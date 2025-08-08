@@ -1,0 +1,96 @@
+---
+description: This rule explains Feature-Sliced Design (FSD) architecture conventions and best practices for scalable frontend applications.
+globs: **/*.js,**/*.jsx,**/*.ts,**/*.tsx
+alwaysApply: true
+---
+
+# Feature-Sliced Design (FSD) Architecture Rules
+
+## Layer Structure
+
+- Follow the strict 7-layer hierarchy: `shared` → `entities` → `features` → `widgets` → `pages` → `processes` → `app`
+- Each layer can only import from layers below it (upward imports are forbidden)
+- Use kebab-case for all directory names: `user-profile`, `auth-form`, `order-history`
+
+## Segment Organization
+
+- Structure each slice with standard segments: `ui/`, `model/`, `api/`, `lib/`, `config/`
+- Export everything through `index.ts` files (Public API principle)
+- Keep internal implementation details private within segments
+
+## Import Rules
+
+- ❌ **Never** import from upper layers: `features` cannot import from `widgets`
+- ❌ **Never** import across slices at the same level: `features/auth` cannot import from `features/cart`
+- ✅ **Always** use Public API: import from `index.ts` files only
+- ✅ **Cross-communication** between same-level slices only through `shared` layer
+
+## File Naming Conventions
+
+- **Directories**: kebab-case (`user-settings/`, `product-card/`)
+- **Components**: PascalCase files (`UserProfile.tsx`, `ProductCard.tsx`)
+- **Utilities/Hooks**: camelCase (`useAuth.ts`, `formatDate.ts`)
+- **Constants**: UPPER_SNAKE_CASE (`API_ENDPOINTS.ts`, `ERROR_MESSAGES.ts`)
+
+## Layer-Specific Rules
+
+### `shared/` - Common Infrastructure
+
+- Contains reusable UI components, utilities, configurations
+- No business logic or feature-specific code
+- Examples: `shared/ui/button/`, `shared/lib/utils/`, `shared/api/base/`
+
+### `entities/` - Business Entities
+
+- Domain models and their basic operations
+- Examples: `entities/user/`, `entities/product/`, `entities/order/`
+- Focus on data structures and simple CRUD operations
+
+### `features/` - User Interactions
+
+- Complete user scenarios and business features
+- Examples: `features/auth/`, `features/add-to-cart/`, `features/product-search/`
+- Each feature should be independent and self-contained
+
+### `widgets/` - Composite UI Blocks
+
+- Complex UI compositions combining multiple features/entities
+- Examples: `widgets/header/`, `widgets/product-list/`, `widgets/user-dashboard/`
+
+### `pages/` - Route Components
+
+- Application pages and routing logic
+- Examples: `pages/home/`, `pages/product/`, `pages/profile/`
+- Should compose widgets and features, minimal logic
+
+### `app/` - Application Setup
+
+- App initialization, global providers, routing setup
+- Examples: `app/providers/`, `app/styles/`, `app/store/`
+
+## Next.js Integration
+
+- Place Next.js route files in `pages/` layer following App Router structure
+- Use `app/` layer for Next.js configuration and providers
+- Server Components in `entities/` and `features/` for data fetching
+- Client Components should be minimal and wrapped with `'use client'`
+
+## State Management
+
+- Keep local state within feature segments
+- Share global state only through `shared/` layer
+- Use proper state management tools (Zustand, Redux, etc.) in `shared/model/`
+
+## Testing Structure
+
+- Mirror FSD structure in test directories
+- Unit tests alongside components: `features/auth/__tests__/`
+- Integration tests in dedicated test layers
+
+## Common Anti-Patterns to Avoid
+
+- ❌ Circular dependencies between layers
+- ❌ Direct cross-slice imports at same level
+- ❌ Business logic in `shared/` layer
+- ❌ UI components in `entities/` layer
+- ❌ Bypassing Public API (index.ts files)

@@ -14,6 +14,181 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// --- Domain Enums ---
+enum ProductType {
+  PACKAGE
+  ITEM
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  INITIATED
+  AUTHORIZED
+  CAPTURED
+  REFUNDED
+  FAILED
+}
+
+// --- Domain Models ---
+model Profile {
+  id         String   @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  displayName String?
+  grade       String?   // 회원 등급
+  language    String?   // 기본 언어 (예: th, en, ko)
+  currency    String?   // 기본 통화 (예: THB, KRW)
+  interests   Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // relations
+  itineraries Itinerary[]
+  bookings    Booking[]
+  issuedCodes InviteCode[] @relation("InviteCodeIssuedBy")
+  ownedCodes  InviteCode[] @relation("InviteCodeOwnedBy")
+  creditLedgers CreditLedger[]
+}
+
+model InviteCode {
+  id                 Int      @id @default(autoincrement())
+  code               String   @unique
+  creditCents        Int      @default(0)
+  expiresAt          DateTime?
+  usedAt             DateTime?
+  createdAt          DateTime @default(now())
+
+  // relations (optional)
+  issuedByProfileId  String?  @db.Uuid
+  issuedByProfile    Profile? @relation("InviteCodeIssuedBy", fields: [issuedByProfileId], references: [id])
+
+  ownedByProfileId   String?  @db.Uuid
+  ownedByProfile     Profile? @relation("InviteCodeOwnedBy", fields: [ownedByProfileId], references: [id])
+
+  // ledger backref
+  ledgers            CreditLedger[]
+}
+
+model Product {
+  id             Int          @id @default(autoincrement())
+  type           ProductType
+  title          String
+  description    String?
+  basePriceCents Int?
+  currency       String?
+  durationMinutes Int?        // 리드타임(분)
+  locationName   String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // relations
+  items          PackageItem[]        @relation("PackageItems_package")
+  asItemOf       PackageItem[]        @relation("PackageItems_item")
+  itineraryItems ItineraryItem[]
+}
+
+model PackageItem {
+  id         Int     @id @default(autoincrement())
+  packageId  Int
+  itemId     Int
+  sortOrder  Int     @default(0)
+
+  package    Product @relation("PackageItems_package", fields: [packageId], references: [id])
+  item       Product @relation("PackageItems_item", fields: [itemId], references: [id])
+
+  @@index([packageId])
+  @@index([itemId])
+}
+
+model Itinerary {
+  id         Int       @id @default(autoincrement())
+  profileId  String?   @db.Uuid
+  title      String
+  startDate  DateTime?
+  endDate    DateTime?
+  createdAt  DateTime  @default(now())
+
+  profile    Profile?  @relation(fields: [profileId], references: [id])
+  items      ItineraryItem[]
+  bookings   Booking[]
+
+  @@index([profileId])
+}
+
+model ItineraryItem {
+  id             Int       @id @default(autoincrement())
+  itineraryId    Int
+  productId      Int
+  scheduledStart DateTime?
+  scheduledEnd   DateTime?
+  dayIndex       Int?
+  sortOrder      Int       @default(0)
+  createdAt      DateTime  @default(now())
+
+  itinerary      Itinerary @relation(fields: [itineraryId], references: [id])
+  product        Product   @relation(fields: [productId], references: [id])
+
+  @@index([itineraryId])
+  @@index([productId])
+  @@index([itineraryId, sortOrder])
+}
+
+model Booking {
+  id                Int           @id @default(autoincrement())
+  profileId         String?       @db.Uuid
+  itineraryId       Int?
+  status            BookingStatus @default(PENDING)
+  totalAmountCents  Int?
+  currency          String?
+  createdAt         DateTime      @default(now())
+
+  profile           Profile?      @relation(fields: [profileId], references: [id])
+  itinerary         Itinerary?    @relation(fields: [itineraryId], references: [id])
+  payments          Payment[]
+  creditLedgers     CreditLedger[]
+
+  @@index([profileId])
+  @@index([itineraryId])
+}
+
+model Payment {
+  id             Int           @id @default(autoincrement())
+  bookingId      Int
+  amountCents    Int
+  currency       String
+  provider       String?
+  transactionId  String?       @unique
+  status         PaymentStatus @default(INITIATED)
+  createdAt      DateTime      @default(now())
+
+  booking        Booking       @relation(fields: [bookingId], references: [id])
+
+  @@index([bookingId])
+}
+
+// Credit ledger for invite/credit usage & grants
+model CreditLedger {
+  id             Int       @id @default(autoincrement())
+  profileId      String?   @db.Uuid
+  inviteCodeId   Int?
+  bookingId      Int?
+  amountCents    Int       // + credit grant, - credit usage
+  reason         String?
+  createdAt      DateTime  @default(now())
+
+  profile        Profile?  @relation(fields: [profileId], references: [id])
+  inviteCode     InviteCode? @relation(fields: [inviteCodeId], references: [id])
+  booking        Booking?  @relation(fields: [bookingId], references: [id])
+
+  @@index([profileId])
+  @@index([inviteCodeId])
+  @@index([bookingId])
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String

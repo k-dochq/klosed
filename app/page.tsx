@@ -1,93 +1,159 @@
-import Image from 'next/image';
 import { prisma } from '@/shared/lib/prisma';
 
+function formatCurrency(amountCents?: number | null, currency?: string | null) {
+  if (amountCents == null) return '-';
+  const cur = currency || 'THB';
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: cur }).format(
+    amountCents / 100,
+  );
+}
+
 export default async function Home() {
-  const posts = await prisma.post.findMany({
+  // Curated packages (PACKAGE + its items)
+  const packages = await prisma.product.findMany({
+    where: { type: 'PACKAGE' },
+    include: {
+      items: {
+        include: { item: { select: { title: true, basePriceCents: true, currency: true } } },
+        orderBy: { sortOrder: 'asc' },
+      },
+    },
     orderBy: { id: 'desc' },
     take: 5,
   });
 
+  // Latest itinerary with items + profile
+  const latestItinerary = await prisma.itinerary.findFirst({
+    orderBy: { id: 'desc' },
+    include: {
+      items: {
+        include: {
+          product: { select: { title: true, type: true, basePriceCents: true, currency: true } },
+        },
+        orderBy: [{ dayIndex: 'asc' }, { sortOrder: 'asc' }],
+      },
+      profile: { select: { displayName: true } },
+    },
+  });
+
+  // Latest booking with payments
+  const latestBooking = await prisma.booking.findFirst({
+    orderBy: { id: 'desc' },
+    include: { payments: true, itinerary: { select: { title: true } } },
+  });
+
+  // Seeded profile credit balance (demo)
+  const PROFILE_ID = '00000000-0000-0000-0000-000000000001';
+  const creditAgg = await prisma.creditLedger.aggregate({
+    where: { profileId: PROFILE_ID },
+    _sum: { amountCents: true },
+  });
+  const creditBalance = creditAgg._sum.amountCents ?? 0;
+
   return (
-    <div className='font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20'>
-      <main className='flex flex-col gap-[32px] row-start-2 items-center sm:items-start'>
-        <Image
-          className='dark:invert'
-          src='/next.svg'
-          alt='Next.js logo'
-          width={180}
-          height={38}
-          priority
-        />
-        <div className='w-full max-w-xl text-left'>
-          <h2 className='text-lg font-semibold mb-2'>Latest Posts (Prisma → Supabase)</h2>
-          {posts.length === 0 ? (
-            <p className='text-sm opacity-70'>No posts yet.</p>
+    <div className='min-h-screen p-8 sm:p-16'>
+      <div className='mx-auto w-full max-w-3xl space-y-12'>
+        <header className='space-y-2'>
+          <h1 className='text-2xl font-bold'>Klosed Project</h1>
+          <p className='text-sm opacity-70'>
+            미용·셀프케어·한국여행 큐레이션과 일정 추천, 예약까지 한 번에
+          </p>
+        </header>
+
+        <section className='space-y-3'>
+          <h2 className='text-lg font-semibold'>Curated Packages</h2>
+          {packages.length === 0 ? (
+            <p className='text-sm opacity-70'>준비 중입니다.</p>
           ) : (
-            <ul className='list-disc pl-5 space-y-1'>
-              {posts.map((p) => (
-                <li key={p.id} className='text-sm'>
-                  {p.title} {p.published ? '(published)' : '(draft)'}
+            <ul className='space-y-4'>
+              {packages.map((pkg) => (
+                <li key={pkg.id} className='text-sm'>
+                  <div className='font-medium'>{pkg.title}</div>
+                  {pkg.items.length > 0 && (
+                    <ul className='list-disc pl-5 mt-1 space-y-0.5'>
+                      {pkg.items.map((pi) => (
+                        <li key={pi.id}>
+                          {pi.item.title}
+                          {pi.item.basePriceCents != null && (
+                            <span className='opacity-70'>
+                              {' '}
+                              — {formatCurrency(pi.item.basePriceCents, pi.item.currency)}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </section>
 
-        <div className='flex gap-4 items-center flex-col sm:flex-row'>
-          <a
-            className='rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto'
-            href='https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <Image
-              className='dark:invert'
-              src='/vercel.svg'
-              alt='Vercel logomark'
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className='rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]'
-            href='https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className='row-start-3 flex gap-[24px] flex-wrap items-center justify-center'>
-        <a
-          className='flex items-center gap-2 hover:underline hover:underline-offset-4'
-          href='https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <Image aria-hidden src='/file.svg' alt='File icon' width={16} height={16} />
-          Learn
-        </a>
-        <a
-          className='flex items-center gap-2 hover:underline hover:underline-offset-4'
-          href='https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <Image aria-hidden src='/window.svg' alt='Window icon' width={16} height={16} />
-          Examples
-        </a>
-        <a
-          className='flex items-center gap-2 hover:underline hover:underline-offset-4'
-          href='https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <Image aria-hidden src='/globe.svg' alt='Globe icon' width={16} height={16} />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <section className='space-y-3'>
+          <h2 className='text-lg font-semibold'>Latest Itinerary</h2>
+          {!latestItinerary ? (
+            <p className='text-sm opacity-70'>아직 생성된 일정이 없습니다.</p>
+          ) : (
+            <div className='text-sm'>
+              <div className='font-medium'>{latestItinerary.title}</div>
+              <div className='opacity-70 mb-1'>
+                Guest: {latestItinerary.profile?.displayName ?? '-'}
+              </div>
+              {latestItinerary.items.length === 0 ? (
+                <p className='opacity-70'>No itinerary items.</p>
+              ) : (
+                <ul className='list-disc pl-5 space-y-0.5'>
+                  {latestItinerary.items.map((it) => (
+                    <li key={it.id}>
+                      Day {it.dayIndex ?? '-'}: {it.product.title}
+                      {it.product.basePriceCents != null && (
+                        <span className='opacity-70'>
+                          {' '}
+                          — {formatCurrency(it.product.basePriceCents, it.product.currency)}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </section>
+
+        <section className='space-y-3'>
+          <h2 className='text-lg font-semibold'>Booking & Credits</h2>
+          {!latestBooking ? (
+            <p className='text-sm opacity-70'>최근 예약이 없습니다.</p>
+          ) : (
+            <div className='text-sm space-y-1'>
+              <div>
+                <span className='font-medium'>Itinerary:</span>{' '}
+                {latestBooking.itinerary?.title ?? '-'}
+              </div>
+              <div>
+                <span className='font-medium'>Total:</span>{' '}
+                {formatCurrency(latestBooking.totalAmountCents, latestBooking.currency)}
+              </div>
+              <div>
+                <span className='font-medium'>Payments:</span>{' '}
+                {latestBooking.payments.length === 0
+                  ? 'None'
+                  : latestBooking.payments
+                      .map(
+                        (p) =>
+                          `${formatCurrency(p.amountCents, p.currency)} (${p.status.toLowerCase()})`,
+                      )
+                      .join(', ')}
+              </div>
+              <div>
+                <span className='font-medium'>Credit Balance:</span>{' '}
+                {formatCurrency(creditBalance, 'THB')}
+              </div>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "seed": "prisma db seed"
   },
   "dependencies": {
+    "@prisma/client": "^6.13.0",
     "next": "15.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -26,7 +28,12 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
+    "prisma": "^6.13.0",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

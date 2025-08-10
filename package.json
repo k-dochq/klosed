@@ -10,10 +10,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed": "prisma db seed",
-    "postinstall": "prisma generate",
-    "notion:archive-completed": "tsx scripts/notion/move-to-archive.ts"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@notionhq/client": "^4.0.1",
     "@prisma/client": "^6.13.0",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",

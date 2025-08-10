@@ -79,9 +79,10 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  let pageId: string | undefined;
   try {
     const body = (await req.json().catch(() => ({}))) as { pageId?: string };
-    const pageId = body?.pageId;
+    pageId = body?.pageId;
     if (!pageId) {
       return NextResponse.json({ ok: false, error: 'Missing pageId' }, { status: 400 });
     }
@@ -116,8 +117,16 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, archived: pageId, copiedTo: created.id });
   } catch (err: any) {
+    const errorId = Math.random().toString(36).slice(2, 10);
+    // Server log for debugging
+    // eslint-disable-next-line no-console
+    console.error(`[notion-archive][${errorId}]`, {
+      pageId,
+      error: err?.message,
+      stack: err?.stack,
+    });
     return NextResponse.json(
-      { ok: false, error: err?.message || 'Unknown error' },
+      { ok: false, errorId, error: err?.message || 'Unknown error' },
       { status: 500 },
     );
   }

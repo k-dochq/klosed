@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed": "prisma db seed",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "notion:archive-completed": "tsx scripts/notion/move-to-archive.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.13.0",

@@ -16,6 +16,21 @@ function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+function normalizeId(id?: string): string | undefined {
+  return id?.replace(/-/g, '');
+}
+
+type LogLevel = 'log' | 'warn' | 'error';
+function log(level: LogLevel, event: string, payload: Record<string, unknown> = {}) {
+  const entry = {
+    ts: new Date().toISOString(),
+    event,
+    ...payload,
+  };
+  // eslint-disable-next-line no-console
+  (console[level] || console.log)(`[notion-archive] ${event} ${JSON.stringify(entry)}`);
+}
+
 function getSelectName(p: any): string | undefined {
   return p?.select?.name as string | undefined;
 }
@@ -82,49 +97,57 @@ export async function POST(req: Request) {
   let pageId: string | undefined;
   try {
     const body = (await req.json().catch(() => ({}))) as { pageId?: string };
+    const reqId = Math.random().toString(36).slice(2, 10);
+    log('log', 'request_received', { reqId });
     pageId = body?.pageId;
     if (!pageId) {
+      log('warn', 'validation_failed', { reqId, reason: 'missing_pageId' });
       return NextResponse.json({ ok: false, error: 'Missing pageId' }, { status: 400 });
     }
 
     // Retrieve page
     const page: any = await notion.pages.retrieve({ page_id: pageId } as any);
+    log('log', 'page_retrieved', {
+      pageId,
+      archived: !!page?.archived,
+      parentDbId: page?.parent?.database_id,
+    });
     if (page.archived) {
+      log('warn', 'skip_already_archived', { pageId });
       return NextResponse.json({ ok: true, skipped: true, reason: 'already archived' });
     }
 
     // Verify belongs to Requests DB (optional)
     const parentDbId: string | undefined = page.parent?.database_id;
-    if (parentDbId && parentDbId !== REQUEST_DB_ID) {
+    if (parentDbId && normalizeId(parentDbId) !== normalizeId(REQUEST_DB_ID)) {
+      log('warn', 'db_mismatch', { pageId, parentDbId, expected: REQUEST_DB_ID });
       return NextResponse.json({ ok: false, error: 'Not a Requests DB item' }, { status: 400 });
     }
 
     const props = page.properties as NotionProperty;
     const isDone = !!getCheckbox(props['결재 완료']);
     if (!isDone) {
+      log('warn', 'skip_not_completed', { pageId });
       return NextResponse.json({ ok: true, skipped: true, reason: '결재 완료 not checked' });
     }
 
     // Create archived copy
     const archiveProps = buildArchiveProps(props);
+    log('log', 'archive_create_start', { pageId });
     const created = await notion.pages.create({
       parent: { database_id: ARCHIVE_DB_ID },
       properties: archiveProps,
     } as any);
+    log('log', 'archive_create_success', { pageId, archiveId: created.id });
 
     // Archive original
     await notion.pages.update({ page_id: pageId, archived: true } as any);
+    log('log', 'source_archived', { pageId });
 
     return NextResponse.json({ ok: true, archived: pageId, copiedTo: created.id });
   } catch (err: any) {
     const errorId = Math.random().toString(36).slice(2, 10);
-    // Server log for debugging
-    // eslint-disable-next-line no-console
-    console.error(`[notion-archive][${errorId}]`, {
-      pageId,
-      error: err?.message,
-      stack: err?.stack,
-    });
+    log('error', 'unhandled_error', { errorId, pageId, error: err?.message });
     return NextResponse.json(
       { ok: false, errorId, error: err?.message || 'Unknown error' },
       { status: 500 },

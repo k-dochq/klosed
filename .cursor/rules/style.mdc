@@ -1,0 +1,229 @@
+---
+alwaysApply: true
+---
+
+# Tailwind CSS Style Rules
+
+## Core Principles
+
+- **Utility-First**: Always prefer Tailwind utility classes over custom CSS
+- **Composition**: Build complex designs by composing utility classes
+- **Consistency**: Use Tailwind's design system (spacing, colors, etc.) for consistency
+
+## Best Practices
+
+### 1. Class Organization
+
+- Group related utilities together
+- Order: Layout → Box Model → Typography → Visual → Misc
+- Example:
+  `flex items-center justify-between p-4 text-lg font-bold text-gray-900 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow`
+
+### 2. Responsive Design
+
+- Use Tailwind's responsive prefixes: `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
+- Mobile-first approach: Base styles for mobile, add breakpoints for larger screens
+- Example: `text-sm md:text-base lg:text-lg`
+
+### 3. State Variants
+
+- Use state variants for interactive elements: `hover:`, `focus:`, `active:`, `disabled:`
+- Group state variants at the end
+- Example: `bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-400`
+
+### 4. Animation & Transitions
+
+- Prefer Tailwind's built-in animations: `animate-spin`, `animate-ping`, `animate-pulse`,
+  `animate-bounce`
+- Use `transition-*` utilities for smooth state changes
+- For complex animations, use `@keyframes` in global CSS with Tailwind's `animate-*` classes
+
+### 5. Color Usage
+
+- Use Tailwind's color palette: `gray-50` to `gray-900`
+- Semantic colors: `primary`, `secondary`, `accent` (define in `tailwind.config.js`)
+- Avoid arbitrary values like `bg-[#123456]` unless absolutely necessary
+
+### 6. Spacing
+
+- Use Tailwind's spacing scale: `0`, `0.5`, `1`, `2`, ... `96`
+- Be consistent with spacing patterns across the app
+- Use negative margins sparingly: `-mt-4`
+
+### 7. Typography
+
+- Use Tailwind's typography scale: `text-xs` to `text-9xl`
+- Font weights: `font-thin` to `font-black`
+- Line heights: `leading-none` to `leading-loose`
+
+### 8. Dark Mode
+
+- Use `dark:` variant for dark mode styles
+- Example: `bg-white dark:bg-gray-900 text-gray-900 dark:text-white`
+
+### 9. Component Extraction
+
+- Extract repeated utility patterns into components
+- Use `@apply` directive sparingly in CSS modules for complex reusable styles
+- Prefer component composition over `@apply`
+
+### 10. Performance
+
+- Avoid dynamic class names that break Tailwind's purge
+- ❌ `bg-${color}-500`
+- ✅ `${color === 'red' ? 'bg-red-500' : 'bg-blue-500'}`
+
+### 11. Accessibility
+
+- Use semantic HTML elements
+- Include focus states: `focus:outline-none focus:ring-2`
+- Ensure color contrast meets WCAG standards
+
+### 12. Custom Utilities
+
+- Define custom utilities in `tailwind.config.js` when needed
+- Use CSS variables for dynamic values
+- Example: `[--custom-size:100px] w-[var(--custom-size)]`
+
+## Anti-Patterns to Avoid
+
+1. **Inline Styles**: Avoid `style` prop when Tailwind classes exist
+2. **Custom CSS**: Don't write custom CSS for things Tailwind can handle
+3. **Important**: Avoid `!important` - restructure classes instead
+4. **Arbitrary Values**: Minimize arbitrary values like `w-[137px]`
+5. **Class Concatenation**: Avoid complex string concatenation for classes
+
+## Examples
+
+### Good ✅
+
+```tsx
+<button className='px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors'>
+  Click me
+</button>
+```
+
+### Bad ❌
+
+```tsx
+<button style={{ padding: '8px 16px', backgroundColor: '#3B82F6' }}>Click me</button>
+```
+
+## References
+
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Tailwind CSS Best Practices](https://tailwindcss.com/docs/editor-setup)
+- [Tailwind UI Patterns](https://tailwindui.com/components)
+
+# Tailwind CSS Style Rules
+
+## Core Principles
+
+- **Utility-First**: Always prefer Tailwind utility classes over custom CSS
+- **Composition**: Build complex designs by composing utility classes
+- **Consistency**: Use Tailwind's design system (spacing, colors, etc.) for consistency
+
+## Best Practices
+
+### 1. Class Organization
+
+- Group related utilities together
+- Order: Layout → Box Model → Typography → Visual → Misc
+- Example:
+  `flex items-center justify-between p-4 text-lg font-bold text-gray-900 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow`
+
+### 2. Responsive Design
+
+- Use Tailwind's responsive prefixes: `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
+- Mobile-first approach: Base styles for mobile, add breakpoints for larger screens
+- Example: `text-sm md:text-base lg:text-lg`
+
+### 3. State Variants
+
+- Use state variants for interactive elements: `hover:`, `focus:`, `active:`, `disabled:`
+- Group state variants at the end
+- Example: `bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-400`
+
+### 4. Animation & Transitions
+
+- Prefer Tailwind's built-in animations: `animate-spin`, `animate-ping`, `animate-pulse`,
+  `animate-bounce`
+- Use `transition-*` utilities for smooth state changes
+- For complex animations, use `@keyframes` in global CSS with Tailwind's `animate-*` classes
+
+### 5. Color Usage
+
+- Use Tailwind's color palette: `gray-50` to `gray-900`
+- Semantic colors: `primary`, `secondary`, `accent` (define in `tailwind.config.js`)
+- Avoid arbitrary values like `bg-[#123456]` unless absolutely necessary
+
+### 6. Spacing
+
+- Use Tailwind's spacing scale: `0`, `0.5`, `1`, `2`, ... `96`
+- Be consistent with spacing patterns across the app
+- Use negative margins sparingly: `-mt-4`
+
+### 7. Typography
+
+- Use Tailwind's typography scale: `text-xs` to `text-9xl`
+- Font weights: `font-thin` to `font-black`
+- Line heights: `leading-none` to `leading-loose`
+
+### 8. Dark Mode
+
+- Use `dark:` variant for dark mode styles
+- Example: `bg-white dark:bg-gray-900 text-gray-900 dark:text-white`
+
+### 9. Component Extraction
+
+- Extract repeated utility patterns into components
+- Use `@apply` directive sparingly in CSS modules for complex reusable styles
+- Prefer component composition over `@apply`
+
+### 10. Performance
+
+- Avoid dynamic class names that break Tailwind's purge
+- ❌ `bg-${color}-500`
+- ✅ `${color === 'red' ? 'bg-red-500' : 'bg-blue-500'}`
+
+### 11. Accessibility
+
+- Use semantic HTML elements
+- Include focus states: `focus:outline-none focus:ring-2`
+- Ensure color contrast meets WCAG standards
+
+### 12. Custom Utilities
+
+- Define custom utilities in `tailwind.config.js` when needed
+- Use CSS variables for dynamic values
+- Example: `[--custom-size:100px] w-[var(--custom-size)]`
+
+## Anti-Patterns to Avoid
+
+1. **Inline Styles**: Avoid `style` prop when Tailwind classes exist
+2. **Custom CSS**: Don't write custom CSS for things Tailwind can handle
+3. **Important**: Avoid `!important` - restructure classes instead
+4. **Arbitrary Values**: Minimize arbitrary values like `w-[137px]`
+5. **Class Concatenation**: Avoid complex string concatenation for classes
+
+## Examples
+
+### Good ✅
+
+```tsx
+<button className='px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors'>
+  Click me
+</button>
+```
+
+### Bad ❌
+
+```tsx
+<button style={{ padding: '8px 16px', backgroundColor: '#3B82F6' }}>Click me</button>
+```
+
+## References
+
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Tailwind CSS Best Practices](https://tailwindcss.com/docs/editor-setup)
+- [Tailwind UI Patterns](https://tailwindui.com/components)

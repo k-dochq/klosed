@@ -8,7 +8,8 @@ alwaysApply: true
 
 ## Layer Structure
 
-- Follow the strict 7-layer hierarchy: `shared` → `entities` → `features` → `widgets` → `pages` → `processes` → `app`
+- Follow the strict 7-layer hierarchy: `shared` → `entities` → `features` → `widgets` → `pages` →
+  `processes` → `app`
 - Each layer can only import from layers below it (upward imports are forbidden)
 - Use kebab-case for all directory names: `user-profile`, `auth-form`, `order-history`
 
@@ -21,7 +22,8 @@ alwaysApply: true
 ## Import Rules
 
 - ❌ **Never** import from upper layers: `features` cannot import from `widgets`
-- ❌ **Never** import across slices at the same level: `features/auth` cannot import from `features/cart`
+- ❌ **Never** import across slices at the same level: `features/auth` cannot import from
+  `features/cart`
 - ✅ **Always** use Public API: import from `index.ts` files only
 - ✅ **Cross-communication** between same-level slices only through `shared` layer
 
@@ -87,6 +89,142 @@ alwaysApply: true
 - Unit tests alongside components: `features/auth/__tests__/`
 - Integration tests in dedicated test layers
 
+## Component Decomposition Rules
+
+### Fine-Grained Component Separation
+
+- **Maximum Granularity**: Break down components into the smallest possible units
+- **Single Responsibility**: Each component should have one clear purpose
+- **Reusability Focus**: Extract any reusable UI elements into separate components
+- **Layer-Based Organization**: Organize decomposed components according to FSD layers
+
+### Component Decomposition Strategy
+
+1. **UI Primitives** → `shared/ui/` (buttons, inputs, icons, decorations)
+2. **Business Components** → `entities/` (user cards, product items)
+3. **Feature Components** → `features/` (forms, interactive elements)
+4. **Composite Components** → `widgets/` (complex UI blocks)
+5. **Page Components** → `pages/` (route-level compositions)
+
+### Logic Decomposition Rules
+
+### Fine-Grained Logic Separation
+
+- **Atomic Functions**: Break logic into smallest functional units
+- **Hook Extraction**: Extract reusable state logic into custom hooks
+- **Service Layer**: Separate business logic from UI components
+- **Utility Functions**: Extract pure functions into utility modules
+
+### Logic Decomposition Strategy
+
+1. **Pure Utilities** → `shared/lib/` (formatters, validators, helpers)
+2. **Custom Hooks** → `shared/model/` or feature-specific `model/`
+3. **API Logic** → `shared/api/` or entity-specific `api/`
+4. **Business Logic** → `entities/*/model/` or `features/*/model/`
+5. **Configuration** → `shared/config/` or layer-specific `config/`
+
+### Shared Layer Guidelines
+
+#### ⚠️ **Don't Rush to Shared**
+
+- **Start Specific**: Begin with feature-specific or entity-specific implementations
+- **Prove Reusability**: Only move to `shared/` after **3+ actual reuse cases**
+- **Avoid Premature Optimization**: Don't predict future sharing needs
+
+#### ✅ **What Belongs in Shared**
+
+- **Truly Generic** utilities (date formatting, validation, etc.)
+- **Framework-level** components (basic Button, Input, Modal)
+- **Cross-domain** logic used by multiple business domains
+- **Technical** infrastructure (API clients, logging, etc.)
+
+#### ❌ **What Should NOT be in Shared**
+
+- **Domain-specific** logic (invitation-specific animations)
+- **Business-specific** UI components (beauty-themed decorations)
+- **Single-use** utilities that might be reused someday
+- **Themed** components tied to specific design systems
+
+### Decomposition Examples
+
+#### Before (Monolithic)
+
+```
+app/invite/page.tsx (500+ lines)
+```
+
+#### After (Decomposed)
+
+```
+widgets/beauty-invitation/
+  ui/EnvelopeInvitation.tsx
+  ui/DiamondCenterpiece.tsx
+  ui/LuxuryBorder.tsx
+  model/useEnvelopeAnimation.ts
+
+features/invitation-swipe/
+  ui/SwipeToOpen.tsx
+  model/useSwipeGesture.ts
+
+features/invitation-code/
+  ui/InvitationCodeInput.tsx
+  model/useInvitationCode.ts
+
+entities/invitation/
+  ui/DiamondSeal.tsx
+  ui/LuxuryBackground.tsx
+  model/invitationTypes.ts
+
+shared/ui/
+  button/Button.tsx
+  input/TextInput.tsx
+  icon/ArrowIcon.tsx
+```
+
+## Import Path Guidelines
+
+### ✅ **Absolute Paths Preferred**
+
+- **Always use absolute paths** for imports instead of relative paths
+- **Consistent structure**: All imports should start from the project root
+- **Better maintainability**: Easier to refactor and move files
+- **Clearer dependencies**: Absolute paths make layer relationships explicit
+
+#### Examples:
+
+```typescript
+// ✅ Good - Absolute paths
+import { Button } from 'shared/ui/button';
+import { useAuth } from 'features/auth/model/useAuth';
+import { UserCard } from 'entities/user/ui/UserCard';
+import { Header } from 'widgets/header/ui/Header';
+
+// ❌ Bad - Relative paths
+import { Button } from '../../../shared/ui/button';
+import { useAuth } from '../../features/auth/model/useAuth';
+import { UserCard } from '../entities/user/ui/UserCard';
+```
+
+### 🔧 **TypeScript Path Mapping**
+
+Configure `tsconfig.json` with baseUrl and paths:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "shared/*": ["shared/*"],
+      "entities/*": ["entities/*"],
+      "features/*": ["features/*"],
+      "widgets/*": ["widgets/*"],
+      "pages/*": ["pages/*"],
+      "app/*": ["app/*"]
+    }
+  }
+}
+```
+
 ## Common Anti-Patterns to Avoid
 
 - ❌ Circular dependencies between layers
@@ -94,3 +232,10 @@ alwaysApply: true
 - ❌ Business logic in `shared/` layer
 - ❌ UI components in `entities/` layer
 - ❌ Bypassing Public API (index.ts files)
+- ❌ **Monolithic components** over 200 lines
+- ❌ **Mixed responsibilities** in single component/function
+- ❌ **Logic coupled** to specific UI components
+- ❌ **Premature shared extraction** without proven reuse
+- ❌ **Domain-specific code** in shared layer
+- ❌ **Over-abstraction** of single-use components
+- ❌ **Relative import paths** (use absolute paths instead)

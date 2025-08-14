@@ -11,7 +11,7 @@ const EnvelopeAnimation = () => {
   const letterRef = useRef<HTMLDivElement>(null);
 
   const { invitationCode, handleCodeChange } = useInvitationCode();
-  const { isOpen, setIsOpen } = useEnvelopeAnimation({ letterRef });
+  const { isOpen, setIsOpen } = useEnvelopeAnimation({ letterRef, envelopeRef });
   const { swipeAreaRef, isDragging, dragProgress } = useSwipeGesture({
     letterRef,
     setIsOpen,

@@ -136,82 +136,181 @@ const EnvelopeAnimation = () => {
         >
           {/* 봉투 몸체 */}
           <div className='absolute inset-0 overflow-hidden rounded-lg shadow-2xl'>
-            {/* 그라데이션 배경 */}
+            {/* 메인 배경 그라데이션 */}
             <div className='absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-black' />
 
-            {/* 텍스처 오버레이 */}
+            {/* 고급스러운 무늬 패턴 */}
             <div
-              className='absolute inset-0 opacity-20'
+              className='absolute inset-0 opacity-15'
               style={{
                 backgroundImage: `
-                  repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 6px),
-                  repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 6px)
+                  repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.05) 4px, rgba(255,255,255,0.05) 8px),
+                  repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(255,255,255,0.05) 4px, rgba(255,255,255,0.05) 8px),
+                  radial-gradient(circle at 25% 25%, rgba(255,215,0,0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 75% 75%, rgba(255,215,0,0.08) 0%, transparent 50%)
                 `,
               }}
             />
 
-            {/* 외부 골드 테두리 */}
-            <div className='absolute inset-0 rounded-lg border-2 border-yellow-400/70 bg-gradient-to-br from-yellow-400/5 via-transparent to-yellow-600/5'>
-              {/* 내부 테두리 */}
-              <div className='absolute inset-3 rounded-sm border border-yellow-300/30'>
-                {/* 모서리 장식 */}
-                <div className='absolute -top-1 -left-1 h-6 w-6 border-t-2 border-l-2 border-yellow-400/60' />
-                <div className='absolute -top-1 -right-1 h-6 w-6 border-t-2 border-r-2 border-yellow-400/60' />
-                <div className='absolute -bottom-1 -left-1 h-6 w-6 border-b-2 border-l-2 border-yellow-400/60' />
-                <div className='absolute -right-1 -bottom-1 h-6 w-6 border-r-2 border-b-2 border-yellow-400/60' />
-              </div>
-            </div>
+            {/* 다이아몬드 패턴 텍스처 */}
+            <div
+              className='absolute inset-0 opacity-8'
+              style={{
+                backgroundImage: `
+                  radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                  radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                  linear-gradient(45deg, transparent 45%, rgba(255,215,0,0.02) 50%, transparent 55%)
+                `,
+                backgroundSize: '40px 40px, 35px 35px, 20px 20px',
+              }}
+            />
 
-            {/* 중앙 장식 패턴 */}
-            <div className='absolute inset-0 flex items-center justify-center'>
-              <div className='relative'>
-                {/* 배경 원형 장식 */}
-                <div className='bg-gradient-radial absolute -inset-8 rounded-full from-yellow-400/10 via-transparent to-transparent' />
+            {/* 화려한 멀티레이어 골드 테두리 */}
+            <div className='absolute inset-0 rounded-lg border-2 border-yellow-400/80 bg-gradient-to-br from-yellow-400/8 via-transparent to-yellow-600/8'>
+              {/* 두 번째 테두리 */}
+              <div className='absolute inset-2 rounded-md border border-yellow-300/40'>
+                {/* 세 번째 테두리 */}
+                <div className='absolute inset-2 rounded-sm border border-yellow-200/20'>
+                  {/* 정교한 모서리 장식 */}
+                  <div className='absolute -top-1 -left-1 h-8 w-8 border-t-2 border-l-2 border-yellow-400'>
+                    <div className='absolute top-2 left-2 h-2 w-2 border-t border-l border-yellow-300/60' />
+                  </div>
+                  <div className='absolute -top-1 -right-1 h-8 w-8 border-t-2 border-r-2 border-yellow-400'>
+                    <div className='absolute top-2 right-2 h-2 w-2 border-t border-r border-yellow-300/60' />
+                  </div>
+                  <div className='absolute -bottom-1 -left-1 h-8 w-8 border-b-2 border-l-2 border-yellow-400'>
+                    <div className='absolute bottom-2 left-2 h-2 w-2 border-b border-l border-yellow-300/60' />
+                  </div>
+                  <div className='absolute -right-1 -bottom-1 h-8 w-8 border-r-2 border-b-2 border-yellow-400'>
+                    <div className='absolute right-2 bottom-2 h-2 w-2 border-r border-b border-yellow-300/60' />
+                  </div>
 
-                {/* Beauty 텍스트 박스 */}
-                <div className='relative border border-yellow-400/30 bg-black/40 px-10 py-6 backdrop-blur-sm sm:px-12 sm:py-8'>
-                  <div className='absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-yellow-400 to-transparent' />
-                  <div className='absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-yellow-400 to-transparent' />
-
-                  <h2 className='mb-2 text-center font-serif text-xl tracking-[0.25em] text-yellow-400 sm:text-2xl sm:tracking-[0.3em]'>
-                    BEAUTY
-                  </h2>
-                  <div className='my-2 h-px w-full bg-yellow-400/40' />
-                  <p className='text-center text-[9px] tracking-[0.35em] text-yellow-300/80 sm:text-[10px] sm:tracking-[0.4em]'>
-                    INVITATION
-                  </p>
+                  {/* 중앙 테두리 장식 라인 */}
+                  <div className='absolute top-0 left-1/2 h-1 w-12 -translate-x-1/2 bg-gradient-to-r from-transparent via-yellow-400/60 to-transparent' />
+                  <div className='absolute bottom-0 left-1/2 h-1 w-12 -translate-x-1/2 bg-gradient-to-r from-transparent via-yellow-400/60 to-transparent' />
+                  <div className='absolute top-1/2 left-0 h-12 w-1 -translate-y-1/2 bg-gradient-to-b from-transparent via-yellow-400/60 to-transparent' />
+                  <div className='absolute top-1/2 right-0 h-12 w-1 -translate-y-1/2 bg-gradient-to-b from-transparent via-yellow-400/60 to-transparent' />
                 </div>
               </div>
             </div>
 
-            {/* 하단 장식 */}
-            <div className='absolute right-0 bottom-8 left-0'>
-              <div className='flex items-center justify-center space-x-4'>
-                <div className='h-px w-12 bg-gradient-to-r from-transparent to-yellow-400/50' />
-                <div className='h-2 w-2 rounded-full bg-yellow-400/60' />
-                <div className='h-px w-12 bg-gradient-to-l from-transparent to-yellow-400/50' />
+            {/* 화려한 중앙 다이아몬드 장식 */}
+            <div className='absolute inset-0 flex items-center justify-center'>
+              <div className='relative'>
+                {/* 다중 광원 배경 효과 */}
+                <div className='bg-gradient-radial absolute -inset-12 rounded-full from-yellow-400/15 via-amber-400/8 to-transparent' />
+                <div className='bg-gradient-radial absolute -inset-8 rounded-full from-yellow-300/10 via-transparent to-transparent' />
+
+                {/* 메인 다이아몬드 컨테이너 */}
+                <div
+                  className='relative border border-yellow-400/40 bg-gradient-to-br from-black/60 via-gray-900/80 to-black/60 px-10 py-6 backdrop-blur-sm sm:px-12 sm:py-8'
+                  style={{
+                    clipPath:
+                      'polygon(15% 0%, 85% 0%, 100% 35%, 100% 65%, 85% 100%, 15% 100%, 0% 65%, 0% 35%)',
+                  }}
+                >
+                  {/* 다이아몬드 모양 글로우 효과 */}
+                  <div
+                    className='absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-transparent to-yellow-600/10'
+                    style={{
+                      clipPath:
+                        'polygon(15% 0%, 85% 0%, 100% 35%, 100% 65%, 85% 100%, 15% 100%, 0% 65%, 0% 35%)',
+                    }}
+                  />
+
+                  {/* 상단/하단 다이아몬드 라인 */}
+                  <div className='absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-yellow-400/80 to-transparent' />
+                  <div className='absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-yellow-400/80 to-transparent' />
+
+                  {/* 중앙 텍스트 */}
+                  <div className='relative z-10'>
+                    <h2 className='mb-2 text-center font-serif text-xl tracking-[0.25em] text-yellow-400 sm:text-2xl sm:tracking-[0.3em]'>
+                      BEAUTY
+                    </h2>
+                    <div className='mx-auto my-2 h-px w-3/4 bg-gradient-to-r from-transparent via-yellow-400/60 to-transparent' />
+                    <p className='text-center text-[9px] tracking-[0.35em] text-yellow-300/80 sm:text-[10px] sm:tracking-[0.4em]'>
+                      INVITATION
+                    </p>
+                  </div>
+
+                  {/* 모서리 보석 효과 */}
+                  <div className='absolute top-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50' />
+                  <div className='absolute bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50' />
+                  <div className='absolute top-1/2 left-2 h-1 w-1 -translate-y-1/2 rounded-full bg-yellow-300 shadow-lg shadow-yellow-300/50' />
+                  <div className='absolute top-1/2 right-2 h-1 w-1 -translate-y-1/2 rounded-full bg-yellow-300 shadow-lg shadow-yellow-300/50' />
+                </div>
               </div>
             </div>
 
-            {/* 왕관 씰 */}
+            {/* 화려한 하단 장식 */}
+            <div className='absolute right-0 bottom-8 left-0'>
+              <div className='flex items-center justify-center space-x-3'>
+                {/* 왼쪽 장식 라인 */}
+                <div className='flex items-center space-x-1'>
+                  <div className='h-px w-8 bg-gradient-to-r from-transparent to-yellow-400/60' />
+                  <div className='h-0.5 w-0.5 rounded-full bg-yellow-400/70' />
+                  <div className='h-px w-4 bg-yellow-400/50' />
+                </div>
+
+                {/* 중앙 다이아몬드 */}
+                <div className='relative'>
+                  <div className='h-3 w-3 rotate-45 bg-gradient-to-br from-yellow-400/80 to-yellow-600/60 shadow-lg shadow-yellow-400/40' />
+                  <div className='absolute inset-0.5 rotate-45 bg-yellow-300/40' />
+                </div>
+
+                {/* 오른쪽 장식 라인 */}
+                <div className='flex items-center space-x-1'>
+                  <div className='h-px w-4 bg-yellow-400/50' />
+                  <div className='h-0.5 w-0.5 rounded-full bg-yellow-400/70' />
+                  <div className='h-px w-8 bg-gradient-to-l from-transparent to-yellow-400/60' />
+                </div>
+              </div>
+            </div>
+
+            {/* 프리미엄 다이아몬드 씰 */}
             <div className='absolute bottom-16 left-1/2 -translate-x-1/2'>
               <div className='relative'>
-                <div className='flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 shadow-xl'>
-                  <div className='flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500'>
-                    <div className='flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-yellow-200 to-yellow-400'>
-                      {/* 왕관 아이콘 */}
-                      <svg
-                        className='h-5 w-5 text-yellow-800'
-                        fill='currentColor'
-                        viewBox='0 0 20 20'
+                {/* 메인 다이아몬드 씰 */}
+                <div className='flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400/20 via-yellow-500/30 to-yellow-600/20 shadow-2xl backdrop-blur-sm'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-full border border-yellow-400/40 bg-gradient-to-br from-black/60 via-gray-900/80 to-black/60'>
+                    {/* 다이아몬드 아이콘 */}
+                    <div className='relative'>
+                      <div
+                        className='h-6 w-6'
+                        style={{
+                          clipPath: 'polygon(50% 0%, 80% 35%, 50% 100%, 20% 35%)',
+                          background:
+                            'linear-gradient(135deg, rgba(255,215,0,0.9) 0%, rgba(255,193,7,0.7) 50%, rgba(255,215,0,0.9) 100%)',
+                        }}
                       >
-                        <path d='M5 3l1.5 3L10 4l3.5 2L15 3l1 9H4l1-9z' />
-                      </svg>
+                        {/* 다이아몬드 내부 반사 */}
+                        <div
+                          className='absolute inset-1'
+                          style={{
+                            clipPath: 'polygon(50% 10%, 70% 40%, 50% 90%, 30% 40%)',
+                            background:
+                              'linear-gradient(45deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(255,255,255,0.2) 100%)',
+                          }}
+                        />
+                      </div>
+
+                      {/* 다이아몬드 주변 작은 보석들 */}
+                      <div className='absolute -top-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-yellow-300 shadow-sm' />
+                      <div className='absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-yellow-300 shadow-sm' />
+                      <div className='absolute top-1/2 -left-1 h-0.5 w-0.5 -translate-y-1/2 rounded-full bg-yellow-400' />
+                      <div className='absolute top-1/2 -right-1 h-0.5 w-0.5 -translate-y-1/2 rounded-full bg-yellow-400' />
                     </div>
                   </div>
                 </div>
-                {/* 씰 광채 효과 */}
-                <div className='absolute inset-0 animate-pulse rounded-full bg-yellow-400/20 blur-lg' />
+
+                {/* 화려한 주변 반짝임 효과 */}
+                <div className='absolute -inset-3 rounded-full bg-yellow-400/15 blur-xl' />
+                <div className='absolute -top-2 left-3 h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-200 shadow-lg shadow-yellow-200/50' />
+                <div className='absolute top-4 -right-2 h-1 w-1 rounded-full bg-yellow-300 shadow-md shadow-yellow-300/40' />
+                <div className='absolute right-3 -bottom-2 h-1.5 w-1.5 animate-pulse rounded-full bg-yellow-200 shadow-lg shadow-yellow-200/50' />
+                <div className='absolute bottom-4 -left-2 h-1 w-1 rounded-full bg-yellow-300 shadow-md shadow-yellow-300/40' />
+                <div className='absolute top-1 right-1 h-0.5 w-0.5 rounded-full bg-yellow-100' />
+                <div className='absolute bottom-1 left-1 h-0.5 w-0.5 rounded-full bg-yellow-100' />
               </div>
             </div>
 
@@ -280,21 +379,62 @@ const EnvelopeAnimation = () => {
             pointerEvents: isOpen ? 'auto' : 'none', // 편지가 열렸을 때만 클릭 가능
           }}
         >
-          <div className='relative rounded-md bg-gradient-to-b from-white via-[#fffef9] to-white shadow-2xl'>
-            {/* 편지 테두리 장식 */}
-            <div className='absolute inset-0 rounded-md border-2 border-yellow-400/20'>
-              <div className='absolute inset-1 rounded-sm border border-yellow-300/10' />
+          <div className='relative rounded-lg bg-gradient-to-b from-white via-[#fffef9] to-[#fff8e7] shadow-2xl'>
+            {/* 화려한 편지 테두리 장식 */}
+            <div className='absolute inset-0 rounded-lg border-2 border-yellow-400/30'>
+              <div className='absolute inset-1 rounded-md border border-yellow-300/20'>
+                <div className='absolute inset-1 rounded-sm border border-yellow-200/15' />
+              </div>
             </div>
+
+            {/* 편지 모서리 장식 */}
+            <div className='absolute top-2 left-2 h-4 w-4 border-t-2 border-l-2 border-yellow-400/40' />
+            <div className='absolute top-2 right-2 h-4 w-4 border-t-2 border-r-2 border-yellow-400/40' />
+            <div className='absolute bottom-2 left-2 h-4 w-4 border-b-2 border-l-2 border-yellow-400/40' />
+            <div className='absolute right-2 bottom-2 h-4 w-4 border-r-2 border-b-2 border-yellow-400/40' />
+
+            {/* 편지 배경 패턴 */}
+            <div
+              className='absolute inset-0 rounded-lg opacity-5'
+              style={{
+                backgroundImage: `
+                  radial-gradient(circle at 25% 25%, rgba(255,215,0,0.3) 0%, transparent 25%),
+                  radial-gradient(circle at 75% 75%, rgba(255,215,0,0.2) 0%, transparent 25%),
+                  linear-gradient(45deg, transparent 49%, rgba(255,215,0,0.1) 50%, transparent 51%)
+                `,
+                backgroundSize: '60px 60px, 80px 80px, 30px 30px',
+              }}
+            />
 
             {/* 편지 내용 */}
             <div className='relative p-6 sm:p-8 md:p-12'>
-              {/* 상단 장식 */}
+              {/* 화려한 상단 장식 */}
               <div className='mb-6 text-center sm:mb-8'>
-                <div className='mx-auto mb-4 h-px w-16 bg-gradient-to-r from-transparent via-yellow-400/60 to-transparent sm:mb-6 sm:w-24' />
+                {/* 상단 장식 라인 */}
+                <div className='mx-auto mb-4 flex items-center justify-center space-x-2 sm:mb-6'>
+                  <div className='h-px w-6 bg-gradient-to-r from-transparent to-yellow-400/60 sm:w-8' />
+                  <div className='h-1 w-1 rotate-45 bg-yellow-400/80' />
+                  <div className='h-px w-8 bg-yellow-400/60 sm:w-12' />
+                  <div className='h-1 w-1 rotate-45 bg-yellow-400/80' />
+                  <div className='h-px w-6 bg-gradient-to-l from-transparent to-yellow-400/60 sm:w-8' />
+                </div>
+
                 <h1 className='mb-3 font-serif text-xl tracking-wide text-gray-800 sm:mb-4 sm:text-2xl md:text-3xl'>
-                  Exclusive Beauty Journey
+                  <span className='relative'>
+                    Exclusive Beauty Journey
+                    {/* 텍스트 하이라이트 효과 */}
+                    <div className='absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-yellow-400/30 to-transparent' />
+                  </span>
                 </h1>
-                <div className='mx-auto h-px w-16 bg-gradient-to-r from-transparent via-yellow-400/60 to-transparent sm:w-24' />
+
+                {/* 하단 장식 라인 */}
+                <div className='mx-auto flex items-center justify-center space-x-2'>
+                  <div className='h-px w-6 bg-gradient-to-r from-transparent to-yellow-400/60 sm:w-8' />
+                  <div className='h-1 w-1 rotate-45 bg-yellow-400/80' />
+                  <div className='h-px w-8 bg-yellow-400/60 sm:w-12' />
+                  <div className='h-1 w-1 rotate-45 bg-yellow-400/80' />
+                  <div className='h-px w-6 bg-gradient-to-l from-transparent to-yellow-400/60 sm:w-8' />
+                </div>
               </div>
 
               {/* 본문 */}

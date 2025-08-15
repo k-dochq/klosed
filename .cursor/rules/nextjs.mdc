@@ -8,8 +8,10 @@ alwaysApply: true
 
 - Use the App Router structure with `page.tsx` files in route directories.
 - Client components must be explicitly marked with `'use client'` at the top of the file.
-- Use kebab-case for directory names (e.g., `components/auth-form`) and PascalCase for component files.
-- Prefer named exports over default exports, i.e. `export function Button() { /* ... */ }` instead of `export default function Button() { /* ... */ }`.
+- Use kebab-case for directory names (e.g., `components/auth-form`) and PascalCase for component
+  files.
+- Prefer named exports over default exports, i.e. `export function Button() { /* ... */ }` instead
+  of `export default function Button() { /* ... */ }`.
 - Minimize `'use client'` directives:
   - Keep most components as React Server Components (RSC)
   - Only use client components when you need interactivity and wrap in `Suspense` with fallback UI
@@ -18,3 +20,11 @@ alwaysApply: true
   - Use server components for data fetching
   - Use URL search params for shareable state
 - Use `nuqs` for URL search param state management
+
+## TypeScript Rules
+
+- **Never use `any` type**: Always provide specific types for better type safety
+  - Use `unknown` for truly unknown types that need type guards
+  - Use union types like `string | number` for multiple possible types
+  - Use generics `<T>` for reusable type-safe functions
+  - Use proper interface or type definitions instead of `any`

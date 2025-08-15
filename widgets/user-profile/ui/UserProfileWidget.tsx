@@ -2,10 +2,12 @@
 
 import { useUser, UserAvatar } from 'entities/user';
 import { SignOutButton } from 'features/google-auth';
+import { useEmailAuth } from 'features/email-auth';
 import Link from 'next/link';
 
 export function UserProfileWidget() {
   const { user, isLoading } = useUser();
+  const { signOut } = useEmailAuth();
 
   if (isLoading) {
     return (
@@ -34,7 +36,16 @@ export function UserProfileWidget() {
         <span className='text-sm font-medium text-gray-900'>{user.fullName || user.email}</span>
         {user.provider && <span className='text-xs text-gray-500'>{user.provider} 계정</span>}
       </div>
-      <SignOutButton />
+      {user.provider === 'google' ? (
+        <SignOutButton />
+      ) : (
+        <button
+          onClick={signOut}
+          className='rounded border border-gray-300 px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-800'
+        >
+          로그아웃
+        </button>
+      )}
     </div>
   );
 }

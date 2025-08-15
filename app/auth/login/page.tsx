@@ -1,5 +1,6 @@
 import { GoogleSignInButton } from 'features/google-auth';
 import { EmailLoginForm } from 'features/email-auth';
+import { Smartphone } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -9,7 +10,7 @@ export default function LoginPage() {
         <div className='text-center'>
           <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>계정에 로그인</h2>
           <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-            이메일 또는 소셜 계정으로 로그인하세요
+            다양한 방법으로 간편하게 로그인하세요
           </p>
         </div>
 
@@ -18,6 +19,32 @@ export default function LoginPage() {
           redirectTo='/auth/callback'
           className='rounded-lg bg-white p-6 shadow-md dark:bg-gray-800'
         />
+
+        {/* 구분선 */}
+        <div className='relative'>
+          <div className='absolute inset-0 flex items-center'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+          <div className='relative flex justify-center text-sm'>
+            <span className='bg-gray-50 px-2 text-gray-500 dark:bg-gray-900 dark:text-gray-400'>
+              또는
+            </span>
+          </div>
+        </div>
+
+        {/* 휴대폰 로그인 */}
+        <div className='rounded-lg bg-white p-6 shadow-md dark:bg-gray-800'>
+          <h3 className='mb-4 text-center text-lg font-medium text-gray-900 dark:text-white'>
+            휴대폰 로그인
+          </h3>
+          <Link
+            href='/auth/phone-login'
+            className='flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+          >
+            <Smartphone className='h-5 w-5' />
+            휴대폰 번호로 로그인
+          </Link>
+        </div>
 
         {/* 구분선 */}
         <div className='relative'>
@@ -47,6 +74,15 @@ export default function LoginPage() {
           >
             비밀번호를 잊으셨나요?
           </Link>
+          <div className='space-x-2'>
+            <span className='text-sm text-gray-600 dark:text-gray-400'>계정이 없으신가요?</span>
+            <Link
+              href='/auth/email-login'
+              className='text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300'
+            >
+              회원가입
+            </Link>
+          </div>
           <div>
             <Link
               href='/'

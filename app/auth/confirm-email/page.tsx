@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from 'shared/lib/supabase';
 import { type EmailOtpType } from '@supabase/supabase-js';
 
-export default function ConfirmEmailPage() {
+function ConfirmEmailContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -133,5 +133,27 @@ export default function ConfirmEmailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className='flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800'>
+      <div className='w-full max-w-md rounded-xl bg-white p-8 shadow-xl dark:bg-gray-800'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent'></div>
+          <h2 className='text-2xl font-bold text-gray-900 dark:text-white'>로딩 중...</h2>
+          <p className='mt-2 text-gray-600 dark:text-gray-400'>잠시만 기다려 주세요</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ConfirmEmailPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ConfirmEmailContent />
+    </Suspense>
   );
 }

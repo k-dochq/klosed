@@ -14,7 +14,6 @@
     "type-check": "tsc --noEmit",
     "check": "pnpm lint && pnpm type-check",
     "find-unused": "tsx scripts/find-unused-files-v2.ts",
-    "find-unused-old": "tsx scripts/find-unused-files.ts",
     "clean-unused": "tsx scripts/find-unused-files-v2.ts --delete",
     "analyze-unused": "tsx scripts/find-unused-files-v2.ts --json"
   },

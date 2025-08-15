@@ -1,18 +1,18 @@
-import { NotionPage, NotionPageId } from 'app/api/notion/approval/archive/entities';
-import type {
-  INotionPageRepository,
-  INotionClientService,
-} from 'app/api/notion/approval/archive/use-cases';
 import {
+  NotionPage,
+  NotionPageId,
   PageNotFoundError,
   DatabaseOperationError,
   NotionApiError,
 } from 'app/api/notion/approval/archive/entities';
+import type {
+  INotionPageRepository,
+  INotionClientService,
+} from 'app/api/notion/approval/archive/use-cases';
 
 export class NotionPageRepository implements INotionPageRepository {
   constructor(
     private readonly notionClient: INotionClientService,
-    private readonly requestDatabaseId: string,
     private readonly archiveDatabaseId: string,
   ) {}
 
@@ -126,12 +126,14 @@ export class NotionPageRepository implements INotionPageRepository {
     const department = this.extractSelectValue(props['부서']);
     const issueDate = this.extractDateValue(props['발급일자']);
     const documentType = this.extractSelectValue(props['종류']);
-    const issueNumber = this.extractRichText(props['발급번호']);
     const quantity = this.extractSelectValue(props['수량']);
     const purpose = this.extractSelectValue(props['제출용도']);
     const directorApproval = this.extractCheckboxValue(props['결재 - 본부장']);
     const ceoApproval = this.extractCheckboxValue(props['결재 - CEO']);
-    const completionDate = this.extractDateValue(props['결재 완료일']) || this.todayISO();
+
+    // Auto-generate archive-specific fields
+    const issueNumber = this.generateIssueNumber(issueDate);
+    const completionDate = this.todayISO();
 
     const archiveProps: Record<string, unknown> = {
       이름: {
@@ -148,19 +150,19 @@ export class NotionPageRepository implements INotionPageRepository {
     if (department) archiveProps['부서'] = { type: 'select', select: { name: department } };
     if (issueDate) archiveProps['발급일자'] = { type: 'date', date: { start: issueDate } };
     if (documentType) archiveProps['종류'] = { type: 'select', select: { name: documentType } };
-    if (issueNumber)
-      archiveProps['발급번호'] = {
-        type: 'rich_text',
-        rich_text: [{ type: 'text', text: { content: issueNumber } }],
-      };
     if (quantity) archiveProps['수량'] = { type: 'select', select: { name: quantity } };
     if (purpose) archiveProps['제출용도'] = { type: 'select', select: { name: purpose } };
     if (typeof directorApproval === 'boolean')
       archiveProps['결재 - 본부장'] = { type: 'checkbox', checkbox: directorApproval };
     if (typeof ceoApproval === 'boolean')
       archiveProps['결재 - CEO'] = { type: 'checkbox', checkbox: ceoApproval };
-    if (completionDate)
-      archiveProps['결재 완료일'] = { type: 'date', date: { start: completionDate } };
+
+    // Always add auto-generated fields
+    archiveProps['발급번호'] = {
+      type: 'rich_text',
+      rich_text: [{ type: 'text', text: { content: issueNumber } }],
+    };
+    archiveProps['결재 완료일'] = { type: 'date', date: { start: completionDate } };
 
     return archiveProps;
   }
@@ -191,22 +193,6 @@ export class NotionPageRepository implements INotionPageRepository {
     return dateProp?.date?.start;
   }
 
-  private extractRichText(prop: unknown): string | undefined {
-    const richTextProp = prop as {
-      rich_text?: Array<{ plain_text?: string; text?: { content?: string } }>;
-    };
-    if (!richTextProp?.rich_text || richTextProp.rich_text.length === 0) {
-      return undefined;
-    }
-
-    return (
-      richTextProp.rich_text
-        .map((t) => t.plain_text || t.text?.content || '')
-        .join('')
-        .trim() || undefined
-    );
-  }
-
   private extractCheckboxValue(prop: unknown): boolean | undefined {
     const checkboxProp = prop as { checkbox?: boolean };
     return checkboxProp?.checkbox;
@@ -214,5 +200,13 @@ export class NotionPageRepository implements INotionPageRepository {
 
   private todayISO(): string {
     return new Date().toISOString().slice(0, 10);
+  }
+
+  private generateIssueNumber(issueDate?: string): string {
+    const date = issueDate || this.todayISO();
+    const dateStr = date.replace(/-/g, ''); // YYYYMMDD
+    const randomSuffix = Math.random().toString(36).slice(-4).toUpperCase();
+
+    return `${dateStr}-${randomSuffix}`;
   }
 }

@@ -1,0 +1,354 @@
+---
+description: Clean Architecture rules for Next.js API routes and server-side code
+globs: **/api/**/*.ts,**/route.ts,**/layout.ts,**/page.ts,**/middleware.ts,**/server/**/*.ts
+alwaysApply: true
+---
+
+# Backend Clean Architecture Rules
+
+## Overview
+
+While frontend code follows **Feature-Sliced Design (FSD)**, backend/server-side code follows
+**Clean Architecture** principles. This separation ensures optimal architecture for each domain:
+
+- **Frontend**: FSD for UI/UX complexity and component organization
+- **Backend**: Clean Architecture for business logic and data flow
+
+## Architecture Layers
+
+Follow the strict 4-layer hierarchy from outer to inner:
+
+```
+┌─────────────────────────────────────┐
+│           Presentation              │  ← Controllers, Route Handlers
+│  ┌─────────────────────────────┐    │
+│  │        Application          │    │  ← Use Cases, Business Logic
+│  │  ┌─────────────────────┐    │    │
+│  │  │      Entities       │    │    │  ← Models, Domain Objects
+│  │  └─────────────────────┘    │    │
+│  └─────────────────────────────┘    │
+│           Infrastructure            │  ← Repositories, Services, External APIs
+└─────────────────────────────────────┘
+```
+
+### 1. Presentation Layer (`app/api/`)
+
+**Controllers and Route Handlers**
+
+- Handle HTTP requests/responses
+- Perform authentication and input validation
+- Orchestrate use cases (no business logic)
+- Use presenters to format responses
+- Handle errors from deeper layers
+
+```typescript
+// ✅ Good - Route handler structure
+export async function POST(req: Request) {
+  try {
+    // 1. Input validation
+    const body = await validateInput(req);
+
+    // 2. Authentication check
+    await authenticateUser(req);
+
+    // 3. Orchestrate use case
+    const result = await useCase.execute(body);
+
+    // 4. Present response
+    return presenter.toApiResponse(result);
+  } catch (error) {
+    return errorHandler.handle(error);
+  }
+}
+```
+
+**Rules:**
+
+- ❌ No business logic in controllers
+- ❌ No direct database access
+- ✅ Only input validation and authentication
+- ✅ Delegate to use cases for business operations
+
+### 2. Application Layer (`app/api/*/use-cases/`)
+
+**Use Cases (Business Logic)**
+
+- Represent single operations: "Create User", "Archive Document"
+- Accept pre-validated input from controllers
+- Handle authorization checks
+- Coordinate repositories and services
+- Return domain objects or errors
+
+```typescript
+// ✅ Good - Use case structure
+export class ArchiveDocumentUseCase {
+  constructor(
+    private documentRepo: IDocumentRepository,
+    private notificationService: INotificationService,
+  ) {}
+
+  async execute(request: ArchiveDocumentRequest): Promise<ArchiveResult> {
+    // 1. Authorization check
+    await this.checkPermissions(request.userId, request.documentId);
+
+    // 2. Business logic
+    const document = await this.documentRepo.findById(request.documentId);
+    if (!document.canBeArchived()) {
+      throw new DocumentNotArchivableError();
+    }
+
+    // 3. Execute operation
+    const archived = await this.documentRepo.archive(document);
+    await this.notificationService.sendArchiveNotification(archived);
+
+    return new ArchiveResult(archived);
+  }
+}
+```
+
+**Rules:**
+
+- ❌ Use cases should NOT call other use cases
+- ❌ No framework-specific code (Next.js, database drivers)
+- ✅ Single responsibility per use case
+- ✅ Use dependency injection for repositories/services
+
+### 3. Entities Layer (`app/api/*/entities/`)
+
+**Domain Models**
+
+- Define business data shapes with plain TypeScript
+- Include business validation rules ("Enterprise Business Rules")
+- Independent of frameworks and databases
+- Contain domain-specific methods
+
+```typescript
+// ✅ Good - Domain entity
+export class Document {
+  constructor(
+    public readonly id: DocumentId,
+    public readonly title: string,
+    public readonly status: DocumentStatus,
+    public readonly approvals: Approval[],
+  ) {
+    this.validateTitle(title);
+  }
+
+  canBeArchived(): boolean {
+    return this.status === DocumentStatus.APPROVED && this.approvals.every((a) => a.isCompleted());
+  }
+
+  private validateTitle(title: string): void {
+    if (title.length < 3 || title.length > 100) {
+      throw new InvalidDocumentTitleError();
+    }
+  }
+}
+```
+
+**Custom Errors**
+
+- Define domain-specific errors
+- Independent of external libraries
+- Used to convert framework errors to domain errors
+
+```typescript
+// ✅ Good - Domain errors
+export class DocumentNotFoundError extends Error {
+  constructor(id: DocumentId) {
+    super(`Document with id ${id} not found`);
+  }
+}
+
+export class DocumentNotArchivableError extends Error {
+  constructor() {
+    super('Document cannot be archived in current state');
+  }
+}
+```
+
+### 4. Infrastructure Layer (`app/api/*/infrastructure/`)
+
+**Repositories**
+
+- Implement data access interfaces from Application layer
+- Handle database operations
+- Convert database errors to domain errors
+- Single responsibility per repository
+
+```typescript
+// ✅ Good - Repository implementation
+export class DrizzleDocumentRepository implements IDocumentRepository {
+  constructor(private db: DrizzleDB) {}
+
+  async findById(id: DocumentId): Promise<Document> {
+    try {
+      const row = await this.db.select().from(documents).where(eq(documents.id, id.value)).limit(1);
+
+      if (!row[0]) {
+        throw new DocumentNotFoundError(id);
+      }
+
+      return this.toDomain(row[0]);
+    } catch (error) {
+      if (error instanceof DocumentNotFoundError) throw error;
+      throw new DatabaseOperationError(error.message);
+    }
+  }
+
+  private toDomain(row: DocumentRow): Document {
+    return new Document(
+      new DocumentId(row.id),
+      row.title,
+      DocumentStatus.fromString(row.status),
+      row.approvals.map((a) => this.approvalToDomain(a)),
+    );
+  }
+}
+```
+
+**Services**
+
+- Implement external service interfaces
+- Handle third-party integrations (email, notifications, APIs)
+- Convert external errors to domain errors
+
+```typescript
+// ✅ Good - Service implementation
+export class EmailNotificationService implements INotificationService {
+  constructor(private emailProvider: EmailProvider) {}
+
+  async sendArchiveNotification(document: Document): Promise<void> {
+    try {
+      await this.emailProvider.send({
+        to: document.owner.email,
+        subject: `Document ${document.title} archived`,
+        template: 'document-archived',
+        data: { documentTitle: document.title },
+      });
+    } catch (error) {
+      throw new NotificationDeliveryError(error.message);
+    }
+  }
+}
+```
+
+## File Structure
+
+```
+app/api/
+├── documents/
+│   ├── route.ts                    # Presentation (Controller)
+│   ├── [id]/
+│   │   ├── route.ts               # Presentation (Controller)
+│   │   └── archive/
+│   │       └── route.ts           # Presentation (Controller)
+│   ├── use-cases/                 # Application Layer
+│   │   ├── create-document.ts
+│   │   ├── archive-document.ts
+│   │   └── index.ts
+│   ├── entities/                  # Domain Layer
+│   │   ├── document.ts
+│   │   ├── approval.ts
+│   │   ├── errors.ts
+│   │   └── index.ts
+│   └── infrastructure/            # Infrastructure Layer
+│       ├── repositories/
+│       │   ├── document-repository.ts
+│       │   └── index.ts
+│       ├── services/
+│       │   ├── notification-service.ts
+│       │   └── index.ts
+│       └── index.ts
+└── shared/                        # Cross-cutting concerns
+    ├── auth/
+    ├── validation/
+    ├── error-handling/
+    └── dependency-injection/
+```
+
+## Dependency Injection
+
+Use IoC container for dependency management:
+
+```typescript
+// di/container.ts
+import { Container } from 'inversify';
+
+const container = new Container();
+
+// Bind interfaces to implementations
+container.bind<IDocumentRepository>('DocumentRepository').to(DrizzleDocumentRepository);
+container.bind<INotificationService>('NotificationService').to(EmailNotificationService);
+container.bind<ArchiveDocumentUseCase>('ArchiveDocumentUseCase').to(ArchiveDocumentUseCase);
+
+export { container };
+```
+
+```typescript
+// route.ts - Using DI
+import { container } from '@/di/container';
+
+export async function POST(req: Request) {
+  const useCase = container.get<ArchiveDocumentUseCase>('ArchiveDocumentUseCase');
+  // ... rest of controller logic
+}
+```
+
+## Interface Definitions
+
+Define interfaces in the Application layer:
+
+```typescript
+// app/api/documents/use-cases/interfaces.ts
+export interface IDocumentRepository {
+  findById(id: DocumentId): Promise<Document>;
+  save(document: Document): Promise<void>;
+  archive(document: Document): Promise<Document>;
+}
+
+export interface INotificationService {
+  sendArchiveNotification(document: Document): Promise<void>;
+}
+```
+
+## TypeScript Rules
+
+- **Never use `any` type**: Always provide specific types
+- Use union types and generics for flexibility
+- Define proper interfaces for all external dependencies
+- Use type guards for runtime validation
+
+## Anti-Patterns to Avoid
+
+- ❌ **Business logic in controllers**
+- ❌ **Use cases calling other use cases**
+- ❌ **Direct database access from controllers**
+- ❌ **Framework-specific code in domain layer**
+- ❌ **Skipping dependency injection**
+- ❌ **Mixing presentation and business logic**
+- ❌ **Using database models as domain entities**
+
+## When to Apply
+
+**Apply Clean Architecture when:**
+
+- API has complex business logic
+- Multiple external integrations
+- Team size > 2 developers
+- Long-term maintenance expected
+
+**Simple REST endpoints may not need full Clean Architecture:**
+
+- Basic CRUD operations
+- Prototypes and MVPs
+- Simple proxy APIs
+- Single developer projects
+
+## Next.js Specific Considerations
+
+- **Route handlers**: Act as controllers in Presentation layer
+- **Server Actions**: Can be controllers or use cases depending on complexity
+- **Middleware**: Cross-cutting concerns (auth, logging)
+- **API validation**: Use Zod or similar at Presentation layer
+- **Error boundaries**: Handle errors at appropriate layers

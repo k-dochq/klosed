@@ -1,19 +1,11 @@
-import { GoogleSignInButton } from 'features/google-auth';
 import { EmailLoginForm } from 'features/email-auth';
+import { GoogleSignInButton } from 'features/google-auth';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function EmailLoginPage() {
   return (
     <div className='flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8 dark:bg-gray-900'>
       <div className='w-full max-w-md space-y-8'>
-        <div className='text-center'>
-          <h2 className='text-3xl font-bold text-gray-900 dark:text-white'>계정에 로그인</h2>
-          <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-            이메일 또는 소셜 계정으로 로그인하세요
-          </p>
-        </div>
-
-        {/* 이메일 로그인 */}
         <EmailLoginForm
           redirectTo='/auth/callback'
           className='rounded-lg bg-white p-6 shadow-md dark:bg-gray-800'

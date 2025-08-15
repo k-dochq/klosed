@@ -12,8 +12,8 @@ import { ArchivePageUseCase, ProcessWebhookUseCase, ScanAndArchiveUseCase } from
 
 // Configuration
 const NOTION_TOKEN = process.env.NOTION_TOKEN || '';
-const REQUEST_DB_ID = '5d8b167cceba424abd6894363fc79e1c';
-const ARCHIVE_DB_ID = '058a381c641846c781e88d614741d13c';
+const REQUEST_DB_ID = '5d8b167c-ceba-424a-bd68-94363fc79e1c';
+const ARCHIVE_DB_ID = '058a381c-6418-46c7-81e8-8d614741d13c';
 
 // Infrastructure instances
 const notionClient = createNotionClient(NOTION_TOKEN);
@@ -24,11 +24,7 @@ const notionClientService = new NotionClientService(notionClient);
 const loggerService = new LoggerService(logger);
 
 // Repositories
-const notionPageRepository = new NotionPageRepository(
-  notionClientService,
-  REQUEST_DB_ID,
-  ARCHIVE_DB_ID,
-);
+const notionPageRepository = new NotionPageRepository(notionClientService, ARCHIVE_DB_ID);
 
 // Use Cases
 const archivePageUseCase = new ArchivePageUseCase(notionPageRepository, loggerService);

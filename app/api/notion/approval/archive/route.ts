@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { container } from './container';
-import { ArchivePageRequest, ScanRequest, InvalidArchiveRequestError } from './entities';
+import {
+  ArchivePageRequest,
+  ScanRequest,
+  InvalidArchiveRequestError,
+  NotionPageId,
+} from './entities';
 
 // Type guards for request validation
 function isNotionWebhook(body: unknown): body is {
@@ -16,6 +21,27 @@ function isNotionWebhook(body: unknown): body is {
     typeof webhook.page_id === 'string' &&
     typeof webhook.property_name === 'string' &&
     webhook.type === 'page_property_updated'
+  );
+}
+
+function isNotionAutomationWebhook(body: unknown): body is {
+  source: { type: 'automation' };
+  data: {
+    object: 'page';
+    id: string;
+    properties: Record<string, unknown>;
+  };
+} {
+  if (typeof body !== 'object' || body === null) return false;
+  const webhook = body as Record<string, unknown>;
+  const source = webhook.source as Record<string, unknown>;
+  const data = webhook.data as Record<string, unknown>;
+
+  return (
+    source?.type === 'automation' &&
+    data?.object === 'page' &&
+    typeof data?.id === 'string' &&
+    typeof data?.properties === 'object'
   );
 }
 
@@ -62,7 +88,43 @@ export async function POST(req: Request) {
 
     // 2. Route to appropriate use case based on request type
 
-    // Handle Notion webhook
+    // Handle Notion Automation webhook (new format)
+    if (isNotionAutomationWebhook(body)) {
+      container.loggerService.log('webhook_automation_received', {
+        requestId,
+        pageId: body.data.id,
+        automationType: body.source.type,
+      });
+
+      // Check if 결재 완료 is true in the properties
+      const properties = body.data.properties as Record<string, { checkbox?: boolean }>;
+      const isApprovalCompleted = properties['결재 완료']?.checkbox;
+
+      if (!isApprovalCompleted) {
+        container.loggerService.log('webhook_automation_skipped', {
+          requestId,
+          pageId: body.data.id,
+          reason: '결재 완료 not checked',
+        });
+
+        return NextResponse.json({
+          success: true,
+          message: '결재 완료가 체크되지 않아 처리하지 않음',
+          skipped: true,
+        });
+      }
+
+      const archiveRequest = new ArchivePageRequest(new NotionPageId(body.data.id), requestId);
+      const result = await container.processWebhookUseCase.execute(archiveRequest);
+
+      container.loggerService.log('webhook_automation_complete', { requestId, result });
+      return NextResponse.json(
+        { ...result, requestId },
+        { headers: { 'x-request-id': requestId } },
+      );
+    }
+
+    // Handle Notion webhook (standard format)
     if (isNotionWebhook(body)) {
       container.loggerService.log('webhook_notion_received', {
         requestId,

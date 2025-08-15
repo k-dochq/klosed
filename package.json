@@ -10,7 +10,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed": "prisma db seed",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "type-check": "tsc --noEmit",
+    "check": "pnpm lint && pnpm type-check"
   },
   "dependencies": {
     "@notionhq/client": "^4.0.1",

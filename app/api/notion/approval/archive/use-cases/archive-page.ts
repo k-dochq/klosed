@@ -1,10 +1,10 @@
-import type { NotionPage, NotionPageId } from 'app/api/notion/approval/archive/entities';
-import { ArchivePageRequest } from 'app/api/notion/approval/archive/entities';
-import type { INotionPageRepository, ILoggerService, ArchiveResult } from './interfaces';
+import type { NotionPage } from 'app/api/notion/approval/archive/entities';
 import {
+  ArchivePageRequest,
   PageNotFoundError,
   PageNotArchivableError,
 } from 'app/api/notion/approval/archive/entities';
+import type { INotionPageRepository, ILoggerService, ArchiveResult } from './interfaces';
 
 export class ArchivePageUseCase {
   constructor(

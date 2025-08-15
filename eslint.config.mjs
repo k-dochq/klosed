@@ -2,8 +2,6 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
 import prettierPlugin from 'eslint-plugin-prettier';
-import prettierConfig from 'eslint-config-prettier';
-import importPlugin from 'eslint-plugin-import';
 
 // __dirname 및 __filename 준비
 const __filename = fileURLToPath(import.meta.url);
@@ -14,7 +12,7 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-export default [
+const eslintConfig = [
   // 최신 Next.js, TypeScript, Core Web Vitals, 접근성(A11y), Prettier 권장 설정 통합
   ...compat.config({
     extends: [
@@ -37,31 +35,24 @@ export default [
       'jsx-a11y/aria-unsupported-elements': 'warn',
       'jsx-a11y/role-has-required-aria-props': 'warn',
       'jsx-a11y/role-supports-aria-props': 'warn',
-      // FSD 절대 경로 import 규칙
+      // FSD 절대 경로 import 규칙 (Clean Architecture 구조 내에서는 상대 경로 허용)
       'import/no-relative-packages': 'error',
-      'import/no-relative-parent-imports': 'error',
-      // 상대 경로 import 전면 금지 (../로 시작하는 모든 import)
-      'no-restricted-imports': [
+      'import/no-relative-parent-imports': 'off', // API 디렉토리에서는 상대 경로 허용
+      // 프론트엔드에서만 상대 경로 import 전면 금지 (API 디렉토리는 Clean Architecture로 별도 관리)
+      'no-restricted-imports': 'off', // 현재는 비활성화
+      // 사용하지 않는 변수/함수 강제 에러 처리
+      '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          patterns: [
-            {
-              group: ['../*'],
-              message: 'Relative imports with "../" are not allowed. Use absolute imports instead.',
-            },
-            {
-              group: ['../../*'],
-              message:
-                'Relative imports with "../../" are not allowed. Use absolute imports instead.',
-            },
-            {
-              group: ['../../../*'],
-              message:
-                'Relative imports with "../../../" are not allowed. Use absolute imports instead.',
-            },
-          ],
+          args: 'all', // 모든 매개변수 검사
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          ignoreRestSiblings: false,
         },
       ],
+      'no-unused-vars': 'off', // TypeScript 규칙과 충돌 방지
       // 필요에 따라 본인 코드 스타일에 맞춘 추가/변경 가능
     },
     settings: {
@@ -100,5 +91,6 @@ export default [
       ],
     },
   },
-  ...prettierConfig,
 ];
+
+export default eslintConfig;

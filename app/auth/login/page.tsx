@@ -1,4 +1,5 @@
 import { GoogleSignInButton } from 'features/google-auth';
+import { FacebookSignInButton } from 'features/facebook-auth';
 import { EmailLoginForm } from 'features/email-auth';
 import { Smartphone } from 'lucide-react';
 import Link from 'next/link';
@@ -63,7 +64,10 @@ export default function LoginPage() {
           <h3 className='mb-4 text-center text-lg font-medium text-gray-900 dark:text-white'>
             소셜 로그인
           </h3>
-          <GoogleSignInButton />
+          <div className='space-y-3'>
+            <GoogleSignInButton />
+            <FacebookSignInButton />
+          </div>
         </div>
 
         {/* 추가 링크 */}

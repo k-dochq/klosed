@@ -13,9 +13,9 @@
     "postinstall": "prisma generate",
     "type-check": "tsc --noEmit",
     "check": "pnpm lint && pnpm type-check",
-    "find-unused": "tsx scripts/find-unused-files-v2.ts",
-    "clean-unused": "tsx scripts/find-unused-files-v2.ts --delete",
-    "analyze-unused": "tsx scripts/find-unused-files-v2.ts --json"
+    "find-unused": "tsx scripts/find-unused-files.ts",
+    "clean-unused": "tsx scripts/find-unused-files.ts --delete",
+    "analyze-unused": "tsx scripts/find-unused-files.ts --json"
   },
   "dependencies": {
     "@notionhq/client": "^4.0.1",

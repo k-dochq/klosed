@@ -91,7 +91,10 @@ class SimpleUnusedFileDetector {
           'globals.css',
         ].includes(fileName);
 
-      if (isAppRouterFile || file === 'middleware.ts') {
+      // 개발 도구 파일들도 진입점으로 간주
+      const isDevelopmentTool = file.startsWith('scripts/') && fileName.endsWith('.ts');
+
+      if (isAppRouterFile || file === 'middleware.ts' || isDevelopmentTool) {
         entryPoints.push(file);
       }
     }
@@ -340,7 +343,7 @@ class SimpleUnusedFileDetector {
       // export ... from 패턴이 있는지 확인
       const exportFromPattern = /export\s*.*\s*from\s*['"`]/;
       return exportFromPattern.test(content);
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

@@ -225,6 +225,59 @@ Configure `tsconfig.json` with baseUrl and paths:
 }
 ```
 
+## Code Reusability and DRY Principles
+
+### ✅ **Eliminate Code Duplication**
+
+- **Constants & Configuration**: Extract repeated values into shared constants
+- **Type Definitions**: Share common types across the application
+- **Utility Functions**: Centralize reusable logic
+- **Component Patterns**: Abstract common UI patterns
+
+### Duplication Elimination Strategy
+
+1. **Constants** → `shared/config/` (API endpoints, locales, themes)
+2. **Types** → `shared/model/types/` (common interfaces, enums)
+3. **Utilities** → `shared/lib/` (formatters, validators, helpers)
+4. **Components** → `shared/ui/` (reusable UI elements)
+
+### Examples:
+
+#### ❌ **Before (Duplicated)**
+
+```typescript
+// Multiple files with repeated locale values
+const locales = ['en', 'ko', 'th']; // in middleware.ts
+const locales = ['en', 'ko', 'th']; // in dictionaries.ts
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'ko', name: '한국어' },
+  { code: 'th', name: 'ไทย' },
+]; // in LanguageSwitcher.tsx
+```
+
+#### ✅ **After (Centralized)**
+
+```typescript
+// shared/config/locales.ts
+export const SUPPORTED_LOCALES = ['en', 'ko', 'th'] as const;
+export type Locale = (typeof SUPPORTED_LOCALES)[number];
+export const DEFAULT_LOCALE: Locale = 'en';
+
+export const LOCALE_LABELS: Record<Locale, string> = {
+  en: 'English',
+  ko: '한국어',
+  th: 'ไทย',
+};
+```
+
+### Configuration Management Rules
+
+- **Single Source of Truth**: One file per configuration domain
+- **Type Safety**: Use TypeScript const assertions and derived types
+- **Environment Awareness**: Separate dev/prod configurations
+- **Validation**: Validate configuration at startup
+
 ## Common Anti-Patterns to Avoid
 
 - ❌ Circular dependencies between layers
@@ -239,3 +292,5 @@ Configure `tsconfig.json` with baseUrl and paths:
 - ❌ **Domain-specific code** in shared layer
 - ❌ **Over-abstraction** of single-use components
 - ❌ **Relative import paths** (use absolute paths instead)
+- ❌ **Duplicated constants** across multiple files
+- ❌ **Hardcoded values** without centralized configuration

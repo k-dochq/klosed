@@ -1,19 +1,45 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from 'shared/lib/supabase/server-only';
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, isValidLocale, type Locale } from 'shared/config';
+
+// Get the preferred locale, similar to the above or using a library
+function getLocale(request: NextRequest): Locale {
+  // Check accept-language header
+  const acceptLanguage = request.headers.get('accept-language');
+  if (acceptLanguage) {
+    const preferredLocale = acceptLanguage.split(',')[0].split('-')[0].toLowerCase();
+    if (isValidLocale(preferredLocale)) {
+      return preferredLocale;
+    }
+  }
+  return DEFAULT_LOCALE;
+}
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+  // Check if there is any supported locale in the pathname
+  const { pathname } = request.nextUrl;
+  const pathnameHasLocale = SUPPORTED_LOCALES.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
+  );
+
+  if (pathnameHasLocale) {
+    // Locale이 있으면 Supabase 세션 처리
+    return await updateSession(request);
+  }
+
+  // Redirect if there is no locale
+  const locale = getLocale(request);
+  request.nextUrl.pathname = `/${locale}${pathname}`;
+  // e.g. incoming request is /products
+  // The new URL is now /en/products
+  return NextResponse.redirect(request.nextUrl);
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Skip all internal paths (_next)
+    '/((?!_next).*)',
+    // Optional: only run on root (/) URL
+    // '/'
   ],
 };

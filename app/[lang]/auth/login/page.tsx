@@ -78,7 +78,7 @@ export default async function LoginPage({ params }: LoginPageProps) {
             {dict.auth.login.socialLogin.title}
           </h3>
           <div className='space-y-3'>
-            <LineSignInButton redirectTo={`/${lang}`} />
+            <LineSignInButton locale={lang} redirectTo={`/${lang}`} />
             <GoogleSignInButton />
             <FacebookSignInButton />
           </div>

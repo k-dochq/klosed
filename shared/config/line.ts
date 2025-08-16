@@ -17,9 +17,14 @@ export const LINE_CONFIG = {
 
 /**
  * 콜백 URL 동적 생성
+ * 현재 언어 경로를 포함한 콜백 URL 생성
  */
-export function getLineCallbackUrl(baseUrl: string): string {
-  return `${baseUrl}/api/auth/line/callback`;
+export function getLineCallbackUrl(baseUrl: string, locale?: string): string {
+  if (locale) {
+    return `${baseUrl}/${locale}/auth/callback`;
+  }
+  // 기본값으로 ko 사용
+  return `${baseUrl}/en/auth/callback`;
 }
 
 /**

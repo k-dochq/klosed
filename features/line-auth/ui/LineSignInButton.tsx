@@ -4,6 +4,10 @@ import { useLineAuth } from 'features/line-auth/model/useLineAuth';
 
 interface LineSignInButtonProps {
   /**
+   * 현재 언어 코드
+   */
+  locale: string;
+  /**
    * 로그인 성공 후 리다이렉트할 경로
    */
   redirectTo?: string;
@@ -22,11 +26,12 @@ interface LineSignInButtonProps {
  * Feature Layer - UI
  */
 export function LineSignInButton({
+  locale,
   redirectTo,
   className = '',
   children = 'LINE으로 로그인',
 }: LineSignInButtonProps) {
-  const { startLineLogin } = useLineAuth();
+  const { startLineLogin } = useLineAuth(locale);
 
   const handleClick = () => {
     startLineLogin(redirectTo);

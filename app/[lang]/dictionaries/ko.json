@@ -25,5 +25,37 @@
         "backHome": "홈으로 돌아가기"
       }
     }
+  },
+  "home": {
+    "title": "Klosed Project",
+    "subtitle": "미용·셀프케어·한국여행 큐레이션과 일정 추천, 예약까지 한 번에",
+    "brand": {
+      "name": "Hi‑So Concierge",
+      "categories": "Beauty · Travel"
+    },
+    "sections": {
+      "packages": {
+        "title": "큐레이션 패키지",
+        "empty": "준비 중입니다.",
+        "items": "아이템",
+        "total": "총액"
+      },
+      "itinerary": {
+        "title": "최신 일정",
+        "empty": "아직 생성된 일정이 없습니다.",
+        "guest": "고객",
+        "noItems": "일정 항목이 없습니다.",
+        "day": "일차"
+      },
+      "booking": {
+        "title": "예약 및 크레딧",
+        "empty": "최근 예약이 없습니다.",
+        "itinerary": "일정",
+        "total": "총액",
+        "payments": "결제내역",
+        "none": "없음",
+        "creditBalance": "크레딧 잔액"
+      }
+    }
   }
 }

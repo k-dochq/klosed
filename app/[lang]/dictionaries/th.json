@@ -25,5 +25,37 @@
         "backHome": "กลับหน้าหลัก"
       }
     }
+  },
+  "home": {
+    "title": "Klosed Project",
+    "subtitle": "ความงาม · การดูแลตนเอง · การท่องเที่ยวเกาหลี คิวเรชั่น คำแนะนำกำหนดการ และการจองทั้งหมดในที่เดียว",
+    "brand": {
+      "name": "Hi‑So Concierge",
+      "categories": "Beauty · Travel"
+    },
+    "sections": {
+      "packages": {
+        "title": "แพ็คเกจคิวเรต",
+        "empty": "กำลังเตรียม",
+        "items": "รายการ",
+        "total": "รวม"
+      },
+      "itinerary": {
+        "title": "กำหนดการล่าสุด",
+        "empty": "ยังไม่มีกำหนดการที่สร้าง",
+        "guest": "แขก",
+        "noItems": "ไม่มีรายการกำหนดการ",
+        "day": "วัน"
+      },
+      "booking": {
+        "title": "การจอง & เครดิต",
+        "empty": "ไม่มีการจองล่าสุด",
+        "itinerary": "กำหนดการ",
+        "total": "รวม",
+        "payments": "การชำระเงิน",
+        "none": "ไม่มี",
+        "creditBalance": "ยอดเครดิต"
+      }
+    }
   }
 }

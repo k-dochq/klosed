@@ -294,3 +294,10 @@ export const LOCALE_LABELS: Record<Locale, string> = {
 - ❌ **Relative import paths** (use absolute paths instead)
 - ❌ **Duplicated constants** across multiple files
 - ❌ **Hardcoded values** without centralized configuration
+
+## TypeScript Rules
+
+- **Never use `any` type**: Always provide specific types
+- Use union types and generics for flexibility
+- Define proper interfaces for all external dependencies
+- Use type guards for runtime validation

@@ -25,5 +25,37 @@
         "backHome": "Back to home"
       }
     }
+  },
+  "home": {
+    "title": "Klosed Project",
+    "subtitle": "Beauty · Self-care · Korea Travel Curation, Schedule Recommendation, and Booking All in One",
+    "brand": {
+      "name": "Hi‑So Concierge",
+      "categories": "Beauty · Travel"
+    },
+    "sections": {
+      "packages": {
+        "title": "Curated Packages",
+        "empty": "Coming soon.",
+        "items": "items",
+        "total": "Total"
+      },
+      "itinerary": {
+        "title": "Latest Itinerary",
+        "empty": "No itineraries created yet.",
+        "guest": "Guest",
+        "noItems": "No itinerary items.",
+        "day": "Day"
+      },
+      "booking": {
+        "title": "Booking & Credits",
+        "empty": "No recent bookings.",
+        "itinerary": "Itinerary",
+        "total": "Total",
+        "payments": "Payments",
+        "none": "None",
+        "creditBalance": "Credit Balance"
+      }
+    }
   }
 }

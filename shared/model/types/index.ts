@@ -1,1 +1,1 @@
-export type { Dictionary } from './dictionary';
+export type { Dictionary, DictionaryValidator } from './dictionary';

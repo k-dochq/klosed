@@ -1,5 +1,6 @@
 import { GoogleSignInButton } from 'features/google-auth';
 import { FacebookSignInButton } from 'features/facebook-auth';
+import { LineSignInButton } from 'features/line-auth';
 import { EmailLoginForm } from 'features/email-auth';
 import { Smartphone } from 'lucide-react';
 import Link from 'next/link';
@@ -77,6 +78,7 @@ export default async function LoginPage({ params }: LoginPageProps) {
             {dict.auth.login.socialLogin.title}
           </h3>
           <div className='space-y-3'>
+            <LineSignInButton locale={lang} redirectTo={`/${lang}`} />
             <GoogleSignInButton />
             <FacebookSignInButton />
           </div>

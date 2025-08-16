@@ -13,8 +13,8 @@ import * as path from 'path';
  */
 
 class TypeScriptBasedUnusedDetector {
-  private program: ts.Program;
-  private checker: ts.TypeChecker;
+  private program!: ts.Program;
+  private checker!: ts.TypeChecker;
   private sourceFiles: Map<string, ts.SourceFile> = new Map();
   private referencedFiles: Set<string> = new Set();
 

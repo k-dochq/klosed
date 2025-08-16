@@ -13,7 +13,7 @@
     "postinstall": "prisma generate",
     "type-check": "tsc --noEmit",
     "check": "pnpm lint && pnpm type-check",
-    "find-unused": "tsx scripts/find-unused-files.ts",
+    "find-unused": "tsx scripts/find-unused-ts-api.ts",
     "clean-unused": "tsx scripts/find-unused-files.ts --delete",
     "analyze-unused": "tsx scripts/find-unused-files.ts --json"
   },

@@ -5,5 +5,25 @@
   "nav": {
     "home": "Home",
     "about": "About"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "subtitle": "Sign in easily with various methods",
+      "phoneLogin": {
+        "title": "Phone Login",
+        "button": "Sign in with phone number"
+      },
+      "socialLogin": {
+        "title": "Social Login"
+      },
+      "divider": "OR",
+      "links": {
+        "forgotPassword": "Forgot your password?",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign up",
+        "backHome": "Back to home"
+      }
+    }
   }
 }

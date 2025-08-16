@@ -5,5 +5,25 @@
   "nav": {
     "home": "홈",
     "about": "소개"
+  },
+  "auth": {
+    "login": {
+      "title": "계정에 로그인",
+      "subtitle": "다양한 방법으로 간편하게 로그인하세요",
+      "phoneLogin": {
+        "title": "휴대폰 로그인",
+        "button": "휴대폰 번호로 로그인"
+      },
+      "socialLogin": {
+        "title": "소셜 로그인"
+      },
+      "divider": "또는",
+      "links": {
+        "forgotPassword": "비밀번호를 잊으셨나요?",
+        "noAccount": "계정이 없으신가요?",
+        "signUp": "회원가입",
+        "backHome": "홈으로 돌아가기"
+      }
+    }
   }
 }

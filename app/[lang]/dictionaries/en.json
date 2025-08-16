@@ -5,5 +5,57 @@
   "nav": {
     "home": "Home",
     "about": "About"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "subtitle": "Sign in easily with various methods",
+      "phoneLogin": {
+        "title": "Phone Login",
+        "button": "Sign in with phone number"
+      },
+      "socialLogin": {
+        "title": "Social Login"
+      },
+      "divider": "OR",
+      "links": {
+        "forgotPassword": "Forgot your password?",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign up",
+        "backHome": "Back to home"
+      }
+    }
+  },
+  "home": {
+    "title": "Klosed Project",
+    "subtitle": "Beauty · Self-care · Korea Travel Curation, Schedule Recommendation, and Booking All in One",
+    "brand": {
+      "name": "Hi‑So Concierge",
+      "categories": "Beauty · Travel"
+    },
+    "sections": {
+      "packages": {
+        "title": "Curated Packages",
+        "empty": "Coming soon.",
+        "items": "items",
+        "total": "Total"
+      },
+      "itinerary": {
+        "title": "Latest Itinerary",
+        "empty": "No itineraries created yet.",
+        "guest": "Guest",
+        "noItems": "No itinerary items.",
+        "day": "Day"
+      },
+      "booking": {
+        "title": "Booking & Credits",
+        "empty": "No recent bookings.",
+        "itinerary": "Itinerary",
+        "total": "Total",
+        "payments": "Payments",
+        "none": "None",
+        "creditBalance": "Credit Balance"
+      }
+    }
   }
 }

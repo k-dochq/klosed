@@ -1,26 +1,24 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from 'shared/lib/supabase/server-only';
-
-const locales = ['en', 'ko', 'th'];
-const defaultLocale = 'en';
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, isValidLocale, type Locale } from 'shared/config';
 
 // Get the preferred locale, similar to the above or using a library
-function getLocale(request: NextRequest): string {
+function getLocale(request: NextRequest): Locale {
   // Check accept-language header
   const acceptLanguage = request.headers.get('accept-language');
   if (acceptLanguage) {
     const preferredLocale = acceptLanguage.split(',')[0].split('-')[0].toLowerCase();
-    if (locales.includes(preferredLocale)) {
+    if (isValidLocale(preferredLocale)) {
       return preferredLocale;
     }
   }
-  return defaultLocale;
+  return DEFAULT_LOCALE;
 }
 
 export async function middleware(request: NextRequest) {
   // Check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
-  const pathnameHasLocale = locales.some(
+  const pathnameHasLocale = SUPPORTED_LOCALES.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 

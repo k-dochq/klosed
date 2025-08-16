@@ -1,8 +1,10 @@
 import { getDictionary } from './dictionaries';
 import { UserProfileWidget } from 'widgets/user-profile';
+import { LanguageSwitcher } from 'shared/ui/language-switcher';
+import { type Locale } from 'shared/config';
 import Link from 'next/link';
 
-export default async function Page({ params }: { params: Promise<{ lang: 'en' | 'ko' | 'th' }> }) {
+export default async function Page({ params }: { params: Promise<{ lang: Locale }> }) {
   const { lang } = await params;
   const dict = await getDictionary(lang);
 
@@ -25,38 +27,7 @@ export default async function Page({ params }: { params: Promise<{ lang: 'en' | 
               </p>
 
               {/* 언어 전환 */}
-              <div className='flex gap-2'>
-                <Link
-                  href='/en'
-                  className={`rounded px-3 py-1 text-sm transition-colors ${
-                    lang === 'en'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  English
-                </Link>
-                <Link
-                  href='/ko'
-                  className={`rounded px-3 py-1 text-sm transition-colors ${
-                    lang === 'ko'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  한국어
-                </Link>
-                <Link
-                  href='/th'
-                  className={`rounded px-3 py-1 text-sm transition-colors ${
-                    lang === 'th'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  ไทย
-                </Link>
-              </div>
+              <LanguageSwitcher currentLang={lang} />
             </div>
             <UserProfileWidget />
           </div>

@@ -1,5 +1,7 @@
+import { SUPPORTED_LOCALES } from 'shared/config';
+
 export async function generateStaticParams() {
-  return [{ lang: 'en' }, { lang: 'ko' }, { lang: 'th' }];
+  return SUPPORTED_LOCALES.map((lang) => ({ lang }));
 }
 
 export default async function RootLayout({

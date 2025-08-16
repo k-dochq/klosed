@@ -1,4 +1,5 @@
 import 'server-only';
+import { type Locale } from 'shared/config';
 
 const dictionaries = {
   en: () => import('./dictionaries/en.json').then((module) => module.default),
@@ -6,4 +7,4 @@ const dictionaries = {
   th: () => import('./dictionaries/th.json').then((module) => module.default),
 };
 
-export const getDictionary = async (locale: 'en' | 'ko' | 'th') => dictionaries[locale]();
+export const getDictionary = async (locale: Locale) => dictionaries[locale]();

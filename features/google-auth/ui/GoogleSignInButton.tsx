@@ -3,20 +3,15 @@
 import { useGoogleAuth } from '../model/useGoogleAuth';
 
 interface GoogleSignInButtonProps {
-  redirectTo?: string;
   className?: string;
   children?: React.ReactNode;
 }
 
-export function GoogleSignInButton({
-  redirectTo,
-  className = '',
-  children,
-}: GoogleSignInButtonProps) {
+export function GoogleSignInButton({ className = '', children }: GoogleSignInButtonProps) {
   const { signInWithGoogle, isLoading, error } = useGoogleAuth();
 
   const handleClick = () => {
-    signInWithGoogle(redirectTo);
+    signInWithGoogle();
   };
 
   return (

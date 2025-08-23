@@ -36,7 +36,7 @@ export default async function LoginPage({ params }: LoginPageProps) {
         <Divider text={dict.auth.login.divider} />
 
         <AuthCard>
-          <SocialLoginSection locale={lang} title={dict.auth.login.socialLogin.title} />
+          <SocialLoginSection title={dict.auth.login.socialLogin.title} />
         </AuthCard>
 
         <AuthLinks locale={lang} links={dict.auth.login.links} />

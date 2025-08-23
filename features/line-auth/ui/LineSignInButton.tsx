@@ -1,16 +1,4 @@
-'use client';
-
-import { useLineAuth } from 'features/line-auth/model/useLineAuth';
-
 interface LineSignInButtonProps {
-  /**
-   * 현재 언어 코드
-   */
-  locale: string;
-  /**
-   * 로그인 성공 후 리다이렉트할 경로
-   */
-  redirectTo?: string;
   /**
    * 버튼의 추가 CSS 클래스
    */
@@ -19,6 +7,10 @@ interface LineSignInButtonProps {
    * 버튼 텍스트 (기본값: "LINE으로 로그인")
    */
   children?: React.ReactNode;
+  /**
+   * 클릭 핸들러
+   */
+  onClick?: () => void;
 }
 
 /**
@@ -26,22 +18,15 @@ interface LineSignInButtonProps {
  * Feature Layer - UI
  */
 export function LineSignInButton({
-  locale,
-  redirectTo,
   className = '',
   children = 'LINE으로 로그인',
+  onClick,
 }: LineSignInButtonProps) {
-  const { startLineLogin } = useLineAuth(locale);
-
-  const handleClick = () => {
-    startLineLogin(redirectTo);
-  };
-
   return (
     <button
       type='button'
-      onClick={handleClick}
-      className={`flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 ${className} `.trim()}
+      onClick={onClick}
+      className={`flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 ${className}`.trim()}
     >
       {/* LINE 로고 */}
       <svg width='20' height='20' viewBox='0 0 24 24' fill='none' className='flex-shrink-0'>

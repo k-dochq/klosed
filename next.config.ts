@@ -14,12 +14,8 @@ const nextConfig: NextConfig = {
 
   // 개발 환경 디버깅 설정
   devIndicators: {
-    buildActivity: true, // 빌드 활동 표시
-    buildActivityPosition: 'bottom-right', // 표시 위치
+    appIsrStatus: true, // ISR 상태 표시
   },
-
-  // 브라우저에서 디버깅 정보 표시
-  browserDebugInfoInTerminal: true,
 
   // 프로덕션에서도 소스맵 생성 (디버깅용)
   productionBrowserSourceMaps: true,

@@ -15,12 +15,9 @@ export async function middleware(request: NextRequest) {
     return await updateSession(request);
   }
 
-  // Redirect if there is no locale
   const locale = getLocale(request);
 
   request.nextUrl.pathname = `/${locale}${pathname}`;
-  // e.g. incoming request is /products
-  // The new URL is now /en/products
   return NextResponse.redirect(request.nextUrl);
 }
 

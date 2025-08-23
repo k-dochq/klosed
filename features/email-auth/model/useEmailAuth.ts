@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from 'shared/lib/supabase';
 
 export function useEmailAuth() {
@@ -9,6 +10,7 @@ export function useEmailAuth() {
   const [message, setMessage] = useState<string | null>(null);
 
   const supabase = createClient();
+  const router = useRouter();
 
   const signInWithEmail = async (email: string, password: string) => {
     try {
@@ -26,6 +28,9 @@ export function useEmailAuth() {
       }
 
       setMessage('로그인에 성공했습니다!');
+
+      router.push('/');
+
       return { data, error: null };
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.';

@@ -9,7 +9,7 @@ export function useGoogleAuth() {
 
   const supabase = createClient();
 
-  const signInWithGoogle = async (redirectTo?: string) => {
+  const signInWithGoogle = async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -17,7 +17,7 @@ export function useGoogleAuth() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectTo || `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 

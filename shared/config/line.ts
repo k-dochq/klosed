@@ -9,35 +9,8 @@ export const LINE_CONFIG = {
   // OAuth 엔드포인트
   AUTHORIZE_URL: 'https://access.line.me/oauth2/v2.1/authorize',
   TOKEN_URL: 'https://api.line.me/oauth2/v2.1/token',
-  PROFILE_URL: 'https://api.line.me/v2/profile',
+  PROFILE_URL: 'https://api.line.me/v2/profile  ',
 
   // 기본 스코프
-  DEFAULT_SCOPE: 'profile openid',
+  DEFAULT_SCOPE: 'profile openid email',
 } as const;
-
-/**
- * 콜백 URL 동적 생성
- * 현재 언어 경로를 포함한 콜백 URL 생성
- */
-export function getLineCallbackUrl(baseUrl: string, locale?: string): string {
-  if (locale) {
-    return `${baseUrl}/${locale}/auth/callback`;
-  }
-  // 기본값으로 ko 사용
-  return `${baseUrl}/en/auth/callback`;
-}
-
-/**
- * LINE 로그인 URL 생성
- */
-export function generateLineAuthUrl(callbackUrl: string, state?: string): string {
-  const params = new URLSearchParams({
-    response_type: 'code',
-    client_id: LINE_CONFIG.CHANNEL_ID,
-    redirect_uri: callbackUrl,
-    scope: LINE_CONFIG.DEFAULT_SCOPE,
-    ...(state && { state }),
-  });
-
-  return `${LINE_CONFIG.AUTHORIZE_URL}?${params.toString()}`;
-}

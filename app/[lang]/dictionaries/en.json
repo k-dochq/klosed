@@ -8,7 +8,24 @@
     "contact": "Contact"
   },
   "auth": {
-    "login": "Login",
+    "login": {
+      "title": "Sign in to your account",
+      "subtitle": "Sign in easily with various methods",
+      "phoneLogin": {
+        "title": "Sign in with phone",
+        "button": "Sign in with phone number"
+      },
+      "socialLogin": {
+        "title": "Sign in with social"
+      },
+      "divider": "or",
+      "links": {
+        "forgotPassword": "Forgot your password?",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign up",
+        "backHome": "Back to home"
+      }
+    },
     "signup": "Sign Up",
     "logout": "Logout"
   },

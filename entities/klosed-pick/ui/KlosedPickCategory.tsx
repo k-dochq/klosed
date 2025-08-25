@@ -12,7 +12,7 @@ export function KlosedPickCategory({ category }: KlosedPickCategoryProps) {
       <h3 className='mb-4 text-lg font-semibold'>{category.category}</h3>
 
       <Carousel
-        className='w-full'
+        className='w-full select-none'
         opts={{
           align: 'start',
           containScroll: 'trimSnaps',
@@ -20,7 +20,7 @@ export function KlosedPickCategory({ category }: KlosedPickCategoryProps) {
       >
         <CarouselContent className='-ml-2'>
           {category.items.map((item) => (
-            <CarouselItem key={item.id} className='max-w-sm basis-4/5 pl-2'>
+            <CarouselItem key={item.id} className='max-w-sm basis-4/5 pl-2 select-none'>
               <KlosedPickItem item={item} />
             </CarouselItem>
           ))}

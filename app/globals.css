@@ -6,3 +6,9 @@
     cursor: pointer;
   }
 }
+
+@layer components {
+  .app-container-max {
+    max-width: 500px;
+  }
+}

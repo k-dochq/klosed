@@ -1,4 +1,5 @@
 import { Header } from 'widgets/header';
+import { Footer } from 'widgets/footer';
 import { type Locale } from 'shared/config';
 
 interface MainAppLayoutProps {
@@ -10,9 +11,10 @@ export default async function MainAppLayout({ children, params }: MainAppLayoutP
   const { lang } = await params;
 
   return (
-    <div className=''>
+    <div className='pb-16'>
       <Header currentLang={lang} />
       {children}
+      <Footer currentLang={lang} />
     </div>
   );
 }

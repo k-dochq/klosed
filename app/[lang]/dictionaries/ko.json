@@ -2,29 +2,15 @@
   "products": {
     "cart": "장바구니에 추가"
   },
-  "nav": {
+  "navigation": {
     "home": "홈",
-    "about": "소개"
+    "about": "소개",
+    "contact": "연락처"
   },
   "auth": {
-    "login": {
-      "title": "계정에 로그인",
-      "subtitle": "다양한 방법으로 간편하게 로그인하세요",
-      "phoneLogin": {
-        "title": "휴대폰 로그인",
-        "button": "휴대폰 번호로 로그인"
-      },
-      "socialLogin": {
-        "title": "소셜 로그인"
-      },
-      "divider": "또는",
-      "links": {
-        "forgotPassword": "비밀번호를 잊으셨나요?",
-        "noAccount": "계정이 없으신가요?",
-        "signUp": "회원가입",
-        "backHome": "홈으로 돌아가기"
-      }
-    }
+    "login": "로그인",
+    "signup": "회원가입",
+    "logout": "로그아웃"
   },
   "home": {
     "title": "Klosed Project",
@@ -57,5 +43,233 @@
         "creditBalance": "크레딧 잔액"
       }
     }
+  },
+  "tours": {
+    "title": "추천 투어",
+    "packages": [
+      {
+        "id": 1,
+        "duration": "4일",
+        "title": "K-뷰티 클래식",
+        "tags": ["V라인 리프팅", "서울 야경 투어", "프리미엄 스킨케어"]
+      },
+      {
+        "id": 2,
+        "duration": "3일",
+        "title": "프리미엄 스킨케어",
+        "tags": ["페이셜 트리트먼트", "쇼핑 투어", "럭셔리 숙박"]
+      },
+      {
+        "id": 3,
+        "duration": "5일",
+        "title": "의료 관광",
+        "tags": ["상담", "회복 케어", "VIP 서비스"]
+      }
+    ]
+  },
+  "klosedPicks": {
+    "title": "클로즈드 픽스",
+    "categories": [
+      {
+        "category": "뷰티 클리닉",
+        "items": [
+          {
+            "id": 1,
+            "title": "V라인 리프팅",
+            "image": "https://images.unsplash.com/photo-1616391182219-e080b4d1043a?w=400&h=300&fit=crop&crop=face"
+          },
+          {
+            "id": 2,
+            "title": "보톡스 트리트먼트",
+            "image": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 3,
+            "title": "스킨케어",
+            "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 4,
+            "title": "페이셜 컨투링",
+            "image": "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 5,
+            "title": "레이저 트리트먼트",
+            "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "프리미엄 스테이",
+        "items": [
+          {
+            "id": 7,
+            "title": "럭셔리 호텔",
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 8,
+            "title": "리조트 패키지",
+            "image": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 9,
+            "title": "부티크 호텔",
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 10,
+            "title": "프라이빗 빌라",
+            "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 11,
+            "title": "스위트 체험",
+            "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "럭셔리 호스피탈리티",
+        "items": [
+          {
+            "id": 12,
+            "title": "파인 다이닝",
+            "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 13,
+            "title": "스파 체험",
+            "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 14,
+            "title": "와인 테이스팅",
+            "image": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 15,
+            "title": "콘시어지 서비스",
+            "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "의료 관광",
+        "items": [
+          {
+            "id": 16,
+            "title": "치과 케어",
+            "image": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 17,
+            "title": "눈 수술",
+            "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 19,
+            "title": "건강 검진",
+            "image": "https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "쇼핑 & 패션",
+        "items": [
+          {
+            "id": 20,
+            "title": "럭셔리 쇼핑",
+            "image": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 21,
+            "title": "패션 스타일링",
+            "image": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 22,
+            "title": "주얼리 컬렉션",
+            "image": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 23,
+            "title": "디자이너 백",
+            "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "문화 체험",
+        "items": [
+          {
+            "id": 24,
+            "title": "전통 다례 체험",
+            "image": "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 25,
+            "title": "한복 체험",
+            "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 26,
+            "title": "한국 요리 클래스",
+            "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 27,
+            "title": "템플 스테이",
+            "image": "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "엔터테인먼트",
+        "items": [
+          {
+            "id": 28,
+            "title": "K-Pop 체험",
+            "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 29,
+            "title": "프라이빗 노래방",
+            "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 31,
+            "title": "콘서트 VIP",
+            "image": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "어드벤처 & 스포츠",
+        "items": [
+          {
+            "id": 32,
+            "title": "하이킹 투어",
+            "image": "https://images.unsplash.com/photo-1551632811-561732d1e306?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 33,
+            "title": "골프 체험",
+            "image": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 34,
+            "title": "워터 스포츠",
+            "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 35,
+            "title": "암벽 등반",
+            "image": "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      }
+    ]
   }
 }

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'K-DOC',
-  description: 'K-DOC',
+  title: 'Klosed',
+  description: 'Klosed',
 };
 
 export default function RootLayout({

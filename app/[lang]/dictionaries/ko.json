@@ -8,7 +8,24 @@
     "contact": "연락처"
   },
   "auth": {
-    "login": "로그인",
+    "login": {
+      "title": "계정에 로그인",
+      "subtitle": "다양한 방법으로 쉽게 로그인하세요",
+      "phoneLogin": {
+        "title": "전화번호로 로그인",
+        "button": "전화번호로 로그인"
+      },
+      "socialLogin": {
+        "title": "소셜 로그인"
+      },
+      "divider": "또는",
+      "links": {
+        "forgotPassword": "비밀번호를 잊으셨나요?",
+        "noAccount": "계정이 없으신가요?",
+        "signUp": "회원가입",
+        "backHome": "홈으로 돌아가기"
+      }
+    },
     "signup": "회원가입",
     "logout": "로그아웃"
   },

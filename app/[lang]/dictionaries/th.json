@@ -25,7 +25,9 @@
         "signUp": "สมัครสมาชิก",
         "backHome": "กลับหน้าหลัก"
       }
-    }
+    },
+    "signup": "สมัครสมาชิก",
+    "logout": "ออกจากระบบ"
   },
   "home": {
     "title": "Klosed Project",

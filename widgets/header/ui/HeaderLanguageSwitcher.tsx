@@ -26,7 +26,7 @@ export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwi
           <Globe size={24} />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' className='w-32'>
+      <DropdownMenuContent align='end' className='w-32 border border-gray-200 bg-white shadow-lg'>
         {Object.entries(LOCALE_LABELS).map(([localeKey, label]) => (
           <DropdownMenuItem
             asChild

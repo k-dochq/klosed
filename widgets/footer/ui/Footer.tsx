@@ -1,47 +1,42 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Heart, Calendar, MessageCircle, User } from 'lucide-react';
-import { type Locale } from 'shared/config';
+import { LocaleLink } from 'shared/ui/locale-link';
 
-interface FooterProps {
-  currentLang: Locale;
-}
-
-export function Footer({ currentLang }: FooterProps) {
+export function Footer() {
   const pathname = usePathname();
 
   const navItems = [
     {
-      href: `/${currentLang}`,
+      href: '/',
       icon: Home,
       label: 'Discover',
-      isActive: pathname === `/${currentLang}`,
+      isActive: pathname.endsWith('/') || pathname.split('/').length === 2,
     },
     {
-      href: `/${currentLang}/wishlist`,
+      href: '/wishlist',
       icon: Heart,
       label: 'Wishlist',
-      isActive: pathname === `/${currentLang}/wishlist`,
+      isActive: pathname.includes('/wishlist'),
     },
     {
-      href: `/${currentLang}/plan`,
+      href: '/plan',
       icon: Calendar,
       label: 'Plan',
-      isActive: pathname === `/${currentLang}/plan`,
+      isActive: pathname.includes('/plan'),
     },
     {
-      href: `/${currentLang}/message`,
+      href: '/message',
       icon: MessageCircle,
       label: 'Message',
-      isActive: pathname === `/${currentLang}/message`,
+      isActive: pathname.includes('/message'),
     },
     {
-      href: `/${currentLang}/my`,
+      href: '/my',
       icon: User,
       label: 'MY',
-      isActive: pathname === `/${currentLang}/my`,
+      isActive: pathname.includes('/my'),
     },
   ];
 
@@ -52,7 +47,7 @@ export function Footer({ currentLang }: FooterProps) {
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
-              <Link
+              <LocaleLink
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center space-y-1 px-3 py-2 transition-colors ${
@@ -63,7 +58,7 @@ export function Footer({ currentLang }: FooterProps) {
               >
                 <Icon className='h-6 w-6' />
                 <span className='text-xs font-medium'>{item.label}</span>
-              </Link>
+              </LocaleLink>
             );
           })}
         </nav>

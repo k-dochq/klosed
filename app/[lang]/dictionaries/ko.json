@@ -29,6 +29,13 @@
     "signup": "회원가입",
     "logout": "로그아웃"
   },
+  "footer": {
+    "discover": "발견",
+    "wishlist": "위시리스트",
+    "plan": "계획",
+    "message": "메시지",
+    "my": "내정보"
+  },
   "home": {
     "title": "Klosed Project",
     "subtitle": "미용·셀프케어·한국여행 큐레이션과 일정 추천, 예약까지 한 번에",
@@ -85,7 +92,7 @@
     ]
   },
   "klosedPicks": {
-    "title": "클로즈드 픽스",
+    "title": "Klosed Picks",
     "categories": [
       {
         "category": "뷰티 클리닉",

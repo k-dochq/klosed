@@ -4,18 +4,16 @@ import { SUPPORTED_LOCALES } from 'shared/config';
 import { getLocale } from 'shared/lib/locale';
 
 export async function middleware(request: NextRequest) {
-  // Check if there is any supported locale in the pathname
   const { pathname } = request.nextUrl;
   const pathnameHasLocale = SUPPORTED_LOCALES.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
   if (pathnameHasLocale) {
-    // Locale이 있으면 Supabase 세션 처리
     return await updateSession(request);
   }
 
-  const locale = getLocale(request);
+  const locale = getLocale();
 
   request.nextUrl.pathname = `/${locale}${pathname}`;
   return NextResponse.redirect(request.nextUrl);

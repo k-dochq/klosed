@@ -29,6 +29,13 @@
     "signup": "Sign Up",
     "logout": "Logout"
   },
+  "footer": {
+    "discover": "Discover",
+    "wishlist": "Wishlist",
+    "plan": "Plan",
+    "message": "Message",
+    "my": "MY"
+  },
   "home": {
     "title": "Klosed Project",
     "subtitle": "Beauty · Self-care · Korea Travel Curation, Schedule Recommendation, and Booking All in One",

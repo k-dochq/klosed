@@ -1,67 +1,46 @@
-'use client';
+import { getDictionary } from 'app/[lang]/dictionaries';
+import { type Locale } from 'shared/config';
+import { FooterNav } from './FooterNav';
 
-import { usePathname } from 'next/navigation';
-import { Home, Heart, Calendar, MessageCircle, User } from 'lucide-react';
-import { LocaleLink } from 'shared/ui/locale-link';
+interface FooterProps {
+  currentLang: Locale;
+}
 
-export function Footer() {
-  const pathname = usePathname();
+export async function Footer({ currentLang }: FooterProps) {
+  const dict = await getDictionary(currentLang);
 
   const navItems = [
     {
       href: '/',
-      icon: Home,
-      label: 'Discover',
-      isActive: pathname.endsWith('/') || pathname.split('/').length === 2,
+      iconName: 'home',
+      label: dict.footer.discover,
     },
     {
       href: '/wishlist',
-      icon: Heart,
-      label: 'Wishlist',
-      isActive: pathname.includes('/wishlist'),
+      iconName: 'heart',
+      label: dict.footer.wishlist,
     },
     {
       href: '/plan',
-      icon: Calendar,
-      label: 'Plan',
-      isActive: pathname.includes('/plan'),
+      iconName: 'calendar',
+      label: dict.footer.plan,
     },
     {
       href: '/message',
-      icon: MessageCircle,
-      label: 'Message',
-      isActive: pathname.includes('/message'),
+      iconName: 'message-circle',
+      label: dict.footer.message,
     },
     {
       href: '/my',
-      icon: User,
-      label: 'MY',
-      isActive: pathname.includes('/my'),
+      iconName: 'user',
+      label: dict.footer.my,
     },
   ];
 
   return (
     <footer className='app-container-max fixed right-0 bottom-0 left-0 z-50 mx-auto border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
-      <div className='max-w-app-container mx-auto'>
-        <nav className='flex items-center justify-around px-4 py-2'>
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <LocaleLink
-                key={item.href}
-                href={item.href}
-                className={`flex flex-col items-center space-y-1 px-3 py-2 transition-colors ${
-                  item.isActive
-                    ? 'text-amber-500'
-                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
-                }`}
-              >
-                <Icon className='h-6 w-6' />
-                <span className='text-xs font-medium'>{item.label}</span>
-              </LocaleLink>
-            );
-          })}
-        </nav>
+      <div className='mx-auto'>
+        <FooterNav items={navItems} />
       </div>
     </footer>
   );

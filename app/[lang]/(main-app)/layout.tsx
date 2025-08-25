@@ -14,7 +14,7 @@ export default async function MainAppLayout({ children, params }: MainAppLayoutP
     <div className='pb-16'>
       <Header currentLang={lang} />
       {children}
-      <Footer />
+      <Footer currentLang={lang} />
     </div>
   );
 }

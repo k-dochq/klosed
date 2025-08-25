@@ -1,9 +1,5 @@
 import { forwardRef } from 'react';
-
-// 간단한 클래스 병합 유틸리티
-function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(' ');
-}
+import { cn } from 'shared/lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';

@@ -12,11 +12,6 @@ const nextConfig: NextConfig = {
     incomingRequests: true, // 모든 요청 로깅
   },
 
-  // 개발 환경 디버깅 설정
-  devIndicators: {
-    appIsrStatus: true, // ISR 상태 표시
-  },
-
   // 프로덕션에서도 소스맵 생성 (디버깅용)
   productionBrowserSourceMaps: true,
 

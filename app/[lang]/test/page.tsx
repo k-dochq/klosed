@@ -1,11 +1,11 @@
-import { getDictionary } from './dictionaries';
+import { getDictionary } from '../dictionaries';
 import { UserProfileWidget } from 'widgets/user-profile';
 import { LanguageSwitcher } from 'shared/ui/language-switcher';
 import { PackagesSection, ItinerarySection, BookingSection } from 'widgets/home-sections';
 import { HomeRepository } from 'shared/lib/repositories';
 import { type Locale } from 'shared/config';
 
-export default async function Page({ params }: { params: Promise<{ lang: Locale }> }) {
+export default async function TestPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const { lang } = await params;
   const dict = await getDictionary(lang);
 

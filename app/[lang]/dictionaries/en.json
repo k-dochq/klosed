@@ -2,29 +2,15 @@
   "products": {
     "cart": "Add to Cart"
   },
-  "nav": {
+  "navigation": {
     "home": "Home",
-    "about": "About"
+    "about": "About",
+    "contact": "Contact"
   },
   "auth": {
-    "login": {
-      "title": "Sign in to your account",
-      "subtitle": "Sign in easily with various methods",
-      "phoneLogin": {
-        "title": "Phone Login",
-        "button": "Sign in with phone number"
-      },
-      "socialLogin": {
-        "title": "Social Login"
-      },
-      "divider": "OR",
-      "links": {
-        "forgotPassword": "Forgot your password?",
-        "noAccount": "Don't have an account?",
-        "signUp": "Sign up",
-        "backHome": "Back to home"
-      }
-    }
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout"
   },
   "home": {
     "title": "Klosed Project",
@@ -59,25 +45,230 @@
     }
   },
   "tours": {
-    "title": "Featured Tour Packages",
+    "title": "Featured Tours",
     "packages": [
       {
         "id": 1,
         "duration": "4 Days",
         "title": "K-Beauty Classic",
-        "tags": ["V-line Lifting", "Seoul night tour", "Skin Care"]
+        "tags": ["V-line Lifting", "Seoul night tour", "Premium skincare"]
       },
       {
         "id": 2,
         "duration": "3 Days",
         "title": "Premium Skincare",
-        "tags": ["Facial Treatment", "Shopping Tour", "Luxury"]
+        "tags": ["Facial Treatment", "Shopping Tour", "Luxury accommodation"]
       },
       {
         "id": 3,
         "duration": "5 Days",
         "title": "Medical Tourism",
-        "tags": ["Consultation", "Recovery Care", "Professional"]
+        "tags": ["Consultation", "Recovery Care", "VIP service"]
+      }
+    ]
+  },
+  "klosedPicks": {
+    "title": "Klosed Picks",
+    "categories": [
+      {
+        "category": "Beauty Clinic",
+        "items": [
+          {
+            "id": 1,
+            "title": "V-line lifting",
+            "image": "https://images.unsplash.com/photo-1616391182219-e080b4d1043a?w=400&h=300&fit=crop&crop=face"
+          },
+          {
+            "id": 2,
+            "title": "Botox Treatment",
+            "image": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 3,
+            "title": "Skin Care",
+            "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 4,
+            "title": "Facial Contouring",
+            "image": "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 5,
+            "title": "Laser Treatment",
+            "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "Premium Stay",
+        "items": [
+          {
+            "id": 7,
+            "title": "Luxury Hotel",
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 8,
+            "title": "Resort Package",
+            "image": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 9,
+            "title": "Boutique Hotel",
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 10,
+            "title": "Private Villa",
+            "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 11,
+            "title": "Suite Experience",
+            "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "Luxury Hospitality",
+        "items": [
+          {
+            "id": 12,
+            "title": "Fine Dining",
+            "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 13,
+            "title": "Spa Experience",
+            "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 14,
+            "title": "Wine Tasting",
+            "image": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 15,
+            "title": "Concierge Service",
+            "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "Medical Tourism",
+        "items": [
+          {
+            "id": 16,
+            "title": "Dental Care",
+            "image": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 17,
+            "title": "Eye Surgery",
+            "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 19,
+            "title": "Health Checkup",
+            "image": "https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "Shopping & Fashion",
+        "items": [
+          {
+            "id": 20,
+            "title": "Luxury Shopping",
+            "image": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 21,
+            "title": "Fashion Styling",
+            "image": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 22,
+            "title": "Jewelry Collection",
+            "image": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 23,
+            "title": "Designer Bags",
+            "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "Cultural Experience",
+        "items": [
+          {
+            "id": 24,
+            "title": "Traditional Tea Ceremony",
+            "image": "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 25,
+            "title": "Hanbok Experience",
+            "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 26,
+            "title": "Korean Cooking Class",
+            "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 27,
+            "title": "Temple Stay",
+            "image": "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "Entertainment",
+        "items": [
+          {
+            "id": 28,
+            "title": "K-Pop Experience",
+            "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 29,
+            "title": "Private Karaoke",
+            "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 31,
+            "title": "Concert VIP",
+            "image": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "Adventure & Sports",
+        "items": [
+          {
+            "id": 32,
+            "title": "Hiking Tour",
+            "image": "https://images.unsplash.com/photo-1551632811-561732d1e306?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 33,
+            "title": "Golf Experience",
+            "image": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 34,
+            "title": "Water Sports",
+            "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 35,
+            "title": "Rock Climbing",
+            "image": "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
       }
     ]
   }

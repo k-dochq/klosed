@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export function Header({ currentLang }: HeaderProps) {
   return (
-    <header className='sticky top-0 z-50 w-full px-4 sm:px-0'>
+    <header className='sticky top-0 z-50 w-full bg-white px-4 sm:px-0'>
       <div className='flex items-center justify-between py-4'>
         <HeaderLogo />
         <HeaderLanguageSwitcher currentLang={currentLang} />

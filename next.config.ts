@@ -23,6 +23,17 @@ const nextConfig: NextConfig = {
     // 서버 컴포넌트 HMR 캐시 활성화
     serverComponentsHmrCache: true,
   },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

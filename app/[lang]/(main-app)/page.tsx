@@ -1,5 +1,7 @@
 import { TourCarousel } from 'widgets/tour-carousel';
+import { KlosedPicks } from 'widgets/klosed-picks';
 import { createLocalizedTours } from 'entities/tour';
+import { createLocalizedKlosedPicks } from 'entities/klosed-pick';
 import { getDictionary } from '../dictionaries';
 import { type Locale } from 'shared/config';
 
@@ -12,10 +14,12 @@ export default async function Page({ params }: PageProps) {
   const dict = await getDictionary(lang);
 
   const localizedTours = createLocalizedTours(dict.tours);
+  const localizedKlosedPicks = createLocalizedKlosedPicks(dict.klosedPicks);
 
   return (
     <div>
       <TourCarousel tours={localizedTours} />
+      <KlosedPicks data={localizedKlosedPicks} />
     </div>
   );
 }

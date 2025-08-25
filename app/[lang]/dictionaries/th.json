@@ -2,9 +2,10 @@
   "products": {
     "cart": "เพิ่มลงตะกร้า"
   },
-  "nav": {
+  "navigation": {
     "home": "หน้าหลัก",
-    "about": "เกี่ยวกับ"
+    "about": "เกี่ยวกับ",
+    "contact": "ติดต่อ"
   },
   "auth": {
     "login": {
@@ -78,6 +79,211 @@
         "duration": "5 วัน",
         "title": "การท่องเที่ยวทางการแพทย์",
         "tags": ["การปรึกษา", "การดูแลฟื้นฟู", "มืออาชีพ"]
+      }
+    ]
+  },
+  "klosedPicks": {
+    "title": "Klosed Picks",
+    "categories": [
+      {
+        "category": "คลินิกความงาม",
+        "items": [
+          {
+            "id": 1,
+            "title": "V-line ลิฟติ้ง",
+            "image": "https://images.unsplash.com/photo-1616391182219-e080b4d1043a?w=400&h=300&fit=crop&crop=face"
+          },
+          {
+            "id": 2,
+            "title": "การรักษาโบท็อกซ์",
+            "image": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 3,
+            "title": "การดูแลผิว",
+            "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 4,
+            "title": "การปรับรูปหน้า",
+            "image": "https://images.unsplash.com/photo-1487412912498-0447578fcca8?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 5,
+            "title": "การรักษาด้วยเลเซอร์",
+            "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "ที่พักพรีเมียม",
+        "items": [
+          {
+            "id": 7,
+            "title": "โรงแรมหรูหรา",
+            "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 8,
+            "title": "แพ็คเกจรีสอร์ท",
+            "image": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 9,
+            "title": "โรงแรมบูติก",
+            "image": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 10,
+            "title": "วิลล่าส่วนตัว",
+            "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 11,
+            "title": "ประสบการณ์สวีท",
+            "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "การต้อนรับหรูหรา",
+        "items": [
+          {
+            "id": 12,
+            "title": "อาหารชั้นเลิศ",
+            "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 13,
+            "title": "ประสบการณ์สปา",
+            "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 14,
+            "title": "การชิมไวน์",
+            "image": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 15,
+            "title": "บริการคอนเซียร์จ",
+            "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "การท่องเที่ยวทางการแพทย์",
+        "items": [
+          {
+            "id": 16,
+            "title": "การดูแลทันตกรรม",
+            "image": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 17,
+            "title": "การผ่าตัดตา",
+            "image": "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 19,
+            "title": "การตรวจสุขภาพ",
+            "image": "https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "ช้อปปิ้ง & แฟชั่น",
+        "items": [
+          {
+            "id": 20,
+            "title": "การช้อปปิ้งหรูหรา",
+            "image": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 21,
+            "title": "การจัดสไตล์แฟชั่น",
+            "image": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 22,
+            "title": "คอลเลกชันเครื่องประดับ",
+            "image": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 23,
+            "title": "กระเป๋าดีไซเนอร์",
+            "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "ประสบการณ์ทางวัฒนธรรม",
+        "items": [
+          {
+            "id": 24,
+            "title": "พิธีชงชาแบบดั้งเดิม",
+            "image": "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 25,
+            "title": "ประสบการณ์ชุดฮันบก",
+            "image": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 26,
+            "title": "ชั้นเรียนทำอาหารเกาหลี",
+            "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 27,
+            "title": "การพักที่วัด",
+            "image": "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "ความบันเทิง",
+        "items": [
+          {
+            "id": 28,
+            "title": "ประสบการณ์ K-Pop",
+            "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 29,
+            "title": "คาราโอเกะส่วนตัว",
+            "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 31,
+            "title": "คอนเสิร์ต VIP",
+            "image": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
+      },
+      {
+        "category": "การผจญภัย & กีฬา",
+        "items": [
+          {
+            "id": 32,
+            "title": "ทัวร์เดินป่า",
+            "image": "https://images.unsplash.com/photo-1551632811-561732d1e306?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 33,
+            "title": "ประสบการณ์กอล์ฟ",
+            "image": "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 34,
+            "title": "กีฬาทางน้ำ",
+            "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center"
+          },
+          {
+            "id": 35,
+            "title": "ปีนหน้าผา",
+            "image": "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400&h=300&fit=crop&crop=center"
+          }
+        ]
       }
     ]
   }

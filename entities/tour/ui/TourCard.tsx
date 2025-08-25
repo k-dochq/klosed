@@ -7,7 +7,7 @@ interface TourCardProps {
 
 export function TourCard({ tour }: TourCardProps) {
   return (
-    <div className='relative aspect-[4/3] overflow-hidden rounded-lg bg-gradient-to-b from-gray-200 to-gray-300'>
+    <div className='relative aspect-[4/3] overflow-hidden bg-gradient-to-b from-gray-200 to-gray-300'>
       {/* 배경 이미지 */}
       <div
         className='absolute inset-0 bg-cover bg-center'

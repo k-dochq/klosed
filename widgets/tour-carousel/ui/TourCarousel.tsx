@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { type Tour } from 'entities/tour';
 import { TourCard } from 'entities/tour/ui';
 import {
@@ -10,6 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
   CarouselIndicators,
+  type CarouselApi,
 } from 'shared/ui/carousel';
 
 interface TourCarouselProps {
@@ -17,11 +18,28 @@ interface TourCarouselProps {
 }
 
 export function TourCarousel({ tours }: TourCarouselProps) {
+  const [api, setApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCurrentSlide(api.selectedScrollSnap());
+
+    api.on('select', () => {
+      setCurrentSlide(api.selectedScrollSnap());
+    });
+  }, [api]);
+
+  const scrollTo = (index: number) => {
+    api?.scrollTo(index);
+  };
 
   return (
     <div className='mx-auto w-full'>
-      <Carousel className='w-full'>
+      <Carousel setApi={setApi} className='w-full'>
         <CarouselContent className='-ml-2 md:-ml-4'>
           {tours.map((tour) => (
             <CarouselItem key={tour.id} className='pl-2 md:pl-4'>
@@ -39,7 +57,7 @@ export function TourCarousel({ tours }: TourCarouselProps) {
       <CarouselIndicators
         totalSlides={tours.length}
         currentSlide={currentSlide}
-        onSlideChange={setCurrentSlide}
+        onSlideChange={scrollTo}
       />
     </div>
   );

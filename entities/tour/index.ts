@@ -1,2 +1,2 @@
-export { type Tour } from './model/types';
-export { tourPackages } from './model/data';
+export { type Tour, type TourPackage, type TourData } from './model/types';
+export { tourPackages, createLocalizedTours } from './model/data';

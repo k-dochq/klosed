@@ -57,5 +57,28 @@
         "creditBalance": "Credit Balance"
       }
     }
+  },
+  "tours": {
+    "title": "Featured Tour Packages",
+    "packages": [
+      {
+        "id": 1,
+        "duration": "4 Days",
+        "title": "K-Beauty Classic",
+        "tags": ["V-line Lifting", "Seoul night tour", "Skin Care"]
+      },
+      {
+        "id": 2,
+        "duration": "3 Days",
+        "title": "Premium Skincare",
+        "tags": ["Facial Treatment", "Shopping Tour", "Luxury"]
+      },
+      {
+        "id": 3,
+        "duration": "5 Days",
+        "title": "Medical Tourism",
+        "tags": ["Consultation", "Recovery Care", "Professional"]
+      }
+    ]
   }
 }

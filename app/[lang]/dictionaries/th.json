@@ -105,6 +105,32 @@
     "seoul": "โซล",
     "difference": "กรุงเทพฯช้ากว่าโซล 2 ชั่วโมง"
   },
+  "essentials": {
+    "title": "สิ่งจำเป็น",
+    "subtitle": "ใช้เครดิตของคุณและเตรียมการเดินทาง!",
+    "items": [
+      {
+        "id": 1,
+        "name": "กิฟติคอน",
+        "description": "บัตรของขวัญดิจิทัล"
+      },
+      {
+        "id": 2,
+        "name": "eซิม",
+        "description": "แพ็คเกจข้อมูลมือถือ"
+      },
+      {
+        "id": 3,
+        "name": "บัตรกำนัลร้านอาหาร",
+        "description": "บัตรกำนัลอาหาร"
+      },
+      {
+        "id": 4,
+        "name": "ข้อเสนอพิเศษ",
+        "description": "ข้อเสนอพิเศษ"
+      }
+    ]
+  },
   "klosedPicks": {
     "title": "Klosed Picks",
     "categories": [

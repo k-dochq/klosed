@@ -105,6 +105,32 @@
     "seoul": "서울",
     "difference": "방콕은 서울보다 2시간 늦습니다"
   },
+  "essentials": {
+    "title": "필수품",
+    "subtitle": "크레딧을 사용하여 여행을 준비하세요!",
+    "items": [
+      {
+        "id": 1,
+        "name": "기프티콘",
+        "description": "디지털 기프트 카드"
+      },
+      {
+        "id": 2,
+        "name": "e심",
+        "description": "모바일 데이터 요금제"
+      },
+      {
+        "id": 3,
+        "name": "식당 바우처",
+        "description": "식사 바우처"
+      },
+      {
+        "id": 4,
+        "name": "특별 할인",
+        "description": "특별 할인"
+      }
+    ]
+  },
   "klosedPicks": {
     "title": "Klosed Picks",
     "categories": [

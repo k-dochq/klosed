@@ -105,6 +105,32 @@
     "seoul": "Seoul",
     "difference": "Bangkok is 2 hours behind Seoul"
   },
+  "essentials": {
+    "title": "Essentials",
+    "subtitle": "Use your Kredit and prepare your trip!",
+    "items": [
+      {
+        "id": 1,
+        "name": "gifticon",
+        "description": "Digital gift cards"
+      },
+      {
+        "id": 2,
+        "name": "eSim",
+        "description": "Mobile data plans"
+      },
+      {
+        "id": 3,
+        "name": "restaurant voucher",
+        "description": "Dining vouchers"
+      },
+      {
+        "id": 4,
+        "name": "sdf",
+        "description": "Special deals"
+      }
+    ]
+  },
   "klosedPicks": {
     "title": "Klosed Picks",
     "categories": [

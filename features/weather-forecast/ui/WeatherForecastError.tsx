@@ -1,15 +1,17 @@
 import { ErrorDisplay } from 'shared/ui/error-display';
+import type { Dictionary } from 'shared/model/types';
 
 interface WeatherForecastErrorProps {
   error: unknown;
+  dict: Dictionary;
 }
 
-export function WeatherForecastError({ error }: WeatherForecastErrorProps) {
+export function WeatherForecastError({ error, dict }: WeatherForecastErrorProps) {
   return (
     <ErrorDisplay
       error={error}
-      title='날씨 정보를 불러올 수 없습니다'
-      description='서버 연결에 문제가 있거나 일시적인 오류가 발생했습니다'
+      title={dict.weather.error.title}
+      description={dict.weather.error.description}
     />
   );
 }

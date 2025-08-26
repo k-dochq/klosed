@@ -8,5 +8,6 @@ export { DropdownMenu } from './dropdown-menu';
 export { InfraCard } from './infra-card';
 export { LanguageSwitcher } from './language-switcher';
 export { LocaleLink } from './locale-link';
+export { Providers } from './providers';
 export { Section } from './section';
 export { StatusBadge } from './status-badge';

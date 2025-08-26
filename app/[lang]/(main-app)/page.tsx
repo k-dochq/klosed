@@ -22,8 +22,8 @@ export default async function Page({ params }: PageProps) {
     <div>
       <TourCarousel tours={localizedTours} />
       <KlosedPicks data={localizedKlosedPicks} />
-      <WeatherForecast />
-      <TimeDifference />
+      <WeatherForecast dict={dict} />
+      <TimeDifference dict={dict} />
     </div>
   );
 }

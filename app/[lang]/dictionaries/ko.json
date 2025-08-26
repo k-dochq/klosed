@@ -91,6 +91,20 @@
       }
     ]
   },
+  "weather": {
+    "title": "한국 지금",
+    "subtitle": "서울 날씨 예보",
+    "error": {
+      "title": "날씨 정보를 불러올 수 없습니다",
+      "description": "서버 연결에 문제가 있거나 일시적인 오류가 발생했습니다"
+    }
+  },
+  "timeDifference": {
+    "title": "시간차",
+    "bangkok": "방콕",
+    "seoul": "서울",
+    "difference": "방콕은 서울보다 2시간 늦습니다"
+  },
   "klosedPicks": {
     "title": "Klosed Picks",
     "categories": [

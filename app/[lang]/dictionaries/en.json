@@ -91,6 +91,20 @@
       }
     ]
   },
+  "weather": {
+    "title": "Korea now",
+    "subtitle": "Weather Forecast in Seoul",
+    "error": {
+      "title": "Unable to load weather information",
+      "description": "There is a server connection problem or a temporary error has occurred"
+    }
+  },
+  "timeDifference": {
+    "title": "Time difference",
+    "bangkok": "Bangkok",
+    "seoul": "Seoul",
+    "difference": "Bangkok is 2 hours behind Seoul"
+  },
   "klosedPicks": {
     "title": "Klosed Picks",
     "categories": [

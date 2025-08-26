@@ -1,12 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getTimeForTimezone } from 'shared/lib/time';
+import { getTimeForTimezone, getTimeZoneOffset } from 'shared/lib/time';
 import { TimeCard, TimeSkeleton } from 'entities/time';
 import { TimeDifferenceTitle } from './TimeDifferenceTitle';
 import { TimeDifferenceGrid } from './TimeDifferenceGrid';
+import { TimeDifferenceInfo } from './TimeDifferenceInfo';
+import type { Dictionary } from 'shared/model/types';
 
-export function TimeDifference() {
+interface TimeDifferenceProps {
+  dict: Dictionary;
+}
+
+export function TimeDifference({ dict }: TimeDifferenceProps) {
   const [seoulTime, setSeoulTime] = useState<ReturnType<typeof getTimeForTimezone> | null>(null);
   const [bangkokTime, setBangkokTime] = useState<ReturnType<typeof getTimeForTimezone> | null>(
     null,
@@ -30,7 +36,7 @@ export function TimeDifference() {
   if (!seoulTime || !bangkokTime) {
     return (
       <div className='mx-auto max-w-2xl px-4 py-6'>
-        <TimeDifferenceTitle />
+        <TimeDifferenceTitle dict={dict} />
         <TimeDifferenceGrid>
           <TimeSkeleton />
           <TimeSkeleton />
@@ -39,13 +45,17 @@ export function TimeDifference() {
     );
   }
 
+  const seoulOffset = getTimeZoneOffset('Asia/Seoul');
+  const bangkokOffset = getTimeZoneOffset('Asia/Bangkok');
+
   return (
     <div className='mx-auto max-w-2xl px-4 py-6'>
-      <TimeDifferenceTitle />
+      <TimeDifferenceTitle dict={dict} />
       <TimeDifferenceGrid>
-        <TimeCard timeData={bangkokTime} cityName='Bangkok' />
-        <TimeCard timeData={seoulTime} cityName='Seoul' />
+        <TimeCard timeData={bangkokTime} cityName={dict.timeDifference.bangkok} />
+        <TimeCard timeData={seoulTime} cityName={dict.timeDifference.seoul} />
       </TimeDifferenceGrid>
+      <TimeDifferenceInfo seoulOffset={seoulOffset} bangkokOffset={bangkokOffset} dict={dict} />
     </div>
   );
 }

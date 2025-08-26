@@ -1,6 +1,7 @@
 import { TourCarousel } from 'widgets/tour-carousel';
 import { KlosedPicks } from 'widgets/klosed-picks';
 import { WeatherForecast } from 'features/weather-forecast';
+import { TimeDifference } from 'features/time-difference';
 import { createLocalizedTours } from 'entities/tour';
 import { createLocalizedKlosedPicks } from 'entities/klosed-pick';
 import { getDictionary } from '../dictionaries';
@@ -22,6 +23,7 @@ export default async function Page({ params }: PageProps) {
       <TourCarousel tours={localizedTours} />
       <KlosedPicks data={localizedKlosedPicks} />
       <WeatherForecast />
+      <TimeDifference />
     </div>
   );
 }

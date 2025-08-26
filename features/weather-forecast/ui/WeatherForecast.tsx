@@ -1,24 +1,11 @@
-import { getWeatherData } from 'shared/api/weather';
-import { WeatherForecastTitle } from './WeatherForecastTitle';
-import { WeatherForecastGrid } from './WeatherForecastGrid';
-import { WeatherForecastError } from './WeatherForecastError';
+import { Suspense } from 'react';
+import { WeatherSkeleton } from 'shared/ui/weather-skeleton';
+import { WeatherForecastContent } from './WeatherForecastContent';
 
-export async function WeatherForecast() {
-  try {
-    const weatherData = await getWeatherData();
-
-    return (
-      <div className='mx-auto px-4 py-6'>
-        <WeatherForecastTitle />
-        <WeatherForecastGrid weatherData={weatherData} />
-      </div>
-    );
-  } catch (error) {
-    return (
-      <div className='mx-auto max-w-md px-4 py-6'>
-        <WeatherForecastTitle />
-        <WeatherForecastError error={error} />
-      </div>
-    );
-  }
+export function WeatherForecast() {
+  return (
+    <Suspense fallback={<WeatherSkeleton />}>
+      <WeatherForecastContent />
+    </Suspense>
+  );
 }

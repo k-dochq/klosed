@@ -1,0 +1,1 @@
+export { WeatherSkeleton } from './WeatherSkeleton';

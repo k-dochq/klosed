@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { LineAuthUseCase } from '@/app/[lang]/auth/line/use-cases/line-auth-use-case';
-import { LineApiService } from '@/app/[lang]/auth/line/infrastructure/services/line-api-service';
+import { LineAuthUseCase } from 'app/[lang]/(auth-app)/auth/line/use-cases/line-auth-use-case';
+import { LineApiService } from 'app/[lang]/(auth-app)/auth/line/infrastructure/services/line-api-service';
 
 /**
  * LINE OAuth 콜백 처리 및 Supabase 통합

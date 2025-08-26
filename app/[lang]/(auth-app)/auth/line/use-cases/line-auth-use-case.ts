@@ -1,9 +1,9 @@
-import { ILineApiService } from '@/app/[lang]/auth/line/infrastructure/services/line-api-service';
+import { ILineApiService } from 'app/[lang]/(auth-app)/auth/line/infrastructure/services/line-api-service';
 import {
   LineProfile,
   LineAuthState,
   LineStateValidationError,
-} from '@/app/[lang]/auth/line/entities/line-auth';
+} from 'app/[lang]/(auth-app)/auth/line/entities/line-auth';
 
 /**
  * LINE 인증 Use Case 요청 인터페이스

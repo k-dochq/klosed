@@ -338,8 +338,6 @@ model Profile {
   inviteCodeId  Int?
   bookings      Booking[]
   creditLedgers CreditLedger[]
-  issuedCodes   InviteCode[]   @relation("InviteCodeIssuedBy")
-  usedCodes     InviteCode[]   @relation("InviteCodeUsedBy")
   itineraries   Itinerary[]
   user          User           @relation(fields: [id], references: [id], onDelete: Cascade)
   inviteCode    InviteCode?    @relation("ProfileInviteCode", fields: [inviteCodeId], references: [id])
@@ -348,18 +346,14 @@ model Profile {
 }
 
 model InviteCode {
-  id             Int       @id @default(autoincrement())
-  code           String    @unique
-  expiresAt      DateTime?
-  usedAt         DateTime?
-  usedByUserId   String?   @db.Uuid
-  createdAt      DateTime  @default(now())
-  issuedByUserId String?   @db.Uuid
-  maxUses        Int       @default(1)
-  currentUses    Int       @default(0)
-  issuedBy       Profile?  @relation("InviteCodeIssuedBy", fields: [issuedByUserId], references: [id])
-  usedBy         Profile?  @relation("InviteCodeUsedBy", fields: [usedByUserId], references: [id])
-  profiles       Profile[] @relation("ProfileInviteCode")
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  maxUses     Int       @default(1)
+  currentUses Int       @default(0)
+  profiles    Profile[] @relation("ProfileInviteCode")
 
   @@schema("public")
 }

@@ -50,6 +50,7 @@ model User {
   mfa_factors                 mfa_factors[]
   one_time_tokens             one_time_tokens[]
   sessions                    sessions[]
+  profile                     Profile?
 
   @@index([instance_id])
   @@index([is_anonymous])
@@ -390,4 +391,164 @@ enum one_time_token_type {
   phone_change_token
 
   @@schema("auth")
+}
+
+model Profile {
+  id            String         @id @db.Uuid
+  displayName   String?
+  grade         String?
+  language      String?
+  currency      String?
+  interests     Json?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation(fields: [id], references: [id], onDelete: Cascade)
+  bookings      Booking[]
+  creditLedgers CreditLedger[]
+  issuedCodes   InviteCode[]   @relation("InviteCodeIssuedBy")
+  ownedCodes    InviteCode[]   @relation("InviteCodeOwnedBy")
+  itineraries   Itinerary[]
+
+  @@schema("public")
+}
+
+model InviteCode {
+  id               Int            @id @default(autoincrement())
+  code             String         @unique
+  creditCents      Int            @default(0)
+  expiresAt        DateTime?
+  usedAt           DateTime?
+  createdAt        DateTime       @default(now())
+  issuedByUserId   String?        @db.Uuid
+  ownedByUserId    String?        @db.Uuid
+  ledgers          CreditLedger[]
+  issuedByProfile  Profile?       @relation("InviteCodeIssuedBy", fields: [issuedByUserId], references: [id])
+  ownedByProfile   Profile?       @relation("InviteCodeOwnedBy", fields: [ownedByUserId], references: [id])
+
+  @@schema("public")
+}
+
+model Product {
+  id              Int             @id @default(autoincrement())
+  type            ProductType
+  title           String
+  description     String?
+  basePriceCents  Int?
+  currency        String?
+  durationMinutes Int?
+  locationName    String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  itineraryItems  ItineraryItem[]
+  asItemOf        PackageItem[]   @relation("PackageItems_item")
+  items           PackageItem[]   @relation("PackageItems_package")
+
+  @@schema("public")
+}
+
+model PackageItem {
+  id        Int     @id @default(autoincrement())
+  packageId Int
+  itemId    Int
+  sortOrder Int     @default(0)
+  item      Product @relation("PackageItems_item", fields: [itemId], references: [id])
+  package   Product @relation("PackageItems_package", fields: [packageId], references: [id])
+
+  @@index([packageId])
+  @@index([itemId])
+  @@schema("public")
+}
+
+model Itinerary {
+  id        Int             @id @default(autoincrement())
+  userId    String?         @db.Uuid
+  title     String
+  startDate DateTime?
+  endDate   DateTime?
+  createdAt DateTime        @default(now())
+  bookings  Booking[]
+  profile   Profile?        @relation(fields: [userId], references: [id])
+  items     ItineraryItem[]
+
+  @@index([userId])
+  @@schema("public")
+}
+
+model ItineraryItem {
+  id             Int       @id @default(autoincrement())
+  itineraryId    Int
+  productId      Int
+  scheduledStart DateTime?
+  scheduledEnd   DateTime?
+  dayIndex       Int?
+  sortOrder      Int       @default(0)
+  createdAt      DateTime  @default(now())
+  itinerary      Itinerary @relation(fields: [itineraryId], references: [id])
+  product        Product   @relation(fields: [productId], references: [id])
+
+  @@index([itineraryId])
+  @@index([productId])
+  @@index([itineraryId, sortOrder])
+  @@schema("public")
+}
+
+model Booking {
+  id               Int            @id @default(autoincrement())
+  userId           String?        @db.Uuid
+  itineraryId      Int?
+  status           BookingStatus  @default(PENDING)
+  totalAmountCents Int?
+  currency         String?
+  createdAt        DateTime       @default(now())
+  itinerary        Itinerary?     @relation(fields: [itineraryId], references: [id])
+  profile          Profile?       @relation(fields: [userId], references: [id])
+  creditLedgers    CreditLedger[]
+  payments         Payment[]
+
+  @@index([userId])
+  @@index([itineraryId])
+  @@schema("public")
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  bookingId     Int
+  amountCents   Int
+  currency      String
+  provider      String?
+  transactionId String?       @unique
+  status        PaymentStatus @default(INITIATED)
+  createdAt     DateTime      @default(now())
+  booking       Booking       @relation(fields: [bookingId], references: [id])
+
+  @@index([bookingId])
+  @@schema("public")
+}
+
+model CreditLedger {
+  id           Int         @id @default(autoincrement())
+  userId       String?     @db.Uuid
+  inviteCodeId Int?
+  bookingId    Int?
+  amountCents  Int
+  reason       String?
+  createdAt    DateTime    @default(now())
+  booking      Booking?    @relation(fields: [bookingId], references: [id])
+  inviteCode   InviteCode? @relation(fields: [inviteCodeId], references: [id])
+  profile      Profile?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([inviteCodeId])
+  @@index([bookingId])
+  @@schema("public")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@schema("public")
 }

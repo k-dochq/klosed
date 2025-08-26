@@ -12,8 +12,8 @@ export function isProtectedRoute(pathname: string, locale?: string): boolean {
 /**
  * 로그인 페이지 경로 생성
  */
-export function getLoginPath(locale: string): string {
-  return `/${locale}${AUTH_CONFIG.loginPath}`;
+export function getAuthPath(locale: string): string {
+  return `/${locale}${AUTH_CONFIG.authPath}`;
 }
 
 /**

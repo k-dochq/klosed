@@ -2,8 +2,9 @@ import 'server-only';
 
 import { createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
-import { isProtectedRoute, getLoginPath } from 'shared/lib/auth';
+import { isProtectedRoute } from 'shared/lib/auth';
 import { extractLocaleFromPath } from 'shared/lib/locale';
+import { getAuthPath } from '../auth/routeGuard';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -47,7 +48,7 @@ export async function updateSession(request: NextRequest) {
 
   if (!user && isProtected) {
     // 로그인하지 않은 사용자가 보호된 경로에 접근하려고 할 때
-    const loginPath = locale ? getLoginPath(locale) : '/auth/login';
+    const loginPath = locale ? getAuthPath(locale) : '/auth';
     const url = request.nextUrl.clone();
     url.pathname = loginPath;
     return NextResponse.redirect(url);

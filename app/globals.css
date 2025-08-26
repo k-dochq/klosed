@@ -11,4 +11,8 @@
   .app-container-max {
     max-width: 500px;
   }
+  .floating-action-container {
+    max-width: 500px;
+    margin: 0 auto;
+  }
 }

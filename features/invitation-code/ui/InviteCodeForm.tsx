@@ -29,15 +29,34 @@ interface InviteCodeFormProps {
 
 export function InviteCodeForm({ dict }: InviteCodeFormProps) {
   const [inviteCode, setInviteCode] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const { mutate: validateCode, isPending } = useInviteCodeValidation();
 
   const handleContinue = () => {
     if (!inviteCode.trim()) {
-      // TODO: 에러 메시지 표시
+      setErrorMessage('초대 코드를 입력해주세요.');
       return;
     }
 
-    validateCode({ code: inviteCode.trim() });
+    setErrorMessage(''); // 에러 메시지 초기화
+    validateCode(
+      { code: inviteCode.trim() },
+      {
+        onSuccess: (data) => {
+          if (data.success) {
+            console.log('초대 코드 검증 성공:', data.inviteCode);
+            // TODO: 성공 시 다음 단계로 이동 (예: 회원가입 페이지)
+            alert('초대 코드가 유효합니다!');
+          } else {
+            setErrorMessage(data.message);
+          }
+        },
+        onError: (error) => {
+          setErrorMessage(error.message || '초대 코드 검증에 실패했습니다.');
+        },
+      },
+    );
   };
 
   const handleCancel = () => {
@@ -58,6 +77,7 @@ export function InviteCodeForm({ dict }: InviteCodeFormProps) {
           value={inviteCode}
           onChange={setInviteCode}
         />
+        {errorMessage && <div className='text-center text-sm text-red-600'>{errorMessage}</div>}
         <NoCodeLink text={dict.noCode} />
       </div>
       <ActionButtons

@@ -278,6 +278,255 @@ export const LOCALE_LABELS: Record<Locale, string> = {
 - **Environment Awareness**: Separate dev/prod configurations
 - **Validation**: Validate configuration at startup
 
+## Data Fetching & API Architecture
+
+### ✅ **Data Fetching Strategy**
+
+**GET Requests (Read Operations)**
+- ✅ **Server Components**: Use direct database/API calls in server components
+- ✅ **No API Routes**: Skip Next.js API routes for read operations
+- ✅ **Caching**: Leverage Next.js built-in caching and streaming
+
+**Non-GET Requests (Write Operations)**  
+- ✅ **API Route Handlers**: Create Next.js API routes for mutations
+- ✅ **TanStack Query**: Use mutations for client-side state management
+- ✅ **Error Handling**: Centralized error handling in API routes
+
+### 🏗️ **Domain-Driven Design (DDD) Architecture**
+
+Following NestJS-style object-oriented dependency injection patterns:
+
+#### **Layer Structure**
+```
+shared/lib/
+├── database/           # Database infrastructure
+│   ├── prisma.ts
+│   └── connection.ts
+├── services/          # Domain services
+│   ├── user.service.ts
+│   └── invite.service.ts
+├── repositories/      # Data access layer
+│   ├── user.repository.ts
+│   └── invite.repository.ts
+├── dto/              # Data Transfer Objects
+│   ├── user.dto.ts
+│   └── invite.dto.ts
+└── interfaces/       # Service contracts
+    ├── user.interface.ts
+    └── invite.interface.ts
+```
+
+#### **Service Layer Pattern**
+
+**1. Repository Pattern** (Data Access)
+```typescript
+// shared/lib/repositories/invite.repository.ts
+export interface IInviteRepository {
+  findByCode(code: string): Promise<InviteCode | null>;
+  updateUsageCount(id: number): Promise<void>;
+}
+
+export class InviteRepository implements IInviteRepository {
+  constructor(private prisma: PrismaClient) {}
+
+  async findByCode(code: string): Promise<InviteCode | null> {
+    return this.prisma.inviteCode.findUnique({
+      where: { code },
+    });
+  }
+
+  async updateUsageCount(id: number): Promise<void> {
+    await this.prisma.inviteCode.update({
+      where: { id },
+      data: { currentUses: { increment: 1 } },
+    });
+  }
+}
+```
+
+**2. Service Layer** (Business Logic)
+```typescript
+// shared/lib/services/invite.service.ts
+export interface IInviteService {
+  validateInviteCode(code: string): Promise<InviteValidationResult>;
+}
+
+export class InviteService implements IInviteService {
+  constructor(private inviteRepository: IInviteRepository) {}
+
+  async validateInviteCode(code: string): Promise<InviteValidationResult> {
+    const invite = await this.inviteRepository.findByCode(code);
+    
+    if (!invite) {
+      throw new Error('Invalid invite code');
+    }
+
+    if (!invite.isActive) {
+      throw new Error('Invite code is deactivated');
+    }
+
+    if (invite.expiresAt && invite.expiresAt < new Date()) {
+      throw new Error('Invite code has expired');
+    }
+
+    if (invite.currentUses >= invite.maxUses) {
+      throw new Error('Invite code has reached usage limit');
+    }
+
+    return {
+      isValid: true,
+      inviteCode: invite,
+    };
+  }
+}
+```
+
+**3. DTO Pattern** (Data Transfer Objects)
+```typescript
+// shared/lib/dto/invite.dto.ts
+export interface ValidateInviteDto {
+  code: string;
+}
+
+export interface InviteValidationResult {
+  isValid: boolean;
+  inviteCode?: InviteCode;
+  message?: string;
+}
+```
+
+#### **Dependency Injection Container**
+
+**Container Setup**
+```typescript
+// shared/lib/container/index.ts
+class Container {
+  private services = new Map();
+
+  register<T>(token: string, instance: T): void {
+    this.services.set(token, instance);
+  }
+
+  resolve<T>(token: string): T {
+    const service = this.services.get(token);
+    if (!service) {
+      throw new Error(`Service ${token} not found`);
+    }
+    return service;
+  }
+}
+
+export const container = new Container();
+
+// Bootstrap services
+const prisma = new PrismaClient();
+const inviteRepository = new InviteRepository(prisma);
+const inviteService = new InviteService(inviteRepository);
+
+container.register('InviteService', inviteService);
+container.register('InviteRepository', inviteRepository);
+```
+
+#### **Server Component Integration**
+
+**GET Requests in Server Components**
+```typescript
+// app/admin/invites/page.tsx (Server Component)
+import { container } from 'shared/lib/container';
+import type { IInviteService } from 'shared/lib/services/invite.service';
+
+export default async function InvitesPage() {
+  const inviteService = container.resolve<IInviteService>('InviteService');
+  
+  // Direct service call - no API route needed
+  const invites = await inviteService.getAllInvites();
+
+  return (
+    <div>
+      {invites.map(invite => (
+        <InviteCard key={invite.id} invite={invite} />
+      ))}
+    </div>
+  );
+}
+```
+
+**API Routes for Mutations**
+```typescript
+// app/api/auth/verify-invite/route.ts
+import { container } from 'shared/lib/container';
+import type { IInviteService } from 'shared/lib/services/invite.service';
+import type { ValidateInviteDto } from 'shared/lib/dto/invite.dto';
+
+export async function POST(request: NextRequest) {
+  try {
+    const inviteService = container.resolve<IInviteService>('InviteService');
+    const body: ValidateInviteDto = await request.json();
+
+    const result = await inviteService.validateInviteCode(body.code);
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 400 }
+    );
+  }
+}
+```
+
+#### **Feature Integration**
+
+**TanStack Query for Mutations**
+```typescript
+// features/invitation-code/api/useVerifyInvite.ts
+export function useVerifyInvite() {
+  return useMutation({
+    mutationFn: async (code: string) => {
+      const response = await fetch('/api/auth/verify-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+      
+      return response.json();
+    },
+  });
+}
+```
+
+### 🎯 **DDD Implementation Guidelines**
+
+**1. Domain Separation**
+- Each domain should have its own service, repository, and DTOs
+- Services contain business logic and validation
+- Repositories handle data persistence only
+
+**2. Dependency Injection**
+- Use constructor injection for dependencies
+- Register services in a centralized container
+- Resolve dependencies at runtime
+
+**3. Interface Segregation**
+- Define clear interfaces for each service
+- Separate read and write operations when appropriate
+- Use DTOs for data transfer between layers
+
+**4. Error Handling**
+- Business rules throw domain-specific errors
+- API routes catch and transform errors to HTTP responses
+- Client-side handles API errors appropriately
+
+**5. Testing Strategy**
+- Mock repositories for service testing
+- Mock services for API route testing
+- Use dependency injection for easy test setup
+
 ## Common Anti-Patterns to Avoid
 
 - ❌ Circular dependencies between layers
@@ -294,6 +543,9 @@ export const LOCALE_LABELS: Record<Locale, string> = {
 - ❌ **Relative import paths** (use absolute paths instead)
 - ❌ **Duplicated constants** across multiple files
 - ❌ **Hardcoded values** without centralized configuration
+- ❌ **Direct database calls** in API routes (use services instead)
+- ❌ **Business logic** in API routes (move to services)
+- ❌ **API routes for GET requests** (use server components instead)
 
 ## TypeScript Rules
 

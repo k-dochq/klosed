@@ -17,33 +17,23 @@ interface InviteCodeValidationResponse {
   };
 }
 
-// 임시 함수 - 나중에 API route로 교체
 async function validateInviteCode(
   request: InviteCodeValidationRequest,
 ): Promise<InviteCodeValidationResponse> {
-  // TODO: 실제 API 호출로 교체
-  console.log('Validating invite code:', request.code);
+  const response = await fetch('/api/invite/validate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
 
-  // 임시 검증 로직
-  const code = parseInt(request.code);
-  if (code >= 1000 && code <= 2000) {
-    return {
-      success: true,
-      message: '초대 코드가 유효합니다.',
-      inviteCode: {
-        id: code,
-        code: request.code,
-        maxUses: 1,
-        currentUses: 0,
-        isActive: true,
-      },
-    };
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || '초대 코드 검증에 실패했습니다.');
   }
 
-  return {
-    success: false,
-    message: '유효하지 않은 초대 코드입니다.',
-  };
+  return response.json();
 }
 
 export function useInviteCodeValidation() {

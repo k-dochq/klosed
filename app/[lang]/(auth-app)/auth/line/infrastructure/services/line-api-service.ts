@@ -4,7 +4,7 @@ import {
   LineProfile,
   LineTokenExchangeError,
   LineProfileFetchError,
-} from '@/app/[lang]/auth/line/entities/line-auth';
+} from 'app/[lang]/(auth-app)/auth/line/entities/line-auth';
 
 /**
  * LINE API 서비스 인터페이스

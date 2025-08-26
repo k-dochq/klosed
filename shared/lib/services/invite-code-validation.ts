@@ -1,4 +1,5 @@
 import { prisma } from 'shared/lib/prisma';
+import { INVITE_CODE_ERROR_CODES } from 'shared/config/error-codes';
 import type { InviteCodeData, InviteCodeValidationResult } from 'shared/model/types/invite-code';
 
 export class InviteCodeValidationService {
@@ -13,7 +14,7 @@ export class InviteCodeValidationService {
       if (!inviteCode) {
         return {
           isValid: false,
-          message: '유효하지 않은 초대 코드입니다.',
+          errorCode: INVITE_CODE_ERROR_CODES.INVALID_CODE,
         };
       }
 
@@ -21,7 +22,7 @@ export class InviteCodeValidationService {
       if (!inviteCode.isActive) {
         return {
           isValid: false,
-          message: '사용할 수 없는 초대 코드입니다.',
+          errorCode: INVITE_CODE_ERROR_CODES.INACTIVE_CODE,
         };
       }
 
@@ -29,7 +30,7 @@ export class InviteCodeValidationService {
       if (inviteCode.expiresAt && inviteCode.expiresAt < new Date()) {
         return {
           isValid: false,
-          message: '만료된 초대 코드입니다.',
+          errorCode: INVITE_CODE_ERROR_CODES.EXPIRED_CODE,
         };
       }
 
@@ -37,7 +38,7 @@ export class InviteCodeValidationService {
       if (inviteCode.currentUses >= inviteCode.maxUses) {
         return {
           isValid: false,
-          message: '이미 사용된 초대 코드입니다.',
+          errorCode: INVITE_CODE_ERROR_CODES.MAX_USES_EXCEEDED,
         };
       }
 
@@ -53,14 +54,13 @@ export class InviteCodeValidationService {
 
       return {
         isValid: true,
-        message: '초대 코드가 유효합니다.',
         inviteCode: inviteCodeData,
       };
     } catch (error) {
       console.error('Invite code validation error:', error);
       return {
         isValid: false,
-        message: '서버 오류가 발생했습니다.',
+        errorCode: INVITE_CODE_ERROR_CODES.SERVER_ERROR,
       };
     }
   }

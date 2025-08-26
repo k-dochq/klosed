@@ -2,29 +2,17 @@
 
 import { useState } from 'react';
 import { useInviteCodeValidation } from 'features/invitation-code';
+import { getInviteErrorMessage } from 'shared/lib';
 import { LogoPlaceholder } from './LogoPlaceholder';
 import { InviteTitle } from './InviteTitle';
 import { InviteInstructions } from './InviteInstructions';
 import { InviteCodeInput } from './InviteCodeInput';
 import { NoCodeLink } from './NoCodeLink';
 import { ActionButtons } from './ActionButtons';
+import type { Dictionary } from 'shared/model/types';
 
 interface InviteCodeFormProps {
-  dict: {
-    title: string;
-    instructions: {
-      line1: string;
-      line2: string;
-    };
-    input: {
-      placeholder: string;
-    };
-    noCode: string;
-    buttons: {
-      cancel: string;
-      continue: string;
-    };
-  };
+  dict: Dictionary['invite'];
 }
 
 export function InviteCodeForm({ dict }: InviteCodeFormProps) {
@@ -35,7 +23,7 @@ export function InviteCodeForm({ dict }: InviteCodeFormProps) {
 
   const handleContinue = () => {
     if (!inviteCode.trim()) {
-      setErrorMessage('초대 코드를 입력해주세요.');
+      setErrorMessage(dict.errors?.CODE_REQUIRED || 'Please enter an invitation code.');
       return;
     }
 
@@ -45,15 +33,19 @@ export function InviteCodeForm({ dict }: InviteCodeFormProps) {
       {
         onSuccess: (data) => {
           if (data.success) {
-            console.log('초대 코드 검증 성공:', data.inviteCode);
+            console.log('초대 코드 검증 성공:', data.data);
             // TODO: 성공 시 다음 단계로 이동 (예: 회원가입 페이지)
             alert('초대 코드가 유효합니다!');
           } else {
-            setErrorMessage(data.message);
+            // 에러 코드를 다국어 메시지로 변환
+            const errorMessage = getInviteErrorMessage(data.errorCode || 'UNKNOWN_ERROR', dict);
+            setErrorMessage(errorMessage);
           }
         },
         onError: (error) => {
-          setErrorMessage(error.message || '초대 코드 검증에 실패했습니다.');
+          // 에러 코드를 다국어 메시지로 변환
+          const errorMessage = getInviteErrorMessage(error.message || 'UNKNOWN_ERROR', dict);
+          setErrorMessage(errorMessage);
         },
       },
     );

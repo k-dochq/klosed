@@ -2,6 +2,7 @@ interface ActionButtonsProps {
   buttons: {
     cancel: string;
     continue: string;
+    validating: string;
   };
   onCancel: () => void;
   onContinue: () => void;
@@ -30,7 +31,7 @@ export function ActionButtons({
             disabled={isLoading}
             className='flex-1 rounded-xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-gray-800 hover:via-gray-700 hover:to-gray-800 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50'
           >
-            {isLoading ? '검증 중...' : buttons.continue}
+            {isLoading ? buttons.validating : buttons.continue}
           </button>
         </div>
       </div>

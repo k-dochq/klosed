@@ -6,6 +6,7 @@ import {
   formatSuccessResponse,
   formatErrorResponse,
 } from 'shared/lib';
+import { INVITE_CODE_ERROR_CODES } from 'shared/config/error-codes';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,20 +19,20 @@ export async function POST(request: NextRequest) {
     const validationResult = await InviteCodeValidationService.validateCode(code);
 
     if (!validationResult.isValid) {
-      return formatErrorResponse(validationResult.message, 400);
+      return formatErrorResponse(validationResult.errorCode!, undefined, 400);
     }
 
     // 검증 성공 응답
-    return formatSuccessResponse(validationResult.inviteCode, validationResult.message);
+    return formatSuccessResponse(validationResult.inviteCode);
   } catch (error) {
     // Zod 검증 에러 처리
     if (error instanceof z.ZodError) {
-      const errorMessage = error.issues[0]?.message || '입력 데이터가 유효하지 않습니다.';
-      return formatErrorResponse(errorMessage, 400);
+      const errorCode = error.issues[0]?.message || INVITE_CODE_ERROR_CODES.INVALID_INPUT;
+      return formatErrorResponse(errorCode, undefined, 400);
     }
 
     // 기타 에러 처리
     console.error('Invite code validation error:', error);
-    return formatErrorResponse('서버 오류가 발생했습니다.', 500);
+    return formatErrorResponse(INVITE_CODE_ERROR_CODES.SERVER_ERROR, undefined, 500);
   }
 }

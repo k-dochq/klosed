@@ -9,6 +9,6 @@ export interface InviteCodeData {
 
 export interface InviteCodeValidationResult {
   isValid: boolean;
-  message: string;
+  errorCode?: string;
   inviteCode?: InviteCodeData;
 }

@@ -348,7 +348,19 @@
     "noCode": "I don't have an invitation code.",
     "buttons": {
       "cancel": "Cancel",
-      "continue": "Continue"
+      "continue": "Continue",
+      "validating": "Validating..."
+    },
+    "errors": {
+      "INVALID_INPUT": "Invalid input data",
+      "CODE_REQUIRED": "Invitation code is required",
+      "CODE_TOO_LONG": "Invitation code is too long",
+      "INVALID_CODE": "Invalid invitation code",
+      "INACTIVE_CODE": "This invitation code is not available",
+      "EXPIRED_CODE": "This invitation code has expired",
+      "MAX_USES_EXCEEDED": "This invitation code has already been used",
+      "SERVER_ERROR": "Server error occurred",
+      "DATABASE_ERROR": "Database error occurred"
     }
   }
 }

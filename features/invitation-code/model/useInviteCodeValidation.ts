@@ -6,8 +6,9 @@ interface InviteCodeValidationRequest {
 
 interface InviteCodeValidationResponse {
   success: boolean;
-  message: string;
-  inviteCode?: {
+  message?: string;
+  errorCode?: string;
+  data?: {
     id: number;
     code: string;
     maxUses: number;
@@ -30,7 +31,9 @@ async function validateInviteCode(
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || '초대 코드 검증에 실패했습니다.');
+    throw new Error(
+      errorData.errorCode || errorData.message || 'Failed to validate invitation code.',
+    );
   }
 
   return response.json();

@@ -348,7 +348,19 @@
     "noCode": "초대 코드가 없어요.",
     "buttons": {
       "cancel": "취소",
-      "continue": "계속"
+      "continue": "계속",
+      "validating": "검증 중..."
+    },
+    "errors": {
+      "INVALID_INPUT": "입력 데이터가 유효하지 않습니다",
+      "CODE_REQUIRED": "초대 코드가 필요합니다",
+      "CODE_TOO_LONG": "초대 코드가 너무 깁니다",
+      "INVALID_CODE": "유효하지 않은 초대 코드입니다",
+      "INACTIVE_CODE": "사용할 수 없는 초대 코드입니다",
+      "EXPIRED_CODE": "만료된 초대 코드입니다",
+      "MAX_USES_EXCEEDED": "이미 사용된 초대 코드입니다",
+      "SERVER_ERROR": "서버 오류가 발생했습니다",
+      "DATABASE_ERROR": "데이터베이스 오류가 발생했습니다"
     }
   }
 }

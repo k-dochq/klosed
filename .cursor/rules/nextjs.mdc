@@ -28,3 +28,231 @@ alwaysApply: true
   - Use union types like `string | number` for multiple possible types
   - Use generics `<T>` for reusable type-safe functions
   - Use proper interface or type definitions instead of `any`
+
+## TanStack Query Best Practices
+
+### Setup and Configuration
+
+- Create a QueryClient wrapper with proper configuration:
+```typescript
+// lib/query-client.ts
+import { QueryClient } from '@tanstack/react-query'
+
+function makeQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000, // 1 minute
+        gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      },
+    },
+  })
+}
+
+let browserQueryClient: QueryClient | undefined = undefined
+
+export function getQueryClient() {
+  if (typeof window === 'undefined') {
+    // Server: always make a new query client
+    return makeQueryClient()
+  } else {
+    // Browser: make a new query client if we don't already have one
+    if (!browserQueryClient) browserQueryClient = makeQueryClient()
+    return browserQueryClient
+  }
+}
+```
+
+- Use QueryClientProvider in a client component wrapper:
+```typescript
+// components/providers.tsx
+'use client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { useState } from 'react'
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000, // 1 minute
+      },
+    },
+  }))
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  )
+}
+```
+
+### Server-Side Data Prefetching
+
+- Prefetch data in Server Components and use HydrationBoundary:
+```typescript
+// app/posts/page.tsx
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
+import { getQueryClient } from '@/lib/query-client'
+import { PostsList } from './posts-list'
+
+export default async function PostsPage() {
+  const queryClient = getQueryClient()
+
+  await queryClient.prefetchQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+  })
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PostsList />
+    </HydrationBoundary>
+  )
+}
+```
+
+- Create typed query functions and hooks:
+```typescript
+// lib/queries/posts.ts
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+
+export interface Post {
+  id: number
+  title: string
+  content: string
+}
+
+export async function fetchPosts(): Promise<Post[]> {
+  const response = await fetch('/api/posts')
+  if (!response.ok) throw new Error('Failed to fetch posts')
+  return response.json()
+}
+
+export function usePosts() {
+  return useQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+  })
+}
+
+export function usePostsSuspense() {
+  return useSuspenseQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+  })
+}
+```
+
+### Client Components Best Practices
+
+- Use `useSuspenseQuery` with Suspense boundaries for better UX:
+```typescript
+// components/posts-list.tsx
+'use client'
+import { Suspense } from 'react'
+import { usePostsSuspense } from '@/lib/queries/posts'
+
+function PostsContent() {
+  const { data: posts } = usePostsSuspense()
+  
+  return (
+    <div>
+      {posts.map(post => (
+        <article key={post.id}>{post.title}</article>
+      ))}
+    </div>
+  )
+}
+
+export function PostsList() {
+  return (
+    <Suspense fallback={<div>Loading posts...</div>}>
+      <PostsContent />
+    </Suspense>
+  )
+}
+```
+
+### Query Key Management
+
+- Use consistent, hierarchical query keys:
+```typescript
+// lib/query-keys.ts
+export const queryKeys = {
+  posts: ['posts'] as const,
+  post: (id: number) => ['posts', id] as const,
+  users: ['users'] as const,
+  user: (id: string) => ['users', id] as const,
+  profile: (userId: string) => ['profile', userId] as const,
+} as const
+```
+
+### Mutations and Optimistic Updates
+
+- Handle mutations with proper error handling and optimistic updates:
+```typescript
+// lib/mutations/posts.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@/lib/query-keys'
+
+export function useCreatePost() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (newPost: Omit<Post, 'id'>) => {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        body: JSON.stringify(newPost),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!response.ok) throw new Error('Failed to create post')
+      return response.json()
+    },
+    onSuccess: () => {
+      // Invalidate and refetch posts
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts })
+    },
+    onError: (error) => {
+      console.error('Failed to create post:', error)
+    },
+  })
+}
+```
+
+### Performance Optimization
+
+- Use `enabled` option to prevent unnecessary requests:
+```typescript
+export function useUserProfile(userId?: string) {
+  return useQuery({
+    queryKey: queryKeys.profile(userId!),
+    queryFn: () => fetchUserProfile(userId!),
+    enabled: !!userId, // Only run when userId is available
+  })
+}
+```
+
+- Implement proper loading and error states:
+```typescript
+function PostComponent() {
+  const { data, isLoading, error } = usePosts()
+
+  if (isLoading) return <PostSkeleton />
+  if (error) return <ErrorMessage error={error} />
+  if (!data) return <EmptyState />
+
+  return <PostsList posts={data} />
+}
+```
+
+### Common Patterns
+
+- **Background Refetching**: Set appropriate `staleTime` and `gcTime` values
+- **Infinite Queries**: Use `useInfiniteQuery` for paginated data
+- **Dependent Queries**: Use `enabled` option to chain queries
+- **Parallel Queries**: Execute multiple independent queries simultaneously
+- **Query Invalidation**: Strategically invalidate related queries after mutations
+- **Error Boundaries**: Wrap query components in error boundaries for better error handling

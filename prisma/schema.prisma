@@ -349,10 +349,10 @@ model InviteCode {
   id          Int       @id @default(autoincrement())
   code        String    @unique
   expiresAt   DateTime?
-  isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   maxUses     Int       @default(1)
   currentUses Int       @default(0)
+  isActive    Boolean   @default(true)
   profiles    Profile[] @relation("ProfileInviteCode")
 
   @@schema("public")

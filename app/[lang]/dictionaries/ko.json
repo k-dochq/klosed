@@ -335,5 +335,20 @@
         ]
       }
     ]
+  },
+  "invite": {
+    "title": "Klosed입니다!",
+    "instructions": {
+      "line1": "초대 코드를 입력하고",
+      "line2": "Klosed 멤버가 되세요."
+    },
+    "input": {
+      "placeholder": "초대 코드를 입력하세요"
+    },
+    "noCode": "초대 코드가 없어요.",
+    "buttons": {
+      "cancel": "취소",
+      "continue": "계속"
+    }
   }
 }

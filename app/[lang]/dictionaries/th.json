@@ -335,5 +335,20 @@
         ]
       }
     ]
+  },
+  "invite": {
+    "title": "นี่คือ Klosed!",
+    "instructions": {
+      "line1": "ใส่รหัสเชิญและ",
+      "line2": "เป็นสมาชิก Klosed"
+    },
+    "input": {
+      "placeholder": "ใส่รหัสเชิญ"
+    },
+    "noCode": "ฉันไม่มีรหัสเชิญ",
+    "buttons": {
+      "cancel": "ยกเลิก",
+      "continue": "ดำเนินการต่อ"
+    }
   }
 }

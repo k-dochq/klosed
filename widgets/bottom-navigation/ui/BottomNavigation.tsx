@@ -1,12 +1,12 @@
 import { getDictionary } from 'app/[lang]/dictionaries';
 import { type Locale } from 'shared/config';
-import { FooterNav } from './FooterNav';
+import { BottomNavigationNav } from './BottomNavigationNav';
 
-interface FooterProps {
+interface BottomNavigationProps {
   currentLang: Locale;
 }
 
-export async function Footer({ currentLang }: FooterProps) {
+export async function BottomNavigation({ currentLang }: BottomNavigationProps) {
   const dict = await getDictionary(currentLang);
 
   const navItems = [
@@ -38,10 +38,10 @@ export async function Footer({ currentLang }: FooterProps) {
   ];
 
   return (
-    <footer className='app-container-max fixed right-0 bottom-0 left-0 z-50 mx-auto border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+    <nav className='app-container-max fixed right-0 bottom-0 left-0 z-50 mx-auto border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
       <div className='mx-auto'>
-        <FooterNav items={navItems} />
+        <BottomNavigationNav items={navItems} />
       </div>
-    </footer>
+    </nav>
   );
 }

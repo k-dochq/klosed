@@ -3,6 +3,7 @@
 import { Globe } from 'lucide-react';
 import { LOCALE_LABELS, type Locale } from 'shared/config';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,6 +16,20 @@ interface HeaderLanguageSwitcherProps {
 }
 
 export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwitcherProps) {
+  const pathname = usePathname();
+
+  // 현재 경로에서 locale 부분을 제거하고 나머지 경로만 추출
+  const getPathWithoutLocale = (path: string) => {
+    const pathSegments = path.split('/');
+    // 첫 번째 세그먼트가 locale인 경우 제거
+    if (pathSegments.length > 1 && Object.keys(LOCALE_LABELS).includes(pathSegments[1])) {
+      return '/' + pathSegments.slice(2).join('/');
+    }
+    return path;
+  };
+
+  const pathWithoutLocale = getPathWithoutLocale(pathname);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,7 +54,7 @@ export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwi
                 : 'text-gray-700',
             ].join(' ')}
           >
-            <Link href={`/${localeKey}`}>{label}</Link>
+            <Link href={`/${localeKey}${pathWithoutLocale}`}>{label}</Link>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

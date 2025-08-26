@@ -4,14 +4,14 @@ import { usePathname } from 'next/navigation';
 import { Home, Heart, Calendar, MessageCircle, User } from 'lucide-react';
 import { LocaleLink } from 'shared/ui/locale-link';
 
-interface FooterNavItem {
+interface BottomNavigationNavItem {
   href: string;
   iconName: string;
   label: string;
 }
 
-interface FooterNavProps {
-  items: FooterNavItem[];
+interface BottomNavigationNavProps {
+  items: BottomNavigationNavItem[];
 }
 
 const iconMap = {
@@ -22,7 +22,7 @@ const iconMap = {
   user: User,
 } as const;
 
-export function FooterNav({ items }: FooterNavProps) {
+export function BottomNavigationNav({ items }: BottomNavigationNavProps) {
   const pathname = usePathname();
 
   return (

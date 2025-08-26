@@ -335,5 +335,20 @@
         ]
       }
     ]
+  },
+  "invite": {
+    "title": "It's Klosed!",
+    "instructions": {
+      "line1": "Enter invitation code and",
+      "line2": "become a Klosed member."
+    },
+    "input": {
+      "placeholder": "Enter invitation code"
+    },
+    "noCode": "I don't have an invitation code.",
+    "buttons": {
+      "cancel": "Cancel",
+      "continue": "Continue"
+    }
   }
 }

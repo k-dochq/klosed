@@ -295,6 +295,117 @@ export const LOCALE_LABELS: Record<Locale, string> = {
 - ❌ **Duplicated constants** across multiple files
 - ❌ **Hardcoded values** without centralized configuration
 
+## API Structure Guidelines
+
+### 피처별 API 구조
+
+특정 피처의 API 엔드포인트는 해당 피처 폴더 내에 위치해야 합니다:
+
+```
+features/
+  invitation-code/
+    api/                     # API 계층
+      entities/             # 도메인 엔티티
+        types.ts            # 도메인 타입 정의
+        schemas.ts          # 입력 검증 스키마
+      infrastructure/       # 인프라 계층
+        repositories/       # 데이터 액세스 계층
+          invite-code-repository.ts
+        services/           # 인프라 서비스 계층
+          invite-code-validation-service.ts
+      use-cases/            # 유스케이스 계층
+        validate-invite-code.ts
+        types.ts            # 유스케이스 인터페이스
+      route.ts              # 라우트 핸들러
+```
+
+### 클린 아키텍처 원칙 적용
+
+- **Entities**: 도메인 엔티티 및 비즈니스 규칙
+- **Use Cases**: 애플리케이션 비즈니스 로직
+- **Interface Adapters**: 컨트롤러, 게이트웨이, 프레젠터
+- **Frameworks & Drivers**: 외부 라이브러리, 데이터베이스, 웹 프레임워크
+
+### Shared Layer 사용 원칙
+
+#### ✅ Shared Layer에 포함되어야 하는 것
+
+- **진정한 공통성**: 여러 피처에서 실제로 공유되는 코드
+- **기술적 인프라**: 데이터베이스 연결, 외부 API 클라이언트
+- **공통 유틸리티**: 날짜 포맷터, 문자열 유틸리티 등
+- **공통 타입**: 정말 모든 곳에서 사용되는 기본 타입
+
+#### ❌ Shared Layer에 포함되지 않아야 하는 것
+
+- **피처별 비즈니스 로직**: 특정 기능에 특화된 서비스
+- **피처별 검증 스키마**: 특정 도메인에 특화된 스키마
+- **피처별 타입**: 특정 피처에서만 사용되는 타입
+- **가정된 재사용성**: "언젠가 공유될 수 있다"는 가정
+
+### 코드 이동 및 리팩토링 가이드라인
+
+#### 1단계: 현재 코드 분석
+
+- shared/lib에 있는 모든 코드를 검토
+- 각 코드의 실제 사용처 파악
+- 피처별로 그룹화
+
+#### 2단계: 적절한 위치로 이동
+
+- **피처별 코드**: 해당 features 폴더로 이동
+- **진정한 공통 코드**: shared에 유지
+- **엔티티 코드**: entities 폴더로 이동
+
+#### 3단계: 계층 구조 적용
+
+- 각 피처의 API는 클린 아키텍처 구조 적용
+- Repository, Service, UseCase 계층 분리
+- 의존성 방향 준수
+
+#### 4단계: 테스트 및 검증
+
+- 모든 import 경로 업데이트
+- 빌드 및 테스트 실행
+- 타입 체크 수행
+
+## 예시: 초대 코드 검증 리팩토링
+
+### Before (기존 구조)
+
+```
+shared/
+  lib/
+    services/
+      invite-code-validation.ts  # ❌ 피처별 코드가 shared에
+    validation/
+      invite-code.ts             # ❌ 피처별 스키마가 shared에
+
+app/api/invite/validate/route.ts # shared/lib 직접 참조
+```
+
+### After (개선된 구조)
+
+```
+features/
+  invitation-code/
+    api/
+      entities/
+        schemas.ts               # ✅ 피처별 스키마
+        types.ts                 # ✅ 피처별 타입
+      infrastructure/
+        services/
+          invite-code-validation-service.ts  # ✅ 피처별 서비스
+      use-cases/
+        validate-invite-code.ts  # ✅ 유스케이스
+      route.ts                   # ✅ 라우트 핸들러
+
+shared/
+  lib/
+    api/
+      response.ts               # ✅ 공통 API 유틸리티
+    utils/                      # ✅ 공통 유틸리티
+```
+
 ## TypeScript Rules
 
 - **Never use `any` type**: Always provide specific types

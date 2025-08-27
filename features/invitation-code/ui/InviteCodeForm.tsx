@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 import { useInviteCodeValidation } from 'features/invitation-code';
 import { getInviteErrorMessage } from 'shared/lib';
 import { LogoPlaceholder } from './LogoPlaceholder';
@@ -18,6 +19,7 @@ interface InviteCodeFormProps {
 export function InviteCodeForm({ dict }: InviteCodeFormProps) {
   const [inviteCode, setInviteCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const router = useLocalizedRouter();
 
   const { mutate: validateCode, isPending } = useInviteCodeValidation();
 
@@ -33,17 +35,13 @@ export function InviteCodeForm({ dict }: InviteCodeFormProps) {
       {
         onSuccess: (data) => {
           if (data.success) {
-            console.log('초대 코드 검증 성공:', data.data);
-            // TODO: 성공 시 다음 단계로 이동 (예: 회원가입 페이지)
-            alert('초대 코드가 유효합니다!');
+            router.push('/auth/signup');
           } else {
-            // 에러 코드를 다국어 메시지로 변환
             const errorMessage = getInviteErrorMessage(data.errorCode || 'UNKNOWN_ERROR', dict);
             setErrorMessage(errorMessage);
           }
         },
         onError: (error) => {
-          // 에러 코드를 다국어 메시지로 변환
           const errorMessage = getInviteErrorMessage(error.message || 'UNKNOWN_ERROR', dict);
           setErrorMessage(errorMessage);
         },
@@ -52,8 +50,8 @@ export function InviteCodeForm({ dict }: InviteCodeFormProps) {
   };
 
   const handleCancel = () => {
-    // TODO: 취소 로직 (예: 홈으로 리다이렉트)
-    console.log('Cancel clicked');
+    // 취소 시 홈으로 이동
+    router.push('/');
   };
 
   return (

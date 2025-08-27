@@ -26,7 +26,32 @@
         "backHome": "Back to home"
       }
     },
-    "signup": "Sign Up",
+    "signup": {
+      "title": "Welcome To Klosed!",
+      "subtitle": "Create an account",
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter your email"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
+        "terms": "I agree to the Terms of Service and Privacy Policy"
+      },
+      "socialLogin": {
+        "title": "Or continue with",
+        "google": "Continue with Google",
+        "apple": "Continue with Apple",
+        "line": "Continue with LINE"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "continue": "Continue",
+        "loading": "Creating account..."
+      }
+    },
     "logout": "Logout"
   },
   "footer": {

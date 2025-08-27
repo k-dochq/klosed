@@ -6,4 +6,3 @@ export type {
   LineAuthRequest,
   LineAuthResult,
 } from './line-auth';
-export type { InviteCodeData, InviteCodeValidationResult } from './invite-code';

@@ -17,7 +17,7 @@ export function ActionButtons({
 }: ActionButtonsProps) {
   return (
     <div className='fixed right-0 bottom-0 left-0 z-50 bg-gradient-to-t from-white via-white/95 to-white/90 backdrop-blur-xl'>
-      <div className='mx-auto max-w-md px-6 py-4'>
+      <div className='mx-auto px-6 py-4'>
         <div className='flex gap-3'>
           <button
             onClick={onCancel}

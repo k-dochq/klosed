@@ -21,6 +21,70 @@ alwaysApply: true
   - Use URL search params for shareable state
 - Use `nuqs` for URL search param state management
 
+## Internationalization (i18n) Rules
+
+### Locale-Aware Navigation
+
+- **Never use raw `useRouter` or `Link`** for internal navigation in internationalized apps
+- **Always use `LocaleLink` component** for internal links that need locale prefixing
+- **Always use `useLocalizedRouter` hook** instead of raw `useRouter` for programmatic navigation
+
+#### LocaleLink Usage
+
+```typescript
+// ✅ Good - Automatic locale handling
+import { LocaleLink } from 'shared/ui/locale-link';
+
+<LocaleLink href="/auth/signup">
+  회원가입
+</LocaleLink>
+
+// ✅ With custom locale
+<LocaleLink href="/auth/signup" locale="en">
+  Sign Up
+</LocaleLink>
+```
+
+#### useLocalizedRouter Usage
+
+```typescript
+// ✅ Good - Automatic locale prefixing
+import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
+
+function MyComponent() {
+  const router = useLocalizedRouter();
+
+  const handleNavigate = () => {
+    router.push('/auth/signup'); // Automatically becomes /en/auth/signup
+    router.replace('/dashboard'); // Automatically becomes /en/dashboard
+  };
+
+  return <button onClick={handleNavigate}>Navigate</button>;
+}
+
+// ❌ Bad - Manual locale handling
+import { useRouter, usePathname } from 'next/navigation';
+import { DEFAULT_LOCALE, type Locale } from 'shared/config';
+
+function MyComponent() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const currentLocale = (pathname.split('/')[1] as Locale) || DEFAULT_LOCALE;
+
+  const handleNavigate = () => {
+    router.push(`/${currentLocale}/auth/signup`); // Manual locale handling
+  };
+}
+```
+
+### Benefits of Locale-Aware Navigation
+
+- **Consistency**: All internal links automatically include correct locale
+- **Maintainability**: Locale logic centralized in reusable components
+- **Developer Experience**: No need to manually handle locale in every component
+- **Error Prevention**: Prevents broken links due to missing locale prefixes
+
 ## TypeScript Rules
 
 - **Never use `any` type**: Always provide specific types for better type safety
@@ -34,9 +98,10 @@ alwaysApply: true
 ### Setup and Configuration
 
 - Create a QueryClient wrapper with proper configuration:
+
 ```typescript
 // lib/query-client.ts
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query';
 
 function makeQueryClient() {
   return new QueryClient({
@@ -46,24 +111,25 @@ function makeQueryClient() {
         gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
       },
     },
-  })
+  });
 }
 
-let browserQueryClient: QueryClient | undefined = undefined
+let browserQueryClient: QueryClient | undefined = undefined;
 
 export function getQueryClient() {
   if (typeof window === 'undefined') {
     // Server: always make a new query client
-    return makeQueryClient()
+    return makeQueryClient();
   } else {
     // Browser: make a new query client if we don't already have one
-    if (!browserQueryClient) browserQueryClient = makeQueryClient()
-    return browserQueryClient
+    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    return browserQueryClient;
   }
 }
 ```
 
 - Use QueryClientProvider in a client component wrapper:
+
 ```typescript
 // components/providers.tsx
 'use client'
@@ -92,6 +158,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ### Server-Side Data Prefetching
 
 - Prefetch data in Server Components and use HydrationBoundary:
+
 ```typescript
 // app/posts/page.tsx
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
@@ -115,40 +182,42 @@ export default async function PostsPage() {
 ```
 
 - Create typed query functions and hooks:
+
 ```typescript
 // lib/queries/posts.ts
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 
 export interface Post {
-  id: number
-  title: string
-  content: string
+  id: number;
+  title: string;
+  content: string;
 }
 
 export async function fetchPosts(): Promise<Post[]> {
-  const response = await fetch('/api/posts')
-  if (!response.ok) throw new Error('Failed to fetch posts')
-  return response.json()
+  const response = await fetch('/api/posts');
+  if (!response.ok) throw new Error('Failed to fetch posts');
+  return response.json();
 }
 
 export function usePosts() {
   return useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
-  })
+  });
 }
 
 export function usePostsSuspense() {
   return useSuspenseQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
-  })
+  });
 }
 ```
 
 ### Client Components Best Practices
 
 - Use `useSuspenseQuery` with Suspense boundaries for better UX:
+
 ```typescript
 // components/posts-list.tsx
 'use client'
@@ -157,7 +226,7 @@ import { usePostsSuspense } from '@/lib/queries/posts'
 
 function PostsContent() {
   const { data: posts } = usePostsSuspense()
-  
+
   return (
     <div>
       {posts.map(post => (
@@ -179,6 +248,7 @@ export function PostsList() {
 ### Query Key Management
 
 - Use consistent, hierarchical query keys:
+
 ```typescript
 // lib/query-keys.ts
 export const queryKeys = {
@@ -187,19 +257,20 @@ export const queryKeys = {
   users: ['users'] as const,
   user: (id: string) => ['users', id] as const,
   profile: (userId: string) => ['profile', userId] as const,
-} as const
+} as const;
 ```
 
 ### Mutations and Optimistic Updates
 
 - Handle mutations with proper error handling and optimistic updates:
+
 ```typescript
 // lib/mutations/posts.ts
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '@/lib/query-keys'
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/query-keys';
 
 export function useCreatePost() {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (newPost: Omit<Post, 'id'>) => {
@@ -207,35 +278,37 @@ export function useCreatePost() {
         method: 'POST',
         body: JSON.stringify(newPost),
         headers: { 'Content-Type': 'application/json' },
-      })
-      if (!response.ok) throw new Error('Failed to create post')
-      return response.json()
+      });
+      if (!response.ok) throw new Error('Failed to create post');
+      return response.json();
     },
     onSuccess: () => {
       // Invalidate and refetch posts
-      queryClient.invalidateQueries({ queryKey: queryKeys.posts })
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts });
     },
     onError: (error) => {
-      console.error('Failed to create post:', error)
+      console.error('Failed to create post:', error);
     },
-  })
+  });
 }
 ```
 
 ### Performance Optimization
 
 - Use `enabled` option to prevent unnecessary requests:
+
 ```typescript
 export function useUserProfile(userId?: string) {
   return useQuery({
     queryKey: queryKeys.profile(userId!),
     queryFn: () => fetchUserProfile(userId!),
     enabled: !!userId, // Only run when userId is available
-  })
+  });
 }
 ```
 
 - Implement proper loading and error states:
+
 ```typescript
 function PostComponent() {
   const { data, isLoading, error } = usePosts()

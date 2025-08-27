@@ -54,55 +54,34 @@ export function SignupContainer({ title, subtitle, dict }: SignupContainerProps)
     }
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: 구글 로그인 로직
-    console.log('Google login clicked');
-  };
-
   const handleAppleLogin = () => {
     // TODO: 애플 로그인 로직
     console.log('Apple login clicked');
-  };
-
-  const handleLineLogin = () => {
-    // TODO: 라인 로그인 로직
-    console.log('Line login clicked');
   };
 
   const isFormValid = email.trim() && password.trim() && agreedToTerms;
 
   return (
     <div className='flex flex-col pb-16'>
-      {/* Main Content Card */}
+      {/* Main Content */}
       <div className='flex flex-1 items-center justify-center'>
-        <div className='w-full'>
-          {/* Clean Card Container */}
-          <div className='relative'>
-            {/* Main card */}
-            <div className='relative'>
-              {/* Content */}
-              <div className='space-y-6 p-8'>
-                {/* Header */}
-                <SignupHeader title={title} subtitle={subtitle} />
+        <div className='space-y-6 p-8'>
+          {/* Header */}
+          <SignupHeader title={title} subtitle={subtitle} />
 
-                {/* Form */}
-                <SignupForm
-                  onEmailChange={setEmail}
-                  onPasswordChange={setPassword}
-                  onTermsChange={setAgreedToTerms}
-                  dict={dict?.form}
-                />
+          {/* Form */}
+          <SignupForm
+            onEmailChange={setEmail}
+            onPasswordChange={setPassword}
+            onTermsChange={setAgreedToTerms}
+            dict={dict?.form}
+          />
 
-                {/* Social Login */}
-                <SocialLoginSection
-                  onGoogleLogin={handleGoogleLogin}
-                  onAppleLogin={handleAppleLogin}
-                  onLineLogin={handleLineLogin}
-                  dict={dict?.socialLogin}
-                />
-              </div>
-            </div>
-          </div>
+          {/* Social Login */}
+          <SocialLoginSection
+            onAppleLogin={handleAppleLogin}
+            dict={dict?.socialLogin}
+          />
         </div>
       </div>
 

@@ -42,11 +42,5 @@ async function validateInviteCode(
 export function useInviteCodeValidation() {
   return useMutation({
     mutationFn: validateInviteCode,
-    onSuccess: (data) => {
-      console.log('Invite code validation successful:', data);
-    },
-    onError: (error) => {
-      console.error('Invite code validation failed:', error);
-    },
   });
 }

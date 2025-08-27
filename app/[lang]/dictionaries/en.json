@@ -52,7 +52,30 @@
         "loading": "Creating account..."
       }
     },
-    "logout": "Logout"
+    "logout": "Logout",
+    "error": {
+      "title": "Login Error",
+      "subtitle": "An error occurred during login",
+      "line": {
+        "LINE_OAUTH_ERROR": "An error occurred during LINE login authentication",
+        "MISSING_AUTH_CODE": "Authentication code is missing",
+        "INVALID_STATE": "Security verification failed",
+        "STATE_EXPIRED": "Authentication request has expired",
+        "TOKEN_EXCHANGE_FAILED": "Failed to exchange token",
+        "INVALID_REDIRECT_URI": "Invalid redirect URI",
+        "PROFILE_FETCH_FAILED": "Failed to fetch profile information",
+        "INVALID_ACCESS_TOKEN": "Invalid access token",
+        "USER_CREATION_FAILED": "Failed to create user account",
+        "SESSION_CREATION_FAILED": "Failed to create session",
+        "CALLBACK_FAILED": "An error occurred during login processing",
+        "UNKNOWN_ERROR": "An unknown error occurred"
+      },
+      "actions": {
+        "retry": "Try Again",
+        "backToLogin": "Back to Login",
+        "contactSupport": "Contact Support"
+      }
+    }
   },
   "footer": {
     "discover": "Discover",

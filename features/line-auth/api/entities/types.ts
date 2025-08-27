@@ -1,0 +1,68 @@
+/**
+ * LINE 인증 관련 도메인 모델
+ */
+
+export interface LineTokenResponse {
+  access_token: string;
+  expires_in: number;
+  id_token?: string;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+}
+
+export interface LineProfile {
+  userId: string;
+  displayName: string;
+  pictureUrl?: string;
+  statusMessage?: string;
+  email?: string;
+}
+
+export interface LineAuthState {
+  timestamp: number;
+  nonce: string;
+}
+
+/**
+ * LINE 인증 관련 도메인 에러
+ */
+export class LineAuthError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+  ) {
+    super(message);
+    this.name = 'LineAuthError';
+  }
+}
+
+export class LineTokenExchangeError extends LineAuthError {
+  constructor(message: string) {
+    super(message, 'TOKEN_EXCHANGE_FAILED');
+  }
+}
+
+export class LineProfileFetchError extends LineAuthError {
+  constructor(message: string) {
+    super(message, 'PROFILE_FETCH_FAILED');
+  }
+}
+
+export class LineStateValidationError extends LineAuthError {
+  constructor(message: string) {
+    super(message, 'INVALID_STATE');
+  }
+}
+
+export class LineUserCreationError extends LineAuthError {
+  constructor(message: string) {
+    super(message, 'USER_CREATION_FAILED');
+  }
+}
+
+export class LineSessionError extends LineAuthError {
+  constructor(message: string) {
+    super(message, 'SESSION_FAILED');
+  }
+}

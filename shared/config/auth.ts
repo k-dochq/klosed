@@ -20,3 +20,6 @@ export const AUTH_CONFIG = {
   redirectAfterLogin: '/dashboard',
   redirectAfterLogout: '/',
 } as const;
+
+// Passwordless 인증용 기본 패스워드
+export const PASSWORDLESS_AUTH_PASSWORD = 'passwordless-auth' as const;

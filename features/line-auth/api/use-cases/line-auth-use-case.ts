@@ -9,6 +9,7 @@ import {
   LineStateValidationError,
 } from 'features/line-auth/api/entities';
 import { LineAuthRequest, LineAuthResult } from './types';
+import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
 
 /**
  * LINE 인증 Use Case
@@ -95,10 +96,19 @@ export class LineAuthUseCase {
       // 1. 사용자 존재 여부 확인
       const existingUser = await this.userRepository.findByEmail(email);
 
-      // 2. 사용자가 이미 존재하는 경우
+      // 2. 사용자가 이미 존재하는 경우 로그인 처리
       if (existingUser) {
         console.log('User already exists for email:', email, '(ID:', existingUser.id + ')');
-        return; // 이미 존재하므로 계정 생성 생략
+
+        // 기존 사용자도 로그인 처리
+        console.log('Logging in existing user:', email);
+        const loginResult = await this.authService.loginWithEmailPassword({
+          email: email,
+          password: PASSWORDLESS_AUTH_PASSWORD,
+        });
+
+        console.log('Existing user successfully logged in:', loginResult);
+        return;
       }
 
       // 3. 사용자가 존재하지 않는 경우에만 계정 생성
@@ -111,6 +121,15 @@ export class LineAuthUseCase {
       });
 
       console.log('User successfully created:', result.userId);
+
+      // 4. 계정 생성 후 바로 로그인 처리
+      console.log('Logging in user:', email);
+      const loginResult = await this.authService.loginWithEmailPassword({
+        email: email,
+        password: PASSWORDLESS_AUTH_PASSWORD,
+      });
+
+      console.log('User successfully logged in:', loginResult.userId);
     } catch (error) {
       console.error('Error integrating with Supabase:', error);
       throw error;

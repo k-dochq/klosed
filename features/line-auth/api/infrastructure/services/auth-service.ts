@@ -1,4 +1,5 @@
 import { createAdminClient } from 'shared/lib/supabase/admin';
+import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
 
 /**
  * 인증 서비스 인터페이스
@@ -13,6 +14,14 @@ export interface IAuthService {
     nickname: string;
     pictureUrl?: string;
   }): Promise<{ userId: string | null }>;
+
+  /**
+   * 이메일/패스워드로 로그인
+   */
+  loginWithEmailPassword(params: {
+    email: string;
+    password: string;
+  }): Promise<{ userId: string | null; session: any }>;
 }
 
 /**
@@ -29,7 +38,7 @@ export class AuthService implements IAuthService {
 
     const { data, error } = await supabase.auth.signUp({
       email: params.email,
-      password: 'passwordless-auth', // passwordless 가입
+      password: PASSWORDLESS_AUTH_PASSWORD, // passwordless 가입
       options: {
         data: {
           provider: 'line',
@@ -46,5 +55,24 @@ export class AuthService implements IAuthService {
     }
 
     return { userId: data.user?.id || null };
+  }
+
+  async loginWithEmailPassword(params: { email: string; password: string }) {
+    const supabase = createAdminClient();
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: params.email,
+      password: params.password,
+    });
+
+    if (error) {
+      console.error('Supabase signInWithPassword error:', error);
+      throw new Error(`Failed to login: ${error.message}`);
+    }
+
+    return {
+      userId: data.user?.id || null,
+      session: data.session,
+    };
   }
 }

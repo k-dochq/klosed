@@ -2,17 +2,17 @@ import { getDictionary } from 'app/[lang]/dictionaries';
 import { AuthErrorPage } from 'features/auth-error/ui/AuthErrorPage';
 import { Locale } from 'shared/config';
 
-interface AuthErrorPageProps {
+interface AuthFailurePageProps {
   params: Promise<{
     lang: Locale;
   }>;
   searchParams: Promise<{
-    error?: string;
+    code?: string;
     provider?: string;
   }>;
 }
 
-export default async function AuthError({ params, searchParams }: AuthErrorPageProps) {
+export default async function AuthFailure({ params, searchParams }: AuthFailurePageProps) {
   const { lang } = await params;
   const resolvedSearchParams = await searchParams;
   const dict = await getDictionary(lang);
@@ -20,7 +20,7 @@ export default async function AuthError({ params, searchParams }: AuthErrorPageP
   return (
     <AuthErrorPage
       dict={dict.auth.error}
-      errorCode={resolvedSearchParams.error}
+      errorCode={resolvedSearchParams.code}
       provider={resolvedSearchParams.provider}
     />
   );

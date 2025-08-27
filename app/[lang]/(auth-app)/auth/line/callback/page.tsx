@@ -23,22 +23,20 @@ interface LineCallbackPageProps {
 
 export default async function LineCallbackPage({ params, searchParams }: LineCallbackPageProps) {
   try {
-    // Next.js 15: params와 searchParams는 Promise 타입이므로 await 사용
     const { lang } = await params;
     const resolvedSearchParams = await searchParams;
 
-    // 다국어 사전 가져오기
     const dictionary = await getDictionary(lang);
 
     // OAuth 에러 체크
     if (resolvedSearchParams.error) {
       console.error('LINE OAuth error:', resolvedSearchParams.error);
-      redirect('/auth/error?error=LINE_OAUTH_ERROR');
+      redirect('/auth/failure?code=LINE_OAUTH_ERROR&provider=line');
     }
 
     if (!resolvedSearchParams.code) {
       console.error('No authorization code received');
-      redirect('/auth/error?error=MISSING_AUTH_CODE');
+      redirect('/auth/failure?code=MISSING_AUTH_CODE&provider=line');
     }
 
     // 동적으로 현재 요청 URL 생성
@@ -70,10 +68,10 @@ export default async function LineCallbackPage({ params, searchParams }: LineCal
       return <LineLoginHandler email={result.email} dictionary={dictionary} />;
     } else {
       console.error('LINE auth failed:', result.error);
-      redirect('/auth/error?error=LINE_AUTH_FAILED');
+      redirect('/auth/failure?code=LINE_AUTH_FAILED&provider=line');
     }
   } catch (error) {
     console.error('LINE callback page error:', error);
-    redirect('/auth/error?error=LINE_CALLBACK_ERROR');
+    redirect('/auth/failure?code=LINE_CALLBACK_ERROR&provider=line');
   }
 }

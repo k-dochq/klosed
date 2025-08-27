@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LineAuthUseCase } from './use-cases';
 import { LineApiService } from './infrastructure';
+import { LINE_AUTH_ERROR_CODES } from 'shared/config/error-codes';
 
 /**
  * LINE OAuth 콜백 처리 핸들러
@@ -12,15 +13,15 @@ export async function handleLineCallback(request: NextRequest): Promise<NextResp
     const state = url.searchParams.get('state');
     const error = url.searchParams.get('error');
 
-    // 1. 에러 체크
+    // 1. OAuth 에러 체크
     if (error) {
       console.error('LINE OAuth error:', error);
-      return NextResponse.redirect(new URL(`/auth/login?error=line_auth_failed`, request.url));
+      return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.LINE_OAUTH_ERROR);
     }
 
     if (!code) {
       console.error('No authorization code received');
-      return NextResponse.redirect(new URL(`/auth/login?error=missing_code`, request.url));
+      return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.MISSING_AUTH_CODE);
     }
 
     // 2. Use Case 실행
@@ -42,10 +43,62 @@ export async function handleLineCallback(request: NextRequest): Promise<NextResp
       return NextResponse.redirect(new URL('/', request.url));
     } else {
       console.error('LINE auth failed:', result.error);
-      return NextResponse.redirect(new URL(`/auth/login?error=callback_failed`, request.url));
+      
+      // 에러 타입에 따른 적절한 에러 코드 매핑
+      const errorCode = mapErrorToCode(result.error);
+      return redirectToErrorPage(request.url, errorCode);
     }
   } catch (error) {
     console.error('LINE callback error:', error);
-    return NextResponse.redirect(new URL(`/auth/login?error=callback_failed`, request.url));
+    return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.UNKNOWN_ERROR);
   }
+}
+
+/**
+ * 에러 페이지로 리다이렉트하는 헬퍼 함수
+ */
+function redirectToErrorPage(requestUrl: string, errorCode: string): NextResponse {
+  const baseUrl = new URL(requestUrl).origin;
+  const errorUrl = new URL('/auth/error', baseUrl);
+  errorUrl.searchParams.set('error', errorCode);
+  errorUrl.searchParams.set('provider', 'line');
+  
+  return NextResponse.redirect(errorUrl);
+}
+
+/**
+ * 에러 메시지를 에러 코드로 매핑하는 함수
+ */
+function mapErrorToCode(errorMessage?: string): string {
+  if (!errorMessage) {
+    return LINE_AUTH_ERROR_CODES.UNKNOWN_ERROR;
+  }
+
+  const lowerMessage = errorMessage.toLowerCase();
+
+  if (lowerMessage.includes('state')) {
+    return LINE_AUTH_ERROR_CODES.INVALID_STATE;
+  }
+  
+  if (lowerMessage.includes('expired')) {
+    return LINE_AUTH_ERROR_CODES.STATE_EXPIRED;
+  }
+  
+  if (lowerMessage.includes('token exchange')) {
+    return LINE_AUTH_ERROR_CODES.TOKEN_EXCHANGE_FAILED;
+  }
+  
+  if (lowerMessage.includes('profile')) {
+    return LINE_AUTH_ERROR_CODES.PROFILE_FETCH_FAILED;
+  }
+  
+  if (lowerMessage.includes('user creation')) {
+    return LINE_AUTH_ERROR_CODES.USER_CREATION_FAILED;
+  }
+  
+  if (lowerMessage.includes('session')) {
+    return LINE_AUTH_ERROR_CODES.SESSION_CREATION_FAILED;
+  }
+
+  return LINE_AUTH_ERROR_CODES.CALLBACK_FAILED;
 }

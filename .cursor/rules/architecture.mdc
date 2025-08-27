@@ -319,6 +319,77 @@ features/
       route.ts              # 라우트 핸들러
 ```
 
+### 공통 API 유틸리티 공유
+
+#### ✅ **Shared Layer에 공통 API 유틸리티 배치**
+
+여러 피처에서 공통으로 사용되는 API 관련 유틸리티는 `shared/lib/api/`에 배치:
+
+```typescript
+// shared/lib/api/error-handlers.ts
+export function redirectToErrorPage(
+  requestUrl: string,
+  errorCode: string,
+  provider?: string,
+): NextResponse {
+  const baseUrl = new URL(requestUrl).origin;
+  const errorUrl = new URL('/auth/error', baseUrl);
+  errorUrl.searchParams.set('error', errorCode);
+  if (provider) {
+    errorUrl.searchParams.set('provider', provider);
+  }
+
+  return NextResponse.redirect(errorUrl);
+}
+
+// shared/lib/api/response-helpers.ts
+export function createSuccessResponse<T>(data: T): NextResponse {
+  return NextResponse.json({ success: true, data });
+}
+
+export function createErrorResponse(error: string, status: number = 400): NextResponse {
+  return NextResponse.json({ success: false, error }, { status });
+}
+```
+
+#### ✅ **피처별 API에서 공통 유틸리티 활용**
+
+```typescript
+// features/line-auth/api/line-callback-handler.ts
+import { redirectToErrorPage } from 'shared/lib/api/error-handlers';
+
+export async function handleLineCallback(request: NextRequest): Promise<NextResponse> {
+  try {
+    // ... 비즈니스 로직
+  } catch (error) {
+    return redirectToErrorPage(request.url, 'LINE_AUTH_ERROR', 'line');
+  }
+}
+
+// app/[lang]/(auth-app)/auth/callback/route.ts
+import { redirectToErrorPage } from 'shared/lib/api/error-handlers';
+
+export async function GET(request: Request) {
+  try {
+    // ... 비즈니스 로직
+  } catch (error) {
+    return redirectToErrorPage(request.url, 'AUTH_CODE_ERROR');
+  }
+}
+```
+
+#### ❌ **중복된 에러 핸들링 코드**
+
+```typescript
+// ❌ 각 피처마다 중복된 에러 핸들링
+function redirectToErrorPage(requestUrl: string, errorCode: string): NextResponse {
+  const baseUrl = new URL(requestUrl).origin;
+  const errorUrl = new URL('/auth/error', baseUrl);
+  errorUrl.searchParams.set('error', errorCode);
+  return NextResponse.redirect(errorUrl);
+}
+```
+
 ### 클린 아키텍처 원칙 적용
 
 - **Entities**: 도메인 엔티티 및 비즈니스 규칙

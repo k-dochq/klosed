@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { LineAuthUseCase } from './use-cases';
 import { LineApiService } from './infrastructure';
 import { LINE_AUTH_ERROR_CODES } from 'shared/config/error-codes';
+import { redirectToErrorPage } from 'shared/lib/api';
 
 /**
  * LINE OAuth 콜백 처리 핸들러
@@ -16,12 +17,12 @@ export async function handleLineCallback(request: NextRequest): Promise<NextResp
     // 1. OAuth 에러 체크
     if (error) {
       console.error('LINE OAuth error:', error);
-      return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.LINE_OAUTH_ERROR);
+      return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.LINE_OAUTH_ERROR, 'line');
     }
 
     if (!code) {
       console.error('No authorization code received');
-      return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.MISSING_AUTH_CODE);
+      return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.MISSING_AUTH_CODE, 'line');
     }
 
     // 2. Use Case 실행
@@ -43,27 +44,15 @@ export async function handleLineCallback(request: NextRequest): Promise<NextResp
       return NextResponse.redirect(new URL('/', request.url));
     } else {
       console.error('LINE auth failed:', result.error);
-      
+
       // 에러 타입에 따른 적절한 에러 코드 매핑
       const errorCode = mapErrorToCode(result.error);
-      return redirectToErrorPage(request.url, errorCode);
+      return redirectToErrorPage(request.url, errorCode, 'line');
     }
   } catch (error) {
     console.error('LINE callback error:', error);
-    return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.UNKNOWN_ERROR);
+    return redirectToErrorPage(request.url, LINE_AUTH_ERROR_CODES.UNKNOWN_ERROR, 'line');
   }
-}
-
-/**
- * 에러 페이지로 리다이렉트하는 헬퍼 함수
- */
-function redirectToErrorPage(requestUrl: string, errorCode: string): NextResponse {
-  const baseUrl = new URL(requestUrl).origin;
-  const errorUrl = new URL('/auth/error', baseUrl);
-  errorUrl.searchParams.set('error', errorCode);
-  errorUrl.searchParams.set('provider', 'line');
-  
-  return NextResponse.redirect(errorUrl);
 }
 
 /**
@@ -79,23 +68,23 @@ function mapErrorToCode(errorMessage?: string): string {
   if (lowerMessage.includes('state')) {
     return LINE_AUTH_ERROR_CODES.INVALID_STATE;
   }
-  
+
   if (lowerMessage.includes('expired')) {
     return LINE_AUTH_ERROR_CODES.STATE_EXPIRED;
   }
-  
+
   if (lowerMessage.includes('token exchange')) {
     return LINE_AUTH_ERROR_CODES.TOKEN_EXCHANGE_FAILED;
   }
-  
+
   if (lowerMessage.includes('profile')) {
     return LINE_AUTH_ERROR_CODES.PROFILE_FETCH_FAILED;
   }
-  
+
   if (lowerMessage.includes('user creation')) {
     return LINE_AUTH_ERROR_CODES.USER_CREATION_FAILED;
   }
-  
+
   if (lowerMessage.includes('session')) {
     return LINE_AUTH_ERROR_CODES.SESSION_CREATION_FAILED;
   }

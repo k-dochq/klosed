@@ -72,7 +72,7 @@ export function SignupContainer({ title, subtitle, dict }: SignupContainerProps)
   const isFormValid = email.trim() && password.trim() && agreedToTerms;
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col pb-16'>
       {/* Main Content Card */}
       <div className='flex flex-1 items-center justify-center'>
         <div className='w-full'>

@@ -87,9 +87,6 @@ export function useLocalizedRouter() {
     forward,
     prefetch,
 
-    // 원본 router 메소드들 (필요한 경우 직접 사용)
-    ...router,
-
     // 유틸리티
     localizePath,
     currentLocale,

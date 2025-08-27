@@ -20,7 +20,7 @@ export function SignupActionButtons({
   dict,
 }: SignupActionButtonsProps) {
   return (
-    <div className='floating-action-container fixed right-0 bottom-0 left-0 z-50 mx-auto flex w-full space-x-4 p-3'>
+    <div className='floating-action-container fixed right-0 bottom-0 left-0 z-50 mx-auto flex w-full space-x-4 bg-white p-3'>
       {/* Cancel Button */}
       <button
         onClick={onCancel}

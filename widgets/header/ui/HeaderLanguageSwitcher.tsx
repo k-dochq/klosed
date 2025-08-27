@@ -54,7 +54,9 @@ export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwi
                 : 'text-gray-700',
             ].join(' ')}
           >
-            <Link href={`/${localeKey}${pathWithoutLocale}`}>{label}</Link>
+            <Link replace scroll={false} href={`/${localeKey}${pathWithoutLocale}`}>
+              {label}
+            </Link>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

@@ -1,4 +1,8 @@
-import { ILineApiService } from 'features/line-auth/api/infrastructure';
+import {
+  ILineApiService,
+  IUserRepository,
+  IAuthService,
+} from 'features/line-auth/api/infrastructure';
 import {
   LineProfile,
   LineAuthState,
@@ -10,7 +14,11 @@ import { LineAuthRequest, LineAuthResult } from './types';
  * LINE 인증 Use Case
  */
 export class LineAuthUseCase {
-  constructor(private lineApiService: ILineApiService) {}
+  constructor(
+    private lineApiService: ILineApiService,
+    private userRepository: IUserRepository,
+    private authService: IAuthService,
+  ) {}
 
   /**
    * LINE 인증 프로세스 실행
@@ -78,17 +86,34 @@ export class LineAuthUseCase {
   }
 
   /**
-   * Supabase와 LINE 계정 통합 (임시로 비워둠)
+   * Supabase와 LINE 계정 통합
    */
   private async integrateWithSupabase(lineProfile: LineProfile): Promise<void> {
-    console.log('LINE profile received:', {
-      userId: lineProfile.userId,
-      displayName: lineProfile.displayName,
-      email: lineProfile.email,
-      pictureUrl: lineProfile.pictureUrl,
-    });
+    try {
+      const email = lineProfile.userId.toLowerCase() + '@line.me';
 
-    // TODO: Supabase 통합 로직 구현 예정
-    // 현재는 LINE 프로필 정보만 로그로 출력
+      // 1. 사용자 존재 여부 확인
+      const existingUser = await this.userRepository.findByEmail(email);
+
+      // 2. 사용자가 이미 존재하는 경우
+      if (existingUser) {
+        console.log('User already exists for email:', email, '(ID:', existingUser.id + ')');
+        return; // 이미 존재하므로 계정 생성 생략
+      }
+
+      // 3. 사용자가 존재하지 않는 경우에만 계정 생성
+      console.log('Creating new user for email:', email);
+      const result = await this.authService.createLineUser({
+        email: email,
+        lineId: lineProfile.userId.toLowerCase(),
+        nickname: lineProfile.displayName,
+        pictureUrl: lineProfile.pictureUrl,
+      });
+
+      console.log('User successfully created:', result.userId);
+    } catch (error) {
+      console.error('Error integrating with Supabase:', error);
+      throw error;
+    }
   }
 }

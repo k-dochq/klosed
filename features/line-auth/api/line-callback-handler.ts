@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LineAuthUseCase } from './use-cases';
-import { LineApiService } from './infrastructure';
+import { LineApiService, UserRepository, AuthService } from './infrastructure';
 import { LINE_AUTH_ERROR_CODES } from 'shared/config/error-codes';
 import { redirectToErrorPage } from 'shared/lib/api';
 
@@ -27,7 +27,9 @@ export async function handleLineCallback(request: NextRequest): Promise<NextResp
 
     // 2. Use Case 실행
     const lineApiService = new LineApiService();
-    const lineAuthUseCase = new LineAuthUseCase(lineApiService);
+    const userRepository = new UserRepository();
+    const authService = new AuthService();
+    const lineAuthUseCase = new LineAuthUseCase(lineApiService, userRepository, authService);
 
     const result = await lineAuthUseCase.execute({
       code,

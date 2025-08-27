@@ -26,7 +26,32 @@
         "backHome": "홈으로 돌아가기"
       }
     },
-    "signup": "회원가입",
+    "signup": {
+      "title": "Klosed에 오신 것을 환영합니다!",
+      "subtitle": "계정을 만들어보세요",
+      "form": {
+        "email": {
+          "label": "이메일",
+          "placeholder": "이메일을 입력하세요"
+        },
+        "password": {
+          "label": "비밀번호",
+          "placeholder": "비밀번호를 입력하세요"
+        },
+        "terms": "이용약관 및 개인정보처리방침에 동의합니다"
+      },
+      "socialLogin": {
+        "title": "또는 다음으로 계속하기",
+        "google": "Google로 계속하기",
+        "apple": "Apple로 계속하기",
+        "line": "LINE으로 계속하기"
+      },
+      "buttons": {
+        "cancel": "취소",
+        "continue": "계속",
+        "loading": "계정 생성 중..."
+      }
+    },
     "logout": "로그아웃"
   },
   "footer": {

@@ -10,24 +10,48 @@ import { SignupActionButtons } from './SignupActionButtons';
 interface SignupContainerProps {
   title: string;
   subtitle: string;
+  dict?: {
+    form?: {
+      email?: { label?: string; placeholder?: string };
+      password?: { label?: string; placeholder?: string };
+      terms?: string;
+    };
+    socialLogin?: {
+      title?: string;
+      google?: string;
+      apple?: string;
+      line?: string;
+    };
+    buttons?: {
+      cancel?: string;
+      continue?: string;
+      loading?: string;
+    };
+  };
 }
 
-export function SignupContainer({ title, subtitle }: SignupContainerProps) {
+export function SignupContainer({ title, subtitle, dict }: SignupContainerProps) {
   const router = useLocalizedRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCancel = () => {
     // 홈으로 이동
     router.push('/');
   };
 
-  const handleContinue = () => {
-    // TODO: 실제 회원가입 로직 구현
-    console.log('Signup data:', { email, password, agreedToTerms });
-    // 회원가입 완료 후 처리
-    console.log('Continue clicked');
+  const handleContinue = async () => {
+    setIsLoading(true);
+    try {
+      // TODO: 실제 회원가입 로직 구현
+      console.log('Signup data:', { email, password, agreedToTerms });
+      // 회원가입 완료 후 처리
+      console.log('Continue clicked');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -48,26 +72,37 @@ export function SignupContainer({ title, subtitle }: SignupContainerProps) {
   const isFormValid = email.trim() && password.trim() && agreedToTerms;
 
   return (
-    <div className='flex min-h-screen flex-col bg-white'>
-      {/* Main Content */}
-      <div className='flex flex-1 flex-col items-center justify-center px-6 py-8 pb-32'>
-        <div className='w-full max-w-md space-y-8'>
-          {/* Header */}
-          <SignupHeader title={title} subtitle={subtitle} />
+    <div className='flex flex-col'>
+      {/* Main Content Card */}
+      <div className='flex flex-1 items-center justify-center'>
+        <div className='w-full'>
+          {/* Clean Card Container */}
+          <div className='relative'>
+            {/* Main card */}
+            <div className='relative'>
+              {/* Content */}
+              <div className='space-y-6 p-8'>
+                {/* Header */}
+                <SignupHeader title={title} subtitle={subtitle} />
 
-          {/* Form */}
-          <SignupForm
-            onEmailChange={setEmail}
-            onPasswordChange={setPassword}
-            onTermsChange={setAgreedToTerms}
-          />
+                {/* Form */}
+                <SignupForm
+                  onEmailChange={setEmail}
+                  onPasswordChange={setPassword}
+                  onTermsChange={setAgreedToTerms}
+                  dict={dict?.form}
+                />
 
-          {/* Social Login */}
-          <SocialLoginSection
-            onGoogleLogin={handleGoogleLogin}
-            onAppleLogin={handleAppleLogin}
-            onLineLogin={handleLineLogin}
-          />
+                {/* Social Login */}
+                <SocialLoginSection
+                  onGoogleLogin={handleGoogleLogin}
+                  onAppleLogin={handleAppleLogin}
+                  onLineLogin={handleLineLogin}
+                  dict={dict?.socialLogin}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -75,7 +110,9 @@ export function SignupContainer({ title, subtitle }: SignupContainerProps) {
       <SignupActionButtons
         onCancel={handleCancel}
         onContinue={handleContinue}
+        isLoading={isLoading}
         isDisabled={!isFormValid}
+        dict={dict?.buttons}
       />
     </div>
   );

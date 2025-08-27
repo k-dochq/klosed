@@ -12,8 +12,9 @@ export default async function SignupPage({ params }: SignupPageProps) {
 
   return (
     <SignupContainer
-      title={dict.auth?.signup || 'Welcome To Klosed!'}
-      subtitle='Create an account'
+      title={dict.auth.signup.title}
+      subtitle={dict.auth.signup.subtitle}
+      dict={dict.auth.signup}
     />
   );
 }

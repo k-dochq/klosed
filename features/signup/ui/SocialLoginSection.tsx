@@ -4,46 +4,64 @@ interface SocialLoginSectionProps {
   onGoogleLogin: () => void;
   onAppleLogin: () => void;
   onLineLogin: () => void;
+  dict?: {
+    title?: string;
+    google?: string;
+    apple?: string;
+    line?: string;
+  };
 }
 
 export function SocialLoginSection({
   onGoogleLogin,
   onAppleLogin,
   onLineLogin,
+  dict,
 }: SocialLoginSectionProps) {
   return (
     <div className='w-full space-y-6'>
-      {/* Divider */}
-      <div className='flex items-center'>
+      {/* Simple Divider */}
+      <div className='relative flex items-center'>
         <div className='flex-1 border-t border-gray-300'></div>
-        <span className='px-4 text-sm font-semibold text-gray-500'>OR</span>
+        <span className='bg-white px-4 text-sm text-gray-500'>
+          {dict?.title || 'Or continue with'}
+        </span>
         <div className='flex-1 border-t border-gray-300'></div>
       </div>
 
-      {/* Social Login Buttons */}
-      <div className='flex justify-center space-x-4'>
+      {/* Clean Social Login Buttons */}
+      <div className='grid grid-cols-3 gap-3'>
         {/* Google */}
         <button
           onClick={onGoogleLogin}
-          className='flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-300 bg-white shadow-sm transition-colors hover:border-gray-400'
+          className='flex flex-col items-center space-y-2 rounded-lg border border-gray-300 bg-white p-4 transition-colors hover:border-gray-400 hover:bg-gray-50'
         >
-          <span className='text-lg font-bold text-gray-700'>G</span>
+          <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100'>
+            <span className='text-lg font-semibold text-gray-700'>G</span>
+          </div>
+          <span className='text-xs text-gray-600'>{dict?.google || 'Google'}</span>
         </button>
 
         {/* Apple */}
         <button
           onClick={onAppleLogin}
-          className='flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-300 bg-white shadow-sm transition-colors hover:border-gray-400'
+          className='flex flex-col items-center space-y-2 rounded-lg border border-gray-300 bg-white p-4 transition-colors hover:border-gray-400 hover:bg-gray-50'
         >
-          <span className='text-lg font-bold text-gray-700'>A</span>
+          <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100'>
+            <span className='text-lg font-semibold text-gray-700'></span>
+          </div>
+          <span className='text-xs text-gray-600'>{dict?.apple || 'Apple'}</span>
         </button>
 
         {/* Line */}
         <button
           onClick={onLineLogin}
-          className='flex h-12 w-12 items-center justify-center rounded-full border-2 border-gray-300 bg-white shadow-sm transition-colors hover:border-gray-400'
+          className='flex flex-col items-center space-y-2 rounded-lg border border-gray-300 bg-white p-4 transition-colors hover:border-gray-400 hover:bg-gray-50'
         >
-          <span className='text-lg font-bold text-gray-700'>L</span>
+          <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100'>
+            <span className='text-sm font-semibold text-gray-700'>LINE</span>
+          </div>
+          <span className='text-xs text-gray-600'>{dict?.line || 'LINE'}</span>
         </button>
       </div>
     </div>

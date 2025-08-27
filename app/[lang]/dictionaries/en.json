@@ -53,6 +53,13 @@
       }
     },
     "logout": "Logout",
+    "lineLogin": {
+      "title": "Processing LINE Login...",
+      "processing": "Processing login...",
+      "success": "Login successful. Redirecting shortly...",
+      "error": "An error occurred during login.",
+      "emailLabel": "Email"
+    },
     "error": {
       "title": "Login Error",
       "subtitle": "An error occurred during login",
@@ -174,7 +181,7 @@
       },
       {
         "id": 4,
-        "name": "sdf",
+        "name": "coupon",
         "description": "Special deals"
       }
     ]

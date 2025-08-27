@@ -6,8 +6,10 @@ import { SignupHeader } from './SignupHeader';
 import { SignupForm } from './SignupForm';
 import { SocialLoginSection } from './SocialLoginSection';
 import { SignupActionButtons } from './SignupActionButtons';
+import { type Locale } from 'shared/config';
 
 interface SignupContainerProps {
+  locale?: Locale;
   title: string;
   subtitle: string;
   dict?: {
@@ -30,7 +32,7 @@ interface SignupContainerProps {
   };
 }
 
-export function SignupContainer({ title, subtitle, dict }: SignupContainerProps) {
+export function SignupContainer({ locale, title, subtitle, dict }: SignupContainerProps) {
   const router = useLocalizedRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -65,7 +67,7 @@ export function SignupContainer({ title, subtitle, dict }: SignupContainerProps)
     <div className='flex flex-col pb-16'>
       {/* Main Content */}
       <div className='flex flex-1 items-center justify-center'>
-        <div className='space-y-6 p-8'>
+        <div className='space-y-6 py-8'>
           {/* Header */}
           <SignupHeader title={title} subtitle={subtitle} />
 
@@ -79,6 +81,7 @@ export function SignupContainer({ title, subtitle, dict }: SignupContainerProps)
 
           {/* Social Login */}
           <SocialLoginSection
+            locale={locale}
             onAppleLogin={handleAppleLogin}
             dict={dict?.socialLogin}
           />

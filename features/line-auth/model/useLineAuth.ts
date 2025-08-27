@@ -2,17 +2,22 @@
 
 import { useState, useCallback } from 'react';
 import { LINE_CONFIG } from 'shared/config';
+import { type Locale } from 'shared/config';
 
 interface LineAuthState {
   isLoading: boolean;
   error: string | null;
 }
 
+interface UseLineAuthProps {
+  locale?: Locale;
+}
+
 /**
  * LINE 로그인 훅
  * LINE OAuth 2.0 플로우를 직접 구현하고 Supabase와 통합
  */
-export function useLineAuth() {
+export function useLineAuth({ locale }: UseLineAuthProps = {}) {
   const [state, setState] = useState<LineAuthState>({
     isLoading: false,
     error: null,
@@ -36,7 +41,11 @@ export function useLineAuth() {
 
       // 현재 도메인 기반 콜백 URL 생성
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
-      const redirectUri = `${baseUrl}/auth/line/callback`;
+
+      // 전달받은 locale을 사용해서 콜백 경로 생성
+      const redirectPath = locale ? `/${locale}/auth/line/callback` : '/auth/line/callback';
+
+      const redirectUri = `${baseUrl}${redirectPath}`;
 
       // LINE 인증 URL 생성
       const authUrl = new URL(LINE_CONFIG.AUTHORIZE_URL);

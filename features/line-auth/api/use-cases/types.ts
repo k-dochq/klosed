@@ -14,5 +14,6 @@ export interface LineAuthResult {
   success: boolean;
   userId?: string;
   displayName?: string;
+  email?: string;
   error?: string;
 }

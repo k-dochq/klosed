@@ -1,8 +1,13 @@
 'use client';
 
 import { useLineAuth } from 'features/line-auth/model/useLineAuth';
+import { type Locale } from 'shared/config';
 
 interface LineSignInButtonProps {
+  /**
+   * 현재 언어 설정
+   */
+  locale?: Locale;
   /**
    * 버튼의 추가 CSS 클래스
    */
@@ -18,10 +23,11 @@ interface LineSignInButtonProps {
  * Feature Layer - UI
  */
 export function LineSignInButton({
+  locale,
   className = '',
   children = 'LINE Login',
 }: LineSignInButtonProps) {
-  const { startLineLogin, isLoading, error } = useLineAuth();
+  const { startLineLogin, isLoading, error } = useLineAuth({ locale });
   return (
     <div>
       <button

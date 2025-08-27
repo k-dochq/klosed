@@ -93,6 +93,80 @@ function MyComponent() {
   - Use generics `<T>` for reusable type-safe functions
   - Use proper interface or type definitions instead of `any`
 
+### Page Props Type Safety
+
+- **Always use Promise types for page props** in Next.js App Router (Next.js 15)
+- **`params` and `searchParams` are now Promise types** and must be awaited
+
+#### ✅ Correct Page Props Usage
+
+```typescript
+interface PageProps {
+  params: Promise<{
+    lang: Locale;
+    id?: string;
+  }>;
+  searchParams: Promise<{
+    error?: string;
+    provider?: string;
+  }>;
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+  const { lang, id } = await params;
+  const resolvedSearchParams = await searchParams;
+
+  // Use lang, id, resolvedSearchParams.error, etc.
+}
+```
+
+#### ❌ Incorrect Page Props Usage
+
+```typescript
+interface PageProps {
+  params: {
+    lang: Locale;
+  };
+  searchParams: {
+    error?: string;
+  };
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+  // ❌ This will cause TypeScript errors
+  const dict = await getDictionary(params.lang);
+  const error = searchParams.error;
+}
+```
+
+#### Common Build Errors to Avoid
+
+- **Type error**: `Type 'PageProps' does not satisfy the constraint 'PageProps'`
+- **Missing properties**: `Types of property 'params' are incompatible`
+- **Promise methods**: `Type is missing the following properties: then, catch, finally`
+
+#### Migration Pattern
+
+```typescript
+// Before (Next.js 13)
+interface Props {
+  params: { lang: string };
+  searchParams: { error?: string };
+}
+
+// After (Next.js 15)
+interface Props {
+  params: Promise<{ lang: string }>;
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function Page({ params, searchParams }: Props) {
+  const { lang } = await params;
+  const { error } = await searchParams;
+  // ...
+}
+```
+
 ## TanStack Query Best Practices
 
 ### Setup and Configuration

@@ -19,7 +19,7 @@ interface LineSignInButtonProps {
  */
 export function LineSignInButton({
   className = '',
-  children = 'LINE으로 로그인',
+  children = 'LINE Login',
 }: LineSignInButtonProps) {
   const { startLineLogin, isLoading, error } = useLineAuth();
   return (
@@ -41,7 +41,7 @@ export function LineSignInButton({
             fill='#00B900'
           />
         </svg>
-        {isLoading ? '로그인 중...' : children}
+        {isLoading ? 'Logging in...' : children}
       </button>
       {error && <p className='mt-2 text-sm text-red-600 dark:text-red-400'>{error}</p>}
     </div>

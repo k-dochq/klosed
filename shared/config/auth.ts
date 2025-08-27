@@ -13,7 +13,7 @@ export const PUBLIC_ROUTES = [
 
 // 인증 관련 설정
 export const AUTH_CONFIG = {
-  authPath: '/auth',
+  authPath: '/auth/invite',
   loginPath: '/auth/login',
   signupPath: '/auth/signup',
   forgotPasswordPath: '/auth/forgot-password',

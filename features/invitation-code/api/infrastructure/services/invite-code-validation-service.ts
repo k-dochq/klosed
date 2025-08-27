@@ -1,16 +1,12 @@
-import { prisma } from 'shared/lib/prisma';
+import { InviteCodeRepository } from '../repositories/invite-code-repository';
 import { INVITE_CODE_ERROR_CODES } from 'shared/config/error-codes';
-import type { InviteCodeData, InviteCodeValidationResult } from 'shared/model/types/invite-code';
+import type { InviteCodeData, InviteCodeValidationResult } from '../../entities/types';
 
 export class InviteCodeValidationService {
   static async validateCode(code: string): Promise<InviteCodeValidationResult> {
     try {
-      // 데이터베이스에서 초대 코드 조회
-      const inviteCode = await prisma.inviteCode.findUnique({
-        where: { code: code.trim() },
-      });
+      const inviteCode = await InviteCodeRepository.findByCode(code);
 
-      // 초대 코드가 존재하지 않는 경우
       if (!inviteCode) {
         return {
           isValid: false,

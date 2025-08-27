@@ -54,19 +54,9 @@ export function SignupContainer({ title, subtitle, dict }: SignupContainerProps)
     }
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: 구글 로그인 로직
-    console.log('Google login clicked');
-  };
-
   const handleAppleLogin = () => {
     // TODO: 애플 로그인 로직
     console.log('Apple login clicked');
-  };
-
-  const handleLineLogin = () => {
-    // TODO: 라인 로그인 로직
-    console.log('Line login clicked');
   };
 
   const isFormValid = email.trim() && password.trim() && agreedToTerms;
@@ -89,9 +79,7 @@ export function SignupContainer({ title, subtitle, dict }: SignupContainerProps)
 
           {/* Social Login */}
           <SocialLoginSection
-            onGoogleLogin={handleGoogleLogin}
             onAppleLogin={handleAppleLogin}
-            onLineLogin={handleLineLogin}
             dict={dict?.socialLogin}
           />
         </div>

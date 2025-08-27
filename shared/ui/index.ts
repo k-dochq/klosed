@@ -6,7 +6,6 @@ export { ConnectorLine } from './connector-line';
 export { Divider } from './divider';
 export { DropdownMenu } from './dropdown-menu';
 export { InfraCard } from './infra-card';
-export { LanguageSwitcher } from './language-switcher';
 export { LocaleLink } from './locale-link';
 export { Providers } from './providers';
 export { Section } from './section';

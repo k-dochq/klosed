@@ -9,6 +9,7 @@ import {
   LineStateValidationError,
 } from 'features/line-auth/api/entities';
 import { LineAuthRequest, LineAuthResult } from './types';
+import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
 
 /**
  * LINE 인증 Use Case
@@ -40,13 +41,14 @@ export class LineAuthUseCase {
       // 3. LINE 프로필 정보 조회
       const lineProfile = await this.lineApiService.getProfile(tokenResponse.access_token);
 
-      // 4. Supabase와 통합
-      await this.integrateWithSupabase(lineProfile);
+      // 4. Supabase와 통합 및 email 반환
+      const email = await this.integrateWithSupabase(lineProfile);
 
       return {
         success: true,
         userId: lineProfile.userId,
         displayName: lineProfile.displayName,
+        email: email,
       };
     } catch (error) {
       console.error('LINE auth use case error:', error);
@@ -88,7 +90,7 @@ export class LineAuthUseCase {
   /**
    * Supabase와 LINE 계정 통합
    */
-  private async integrateWithSupabase(lineProfile: LineProfile): Promise<void> {
+  private async integrateWithSupabase(lineProfile: LineProfile): Promise<string> {
     try {
       const email = lineProfile.userId.toLowerCase() + '@line.me';
 
@@ -98,7 +100,7 @@ export class LineAuthUseCase {
       // 2. 사용자가 이미 존재하는 경우
       if (existingUser) {
         console.log('User already exists for email:', email, '(ID:', existingUser.id + ')');
-        return; // 이미 존재하므로 계정 생성 생략
+        return email;
       }
 
       // 3. 사용자가 존재하지 않는 경우에만 계정 생성
@@ -111,6 +113,7 @@ export class LineAuthUseCase {
       });
 
       console.log('User successfully created:', result.userId);
+      return email;
     } catch (error) {
       console.error('Error integrating with Supabase:', error);
       throw error;

@@ -53,6 +53,13 @@
       }
     },
     "logout": "로그아웃",
+    "lineLogin": {
+      "title": "LINE 로그인 처리 중...",
+      "processing": "로그인 처리 중...",
+      "success": "로그인되었습니다. 잠시 후 이동합니다...",
+      "error": "로그인 중 오류가 발생했습니다.",
+      "emailLabel": "이메일"
+    },
     "error": {
       "title": "로그인 오류",
       "subtitle": "로그인 중에 문제가 발생했습니다",

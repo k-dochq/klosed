@@ -26,10 +26,11 @@ export async function handleLineCallback(request: NextRequest): Promise<NextResp
     }
 
     // 2. Use Case 실행
-    const lineApiService = new LineApiService();
-    const userRepository = new UserRepository();
-    const authService = new AuthService();
-    const lineAuthUseCase = new LineAuthUseCase(lineApiService, userRepository, authService);
+    const lineAuthUseCase = new LineAuthUseCase(
+      new LineApiService(),
+      new UserRepository(),
+      new AuthService(),
+    );
 
     const result = await lineAuthUseCase.execute({
       code,

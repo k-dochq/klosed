@@ -2,8 +2,10 @@
 
 import { GoogleSignInButton } from 'features/google-auth';
 import { LineSignInButton } from 'features/line-auth';
+import { type Locale } from 'shared/config';
 
 interface SocialLoginSectionProps {
+  locale?: Locale;
   onAppleLogin?: () => void;
   dict?: {
     title?: string;
@@ -13,7 +15,7 @@ interface SocialLoginSectionProps {
   };
 }
 
-export function SocialLoginSection({ onAppleLogin, dict }: SocialLoginSectionProps) {
+export function SocialLoginSection({ locale, onAppleLogin, dict }: SocialLoginSectionProps) {
   return (
     <div className='w-full space-y-6'>
       {/* Simple Divider */}
@@ -36,7 +38,7 @@ export function SocialLoginSection({ onAppleLogin, dict }: SocialLoginSectionPro
 
         {/* LINE */}
         <div className='w-full'>
-          <LineSignInButton className='h-12 text-sm'>
+          <LineSignInButton locale={locale} className='h-12 text-sm'>
             {dict?.line || 'Continue with LINE'}
           </LineSignInButton>
         </div>

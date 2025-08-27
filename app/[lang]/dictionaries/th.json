@@ -27,7 +27,7 @@
       }
     },
     "signup": {
-      "title": "ยินดีต้อนรับสู่ Klosed!",
+      "title": "ยินดีต้อนรับสู่ Klosed",
       "subtitle": "สร้างบัญชีของคุณ",
       "form": {
         "email": {
@@ -392,7 +392,7 @@
     ]
   },
   "invite": {
-    "title": "นี่คือ Klosed!",
+    "title": "นี่คือ Klosed",
     "instructions": {
       "line1": "ใส่รหัสเชิญและ",
       "line2": "เป็นสมาชิก Klosed"

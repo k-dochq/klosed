@@ -36,11 +36,11 @@ export const LINE_AUTH_ERROR_CODES = {
   // Supabase 통합 에러
   USER_CREATION_FAILED: 'USER_CREATION_FAILED',
   SESSION_CREATION_FAILED: 'SESSION_CREATION_FAILED',
+  LINE_LOGIN_FAILED: 'LINE_LOGIN_FAILED',
 
   // 일반 에러
   CALLBACK_FAILED: 'CALLBACK_FAILED',
   UNKNOWN_ERROR: 'UNKNOWN_ERROR',
 } as const;
 
-export type LineAuthErrorCode =
-  (typeof LINE_AUTH_ERROR_CODES)[keyof typeof LINE_AUTH_ERROR_CODES];
+export type LineAuthErrorCode = (typeof LINE_AUTH_ERROR_CODES)[keyof typeof LINE_AUTH_ERROR_CODES];

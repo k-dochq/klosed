@@ -32,7 +32,7 @@ export class LineAuthUseCase {
       }
 
       // 2. 액세스 토큰 교환
-      const redirectUri = this.buildRedirectUri(request.requestUrl);
+      const redirectUri = this.buildRedirectUri(request.requestUrl, request.state);
       const tokenResponse = await this.lineApiService.exchangeCodeForToken(
         request.code,
         redirectUri,
@@ -80,9 +80,23 @@ export class LineAuthUseCase {
   }
 
   /**
-   * 콜백 URL 생성
+   * 콜백 URL 생성 (state에서 저장된 redirect_uri 사용)
    */
-  private buildRedirectUri(requestUrl: string): string {
+  private buildRedirectUri(requestUrl: string, state?: string): string {
+    if (state) {
+      try {
+        const stateData = JSON.parse(atob(state));
+        if (stateData.redirectUri) {
+          // state에 저장된 redirect_uri를 그대로 사용
+          return stateData.redirectUri;
+        }
+      } catch (error) {
+        // state 파싱 실패 시 기본 경로 사용
+        console.warn('Failed to parse state for redirectUri:', error);
+      }
+    }
+
+    // fallback: 현재 요청 URL 기반으로 생성
     const url = new URL(requestUrl);
     return `${url.protocol}//${url.host}/auth/line/callback`;
   }

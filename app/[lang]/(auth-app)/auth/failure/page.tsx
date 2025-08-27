@@ -9,6 +9,7 @@ interface AuthFailurePageProps {
   searchParams: Promise<{
     code?: string;
     provider?: string;
+    message?: string;
   }>;
 }
 
@@ -22,6 +23,7 @@ export default async function AuthFailure({ params, searchParams }: AuthFailureP
       dict={dict.auth.error}
       errorCode={resolvedSearchParams.code}
       provider={resolvedSearchParams.provider}
+      message={resolvedSearchParams.message}
     />
   );
 }

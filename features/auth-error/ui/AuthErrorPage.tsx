@@ -17,9 +17,10 @@ interface AuthErrorPageProps {
   };
   errorCode?: string;
   provider?: string;
+  message?: string;
 }
 
-export function AuthErrorPage({ dict, errorCode, provider }: AuthErrorPageProps) {
+export function AuthErrorPage({ dict, errorCode, provider, message }: AuthErrorPageProps) {
   const router = useLocalizedRouter();
 
   const handleRetry = () => {
@@ -36,6 +37,11 @@ export function AuthErrorPage({ dict, errorCode, provider }: AuthErrorPageProps)
   };
 
   const getErrorMessage = () => {
+    // message가 있으면 우선 사용
+    if (message) {
+      return message;
+    }
+
     if (!errorCode) {
       return dict.line.UNKNOWN_ERROR;
     }

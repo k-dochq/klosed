@@ -21,12 +21,10 @@ export default async function PhoneVerificationPage({
   const dict = await getDictionary(lang);
 
   return (
-    <div className='flex flex-col items-center justify-center px-6 py-8'>
-      <PhoneVerificationForm
-        dict={dict.auth.phoneVerification}
-        userId={resolvedSearchParams.userId}
-        email={resolvedSearchParams.email}
-      />
-    </div>
+    <PhoneVerificationForm
+      dict={dict.auth.phoneVerification}
+      userId={resolvedSearchParams.userId}
+      email={resolvedSearchParams.email}
+    />
   );
 }

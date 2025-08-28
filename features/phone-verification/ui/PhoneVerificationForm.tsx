@@ -1,5 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+import { DEFAULT_COUNTRY_CODE } from 'shared/config';
+import { useTimer } from '../model/useTimer';
+import { PhoneVerificationStep } from './PhoneVerificationStep';
+import { CodeVerificationStep } from './CodeVerificationStep';
+
 interface PhoneVerificationFormProps {
   dict: {
     title: string;
@@ -7,18 +13,49 @@ interface PhoneVerificationFormProps {
     phoneInput: {
       label: string;
       placeholder: string;
+      sendCode: string;
+    };
+    verificationCode: {
+      label: string;
+      placeholder: string;
+      resendCode: string;
     };
     verifyButton: string;
     skipButton: string;
+    continueButton: string;
   };
   userId?: string;
   email?: string;
 }
 
 export function PhoneVerificationForm({ dict, userId, email }: PhoneVerificationFormProps) {
+  const [step, setStep] = useState<'phone' | 'verification'>('phone');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [selectedCountryCode, setSelectedCountryCode] = useState(DEFAULT_COUNTRY_CODE);
+
+  const timer = useTimer({
+    initialTime: 180,
+    onComplete: () => {
+      // 타이머 완료 시 처리
+    },
+  });
+
+  const handleSendCode = () => {
+    // TODO: 인증 코드 전송 로직 구현
+    console.log('인증 코드 전송:', { phoneNumber: selectedCountryCode + phoneNumber });
+    setStep('verification');
+    timer.startTimer();
+  };
+
   const handleVerify = () => {
     // TODO: 휴대폰 인증 로직 구현
-    console.log('휴대폰 인증 시작:', { userId, email });
+    console.log('휴대폰 인증 시작:', {
+      userId,
+      email,
+      phoneNumber: selectedCountryCode + phoneNumber,
+      verificationCode,
+    });
   };
 
   const handleSkip = () => {
@@ -26,51 +63,67 @@ export function PhoneVerificationForm({ dict, userId, email }: PhoneVerification
     console.log('휴대폰 인증 건너뜀:', { userId, email });
   };
 
+  const handleResend = () => {
+    // TODO: 재전송 로직 구현
+    console.log('인증 코드 재전송:', { phoneNumber: selectedCountryCode + phoneNumber });
+    timer.startTimer();
+  };
+
+  const handleBackToPhone = () => {
+    setStep('phone');
+    setVerificationCode('');
+    timer.stopTimer();
+  };
+
   return (
-    <div className='w-full max-w-md space-y-8'>
-      {/* 헤더 */}
-      <div className='text-center'>
-        <h1 className='text-2xl font-bold text-gray-900'>{dict.title}</h1>
-        <p className='mt-2 text-gray-600'>{dict.subtitle}</p>
-        {email && <p className='mt-1 text-sm text-gray-500'>계정: {email}</p>}
+    <div className='flex min-h-screen flex-col bg-white'>
+      {/* 메인 콘텐츠 */}
+      <div className='flex flex-1 flex-col items-center justify-center px-6'>
+        <div className='w-full max-w-md space-y-8'>
+          {/* 아이콘 플레이스홀더 */}
+          <div className='flex justify-center'>
+            <div className='h-16 w-16 rounded-full bg-gray-200'></div>
+          </div>
+
+          {/* 환영 메시지 */}
+          <div className='text-center'>
+            <h1 className='text-2xl font-bold text-gray-900'>{dict.title}</h1>
+            <p className='mt-2 text-lg font-semibold text-gray-900'>{dict.subtitle}</p>
+          </div>
+
+          {step === 'phone' ? (
+            <PhoneVerificationStep
+              dict={dict}
+              selectedCountryCode={selectedCountryCode}
+              phoneNumber={phoneNumber}
+              onCountryCodeChange={setSelectedCountryCode}
+              onPhoneNumberChange={setPhoneNumber}
+              onSendCode={handleSendCode}
+            />
+          ) : (
+            <CodeVerificationStep
+              dict={dict}
+              verificationCode={verificationCode}
+              timerFormattedTime={timer.formattedTime}
+              isTimerActive={timer.isActive}
+              onVerificationCodeChange={setVerificationCode}
+              onResend={handleResend}
+              onBackToPhone={handleBackToPhone}
+              onVerify={handleVerify}
+            />
+          )}
+        </div>
       </div>
 
-      {/* 휴대폰 입력 폼 */}
-      <div className='space-y-6'>
-        <div>
-          <label className='mb-2 block text-sm font-medium text-gray-700'>
-            {dict.phoneInput.label}
-          </label>
-          <input
-            type='tel'
-            placeholder={dict.phoneInput.placeholder}
-            className='w-full rounded-xl border-2 border-gray-200 bg-white px-6 py-4 text-center text-lg font-medium text-gray-900 placeholder-gray-400 shadow-sm transition-all duration-200 hover:border-gray-300 focus:border-gray-400 focus:shadow-md focus:outline-none'
-          />
-        </div>
-
-        {/* 버튼들 */}
-        <div className='space-y-3'>
-          <button
-            onClick={handleVerify}
-            className='w-full rounded-xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-gray-800 hover:via-gray-700 hover:to-gray-800 hover:shadow-xl active:scale-[0.98]'
-          >
-            {dict.verifyButton}
-          </button>
-
-          <button
-            onClick={handleSkip}
-            className='w-full rounded-xl border border-gray-200 bg-white px-6 py-4 text-base font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-md active:scale-[0.98]'
-          >
-            {dict.skipButton}
-          </button>
-        </div>
-      </div>
-
-      {/* 개발 중 표시 */}
-      <div className='text-center'>
-        <div className='inline-block rounded-lg bg-yellow-100 px-3 py-1 text-sm text-yellow-800'>
-          🚧 개발 중 - 빈껍데기 페이지
-        </div>
+      {/* 건너뛰기 버튼 */}
+      <div className='px-6 pb-8'>
+        <button
+          type='button'
+          onClick={handleSkip}
+          className='w-full py-2 text-center text-sm text-gray-600 underline hover:text-gray-900'
+        >
+          {dict.skipButton}
+        </button>
       </div>
     </div>
   );

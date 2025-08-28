@@ -65,10 +65,17 @@
       "subtitle": "Please verify your phone number to complete registration",
       "phoneInput": {
         "label": "Phone Number",
-        "placeholder": "Enter your phone number"
+        "placeholder": "Enter your phone number",
+        "sendCode": "Send Code"
       },
-      "verifyButton": "Verify Phone",
-      "skipButton": "Skip for Now"
+      "verificationCode": {
+        "label": "Verification Code",
+        "placeholder": "Enter verification code",
+        "resendCode": "Resend Code"
+      },
+      "verifyButton": "Verify",
+      "skipButton": "Skip for Now",
+      "continueButton": "Continue"
     },
     "error": {
       "title": "Login Error",

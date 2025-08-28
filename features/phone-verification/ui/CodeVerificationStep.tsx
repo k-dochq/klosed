@@ -22,6 +22,7 @@ interface CodeVerificationStepProps {
   onResend: () => void;
   onBackToPhone: () => void;
   onVerify: () => void;
+  isLoading?: boolean;
 }
 
 export function CodeVerificationStep({
@@ -33,6 +34,7 @@ export function CodeVerificationStep({
   onResend,
   onBackToPhone,
   onVerify,
+  isLoading = false,
 }: CodeVerificationStepProps) {
   return (
     <div className='space-y-6'>
@@ -45,6 +47,7 @@ export function CodeVerificationStep({
         resendButtonText={dict.verificationCode.resendCode}
         onVerificationCodeChange={onVerificationCodeChange}
         onResend={onResend}
+        isResendLoading={isLoading}
       />
 
       {/* 뒤로가기 버튼 */}
@@ -59,10 +62,10 @@ export function CodeVerificationStep({
       {/* 인증 완료 버튼 */}
       <Button
         onClick={onVerify}
-        disabled={!verificationCode}
+        disabled={!verificationCode || isLoading}
         className='w-full bg-gray-900 py-4 text-base font-semibold text-white hover:bg-gray-800 disabled:opacity-50'
       >
-        {dict.verifyButton}
+        {isLoading ? 'Verifying...' : dict.verifyButton}
       </Button>
     </div>
   );

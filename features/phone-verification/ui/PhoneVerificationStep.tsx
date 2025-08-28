@@ -16,6 +16,7 @@ interface PhoneVerificationStepProps {
   onCountryCodeChange: (code: string) => void;
   onPhoneNumberChange: (number: string) => void;
   onSendCode: () => void;
+  isLoading?: boolean;
 }
 
 export function PhoneVerificationStep({
@@ -25,6 +26,7 @@ export function PhoneVerificationStep({
   onCountryCodeChange,
   onPhoneNumberChange,
   onSendCode,
+  isLoading = false,
 }: PhoneVerificationStepProps) {
   return (
     <div className='space-y-6'>
@@ -40,10 +42,10 @@ export function PhoneVerificationStep({
       {/* 인증 코드 전송 버튼 */}
       <Button
         onClick={onSendCode}
-        disabled={!phoneNumber}
+        disabled={!phoneNumber || isLoading}
         className='w-full bg-gray-900 py-4 text-base font-semibold text-white hover:bg-gray-800 disabled:opacity-50'
       >
-        {dict.phoneInput.sendCode}
+        {isLoading ? 'Sending...' : dict.phoneInput.sendCode}
       </Button>
     </div>
   );

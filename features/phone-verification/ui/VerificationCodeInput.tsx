@@ -11,6 +11,7 @@ interface VerificationCodeInputProps {
   resendButtonText: string;
   onVerificationCodeChange: (code: string) => void;
   onResend: () => void;
+  isResendLoading?: boolean;
 }
 
 export function VerificationCodeInput({
@@ -22,6 +23,7 @@ export function VerificationCodeInput({
   resendButtonText,
   onVerificationCodeChange,
   onResend,
+  isResendLoading = false,
 }: VerificationCodeInputProps) {
   return (
     <div>
@@ -48,12 +50,12 @@ export function VerificationCodeInput({
         <div className='flex flex-col gap-2 sm:flex-row'>
           <Button
             onClick={onResend}
-            disabled={isTimerActive}
+            disabled={isTimerActive || isResendLoading}
             variant='outline'
             size='sm'
             className='w-full sm:ml-auto sm:w-auto'
           >
-            {resendButtonText}
+            {isResendLoading ? 'Resending...' : resendButtonText}
           </Button>
         </div>
       </div>

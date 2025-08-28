@@ -1,10 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { DEFAULT_COUNTRY_CODE } from 'shared/config';
 import { useTimer } from '../model/useTimer';
+import { usePhoneVerificationState } from '../model/usePhoneVerificationState';
+import { usePhoneVerificationActions } from '../model/usePhoneVerificationActions';
+import {
+  formatPhoneNumber,
+  validatePhoneVerificationForm,
+} from '../model/phoneVerificationValidators';
 import { PhoneVerificationStep } from './PhoneVerificationStep';
 import { CodeVerificationStep } from './CodeVerificationStep';
+import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 
 interface PhoneVerificationFormProps {
   dict: {
@@ -29,11 +34,17 @@ interface PhoneVerificationFormProps {
 }
 
 export function PhoneVerificationForm({ dict, userId, email }: PhoneVerificationFormProps) {
-  const [step, setStep] = useState<'phone' | 'verification'>('phone');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [selectedCountryCode, setSelectedCountryCode] = useState(DEFAULT_COUNTRY_CODE);
+  // 상태 관리
+  const { state, actions } = usePhoneVerificationState();
 
+  // API 액션
+  const { sendVerificationCode, verifyPhoneCode, resendVerificationCode } =
+    usePhoneVerificationActions();
+
+  // 라우터 (다국어 지원)
+  const router = useLocalizedRouter();
+
+  // 타이머
   const timer = useTimer({
     initialTime: 180,
     onComplete: () => {
@@ -41,21 +52,63 @@ export function PhoneVerificationForm({ dict, userId, email }: PhoneVerification
     },
   });
 
-  const handleSendCode = () => {
-    // TODO: 인증 코드 전송 로직 구현
-    console.log('인증 코드 전송:', { phoneNumber: selectedCountryCode + phoneNumber });
-    setStep('verification');
-    timer.startTimer();
+  const handleSendCode = async () => {
+    const fullPhoneNumber = formatPhoneNumber(state.selectedCountryCode, state.phoneNumber);
+
+    // 폼 검증
+    const validation = validatePhoneVerificationForm(fullPhoneNumber);
+    if (!validation.isValid) {
+      actions.setErrorMessage(validation.errors.phoneNumber || 'Invalid phone number.');
+      return;
+    }
+
+    actions.setLoading(true);
+    actions.setErrorMessage(null);
+    actions.setSuccess(null);
+
+    const result = await sendVerificationCode(fullPhoneNumber);
+
+    if (result.success) {
+      actions.setSuccess(
+        'Verification code sent. Please enter the 6-digit code sent to your phone.',
+      );
+      actions.nextStep();
+      timer.startTimer();
+    } else {
+      actions.setErrorMessage(result.error!);
+    }
+
+    actions.setLoading(false);
   };
 
-  const handleVerify = () => {
-    // TODO: 휴대폰 인증 로직 구현
-    console.log('휴대폰 인증 시작:', {
-      userId,
-      email,
-      phoneNumber: selectedCountryCode + phoneNumber,
-      verificationCode,
-    });
+  const handleVerify = async () => {
+    const fullPhoneNumber = formatPhoneNumber(state.selectedCountryCode, state.phoneNumber);
+
+    // 폼 검증
+    const validation = validatePhoneVerificationForm(fullPhoneNumber, state.verificationCode);
+    if (!validation.isValid) {
+      const errorMessage = validation.errors.verificationCode || validation.errors.phoneNumber;
+      actions.setErrorMessage(errorMessage || 'Invalid input.');
+      return;
+    }
+
+    actions.setLoading(true);
+    actions.setErrorMessage(null);
+    actions.setSuccess(null);
+
+    const result = await verifyPhoneCode(fullPhoneNumber, state.verificationCode);
+
+    if (result.success) {
+      actions.setSuccess('Phone verification completed successfully!');
+      console.log('휴대폰 인증 성공:', result.data);
+
+      // 인증 성공 시 홈페이지로 이동
+      router.push('/');
+    } else {
+      actions.setErrorMessage(result.error!);
+    }
+
+    actions.setLoading(false);
   };
 
   const handleSkip = () => {
@@ -63,15 +116,25 @@ export function PhoneVerificationForm({ dict, userId, email }: PhoneVerification
     console.log('휴대폰 인증 건너뜀:', { userId, email });
   };
 
-  const handleResend = () => {
-    // TODO: 재전송 로직 구현
-    console.log('인증 코드 재전송:', { phoneNumber: selectedCountryCode + phoneNumber });
-    timer.startTimer();
+  const handleResend = async () => {
+    const fullPhoneNumber = formatPhoneNumber(state.selectedCountryCode, state.phoneNumber);
+
+    actions.setLoading(true);
+    actions.setErrorMessage(null);
+
+    const result = await resendVerificationCode(fullPhoneNumber);
+
+    if (result.success) {
+      timer.startTimer();
+    } else {
+      actions.setErrorMessage(result.error!);
+    }
+
+    actions.setLoading(false);
   };
 
   const handleBackToPhone = () => {
-    setStep('phone');
-    setVerificationCode('');
+    actions.prevStep();
     timer.stopTimer();
   };
 
@@ -91,25 +154,41 @@ export function PhoneVerificationForm({ dict, userId, email }: PhoneVerification
             <p className='mt-2 text-lg font-semibold text-gray-900'>{dict.subtitle}</p>
           </div>
 
-          {step === 'phone' ? (
+          {/* 에러 메시지 표시 */}
+          {state.error && (
+            <div className='w-full max-w-md rounded-lg bg-red-50 p-4 text-center'>
+              <p className='text-sm text-red-600'>{state.error}</p>
+            </div>
+          )}
+
+          {/* 성공 메시지 표시 */}
+          {state.successMessage && (
+            <div className='w-full max-w-md rounded-lg bg-green-50 p-4 text-center'>
+              <p className='text-sm text-green-600'>{state.successMessage}</p>
+            </div>
+          )}
+
+          {state.step === 'phone' ? (
             <PhoneVerificationStep
               dict={dict}
-              selectedCountryCode={selectedCountryCode}
-              phoneNumber={phoneNumber}
-              onCountryCodeChange={setSelectedCountryCode}
-              onPhoneNumberChange={setPhoneNumber}
+              selectedCountryCode={state.selectedCountryCode}
+              phoneNumber={state.phoneNumber}
+              onCountryCodeChange={actions.setSelectedCountryCode}
+              onPhoneNumberChange={actions.setPhoneNumber}
               onSendCode={handleSendCode}
+              isLoading={state.isLoading}
             />
           ) : (
             <CodeVerificationStep
               dict={dict}
-              verificationCode={verificationCode}
+              verificationCode={state.verificationCode}
               timerFormattedTime={timer.formattedTime}
               isTimerActive={timer.isActive}
-              onVerificationCodeChange={setVerificationCode}
+              onVerificationCodeChange={actions.setVerificationCode}
               onResend={handleResend}
               onBackToPhone={handleBackToPhone}
               onVerify={handleVerify}
+              isLoading={state.isLoading}
             />
           )}
         </div>

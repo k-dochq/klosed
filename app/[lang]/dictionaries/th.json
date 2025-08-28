@@ -65,10 +65,17 @@
       "subtitle": "กรุณายืนยันเบอร์โทรศัพท์เพื่อเสร็จสิ้นการสมัครสมาชิก",
       "phoneInput": {
         "label": "เบอร์โทรศัพท์",
-        "placeholder": "กรุณาใส่เบอร์โทรศัพท์"
+        "placeholder": "กรุณาใส่เบอร์โทรศัพท์",
+        "sendCode": "ส่งรหัส"
       },
-      "verifyButton": "ยืนยันเบอร์โทรศัพท์",
-      "skipButton": "ข้ามไปก่อน"
+      "verificationCode": {
+        "label": "รหัสยืนยัน",
+        "placeholder": "กรุณาใส่รหัสยืนยัน",
+        "resendCode": "ส่งรหัสใหม่"
+      },
+      "verifyButton": "ยืนยัน",
+      "skipButton": "ข้ามไปก่อน",
+      "continueButton": "ดำเนินการต่อ"
     },
     "error": {
       "title": "ข้อผิดพลาดในการเข้าสู่ระบบ",

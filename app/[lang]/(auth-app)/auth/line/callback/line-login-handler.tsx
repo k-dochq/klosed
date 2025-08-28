@@ -21,7 +21,8 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
   const router = useLocalizedRouter();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
-  const hasHandledRef = useRef(false); // 중복 실행 방지용 ref
+  const hasHandledRef = useRef(false); // 완료 여부 추적
+  const isProcessingRef = useRef(false); // 처리 중 상태 추적
 
   const lineLoginTexts = useMemo(
     () => ({
@@ -33,19 +34,21 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
   );
 
   useEffect(() => {
-    // 이미 처리되었으면 실행하지 않음
-    if (hasHandledRef.current) {
+    // 강화된 방어코드: 완료 여부와 처리 중 여부 모두 체크
+    if (hasHandledRef.current || isProcessingRef.current) {
       return;
     }
 
     const handleLogin = async () => {
       try {
-        // 이미 처리 중이면 실행하지 않음
-        if (hasHandledRef.current) {
+        // 이중 체크 + 처리 중 상태 즉시 설정
+        if (hasHandledRef.current || isProcessingRef.current) {
           return;
         }
 
-        hasHandledRef.current = true; // 즉시 처리 시작 표시
+        hasHandledRef.current = true;
+        isProcessingRef.current = true; // 처리 시작 즉시 표시
+
         setStatus('loading');
         setMessage(lineLoginTexts.processing);
 
@@ -53,7 +56,7 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
 
         // LINE 계정으로 이메일 로그인 (passwordless)
         const { data: _data, error } = await supabase.auth.signInWithPassword({
-          email: email,
+          email: email.trim(),
           password: PASSWORDLESS_AUTH_PASSWORD,
         });
 
@@ -64,7 +67,6 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
         setStatus('success');
         setMessage(lineLoginTexts.success);
 
-        // 성공 시 홈페이지로 이동
         setTimeout(() => {
           router.push('/');
         }, 500);
@@ -73,18 +75,28 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
         setStatus('error');
         setMessage(error instanceof Error ? error.message : lineLoginTexts.error);
 
-        // 에러 시 실패 페이지로 이동 (에러 정보 전달)
         setTimeout(() => {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           router.push(
             `/auth/failure?code=${LINE_AUTH_ERROR_CODES.LINE_LOGIN_FAILED}&provider=line&message=${encodeURIComponent(errorMessage)}`,
           );
         }, 1000);
+      } finally {
+        // 처리 완료 시 상태 정리
+        isProcessingRef.current = false;
       }
     };
 
     handleLogin();
   }, [email, router, lineLoginTexts]);
+
+  // 컴포넌트 언마운트 시 정리
+  useEffect(() => {
+    return () => {
+      hasHandledRef.current = false;
+      isProcessingRef.current = false;
+    };
+  }, []);
 
   return (
     <div className='flex min-h-screen items-center justify-center'>

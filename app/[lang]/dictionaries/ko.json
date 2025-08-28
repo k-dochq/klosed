@@ -137,6 +137,35 @@
         "title": "이메일을 확인해주세요",
         "description": "{email}로 인증 메일을 보냈습니다. 이메일을 확인하여 인증을 완료해주세요."
       }
+    },
+    "passwordUpdate": {
+      "title": "새 비밀번호 설정",
+      "description": "새로운 비밀번호를 입력해주세요.",
+      "errors": {
+        "PASSWORD_REQUIRED": "비밀번호를 입력해주세요.",
+        "PASSWORD_MISMATCH": "비밀번호가 일치하지 않습니다.",
+        "PASSWORD_TOO_SHORT": "비밀번호는 최소 6자 이상이어야 합니다.",
+        "UPDATE_FAILED": "비밀번호 업데이트에 실패했습니다.",
+        "UNKNOWN_ERROR": "알 수 없는 오류가 발생했습니다."
+      },
+      "buttons": {
+        "update": "비밀번호 업데이트",
+        "updating": "업데이트 중..."
+      },
+      "form": {
+        "password": {
+          "label": "새 비밀번호",
+          "placeholder": "새 비밀번호를 입력하세요"
+        },
+        "confirmPassword": {
+          "label": "비밀번호 확인",
+          "placeholder": "비밀번호를 다시 입력하세요"
+        }
+      },
+      "success": {
+        "title": "비밀번호가 업데이트되었습니다",
+        "description": "잠시 후 홈페이지로 이동합니다."
+      }
     }
   },
   "footer": {

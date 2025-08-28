@@ -112,7 +112,15 @@
       "buttons": {
         "continue": "Continue",
         "creatingAccount": "Creating account...",
-        "sendingEmail": "Sending email..."
+        "sendingEmail": "Sending email...",
+        "signIn": "Sign In",
+        "signingIn": "Signing in..."
+      },
+      "form": {
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        }
       },
       "description": "We'll create your account and send you a verification email."
     }

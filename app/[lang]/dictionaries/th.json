@@ -112,7 +112,15 @@
       "buttons": {
         "continue": "ดำเนินการต่อ",
         "creatingAccount": "กำลังสร้างบัญชี...",
-        "sendingEmail": "กำลังส่งอีเมล..."
+        "sendingEmail": "กำลังส่งอีเมล...",
+        "signIn": "เข้าสู่ระบบ",
+        "signingIn": "กำลังเข้าสู่ระบบ..."
+      },
+      "form": {
+        "password": {
+          "label": "รหัสผ่าน",
+          "placeholder": "กรุณาใส่รหัสผ่าน"
+        }
       },
       "description": "เราจะสร้างบัญชีของคุณและส่งอีเมลยืนยัน"
     }

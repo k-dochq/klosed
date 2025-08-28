@@ -1,6 +1,7 @@
 'use client';
 
 import { useGoogleAuth } from '../model/useGoogleAuth';
+import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 
 interface SignOutButtonProps {
   className?: string;
@@ -8,7 +9,8 @@ interface SignOutButtonProps {
 }
 
 export function SignOutButton({ className = '', children }: SignOutButtonProps) {
-  const { signOut, isLoading, error } = useGoogleAuth();
+  const { currentLocale } = useLocalizedRouter();
+  const { signOut, isLoading, error } = useGoogleAuth({ locale: currentLocale });
 
   const handleClick = () => {
     signOut();

@@ -64,8 +64,15 @@ export default async function LineCallbackPage({ params, searchParams }: LineCal
         userId: result.userId,
         displayName: result.displayName,
         email: result.email,
+        isNewUser: result.isNewUser,
       });
-      return <LineLoginHandler email={result.email} dictionary={dictionary} />;
+      return (
+        <LineLoginHandler
+          email={result.email}
+          dictionary={dictionary}
+          isNewUser={result.isNewUser}
+        />
+      );
     } else {
       console.error('LINE auth failed:', result.error);
       redirect('/auth/failure?code=LINE_AUTH_FAILED&provider=line');

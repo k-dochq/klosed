@@ -14,9 +14,10 @@ import { useLocalizedRouter } from '@/shared/model';
 interface LineLoginHandlerProps {
   email: string;
   dictionary: Dictionary;
+  isNewUser?: boolean; // 새 사용자 여부
 }
 
-export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
+export function LineLoginHandler({ email, dictionary, isNewUser = false }: LineLoginHandlerProps) {
   const router = useLocalizedRouter();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
@@ -67,7 +68,13 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
         setMessage(lineLoginTexts.success);
 
         setTimeout(() => {
-          router.push('/');
+          if (isNewUser) {
+            // 새 사용자: 핸드폰 인증 페이지로 이동
+            router.push(`/auth/phone-verification?email=${encodeURIComponent(email)}`);
+          } else {
+            // 기존 사용자: 홈으로 이동
+            router.push('/');
+          }
         }, 500);
       } catch (error) {
         console.error('LINE login handler error:', error);

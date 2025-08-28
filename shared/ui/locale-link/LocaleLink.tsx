@@ -1,9 +1,10 @@
 'use client';
 
+import { Locale } from '@/shared/config';
 import Link, { type LinkProps } from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode } from 'react';
-import { DEFAULT_LOCALE, type Locale } from 'shared/config';
+import { extractLocaleFromPathname } from 'shared/lib/locale/utils';
 
 interface LocaleLinkProps extends Omit<LinkProps, 'href'> {
   href: string;
@@ -14,7 +15,7 @@ interface LocaleLinkProps extends Omit<LinkProps, 'href'> {
 
 export function LocaleLink({ href, children, locale, ...props }: LocaleLinkProps) {
   const pathname = usePathname();
-  const currentLocale = (pathname.split('/')[1] as Locale) || DEFAULT_LOCALE;
+  const currentLocale = extractLocaleFromPathname(pathname);
 
   // 외부 링크 처리
   if (href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')) {

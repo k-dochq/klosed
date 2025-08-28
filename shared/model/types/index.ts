@@ -6,3 +6,4 @@ export type {
   LineAuthRequest,
   LineAuthResult,
 } from './line-auth';
+export type { Session, User, UserMetadata, AppMetadata } from './auth';

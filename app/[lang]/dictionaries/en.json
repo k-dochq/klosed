@@ -60,6 +60,16 @@
       "error": "An error occurred during login.",
       "emailLabel": "Email"
     },
+    "phoneVerification": {
+      "title": "Phone Verification",
+      "subtitle": "Please verify your phone number to complete registration",
+      "phoneInput": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number"
+      },
+      "verifyButton": "Verify Phone",
+      "skipButton": "Skip for Now"
+    },
     "error": {
       "title": "Login Error",
       "subtitle": "An error occurred during login",

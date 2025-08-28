@@ -21,7 +21,7 @@ export interface IAuthService {
   loginWithEmailPassword(params: {
     email: string;
     password: string;
-  }): Promise<{ userId: string | null; session: any }>;
+  }): Promise<{ userId: string | null; session: import('@supabase/supabase-js').Session }>;
 }
 
 /**

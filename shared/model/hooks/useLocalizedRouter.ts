@@ -1,5 +1,6 @@
 import { useRouter as useNextRouter, usePathname } from 'next/navigation';
-import { DEFAULT_LOCALE, type Locale } from 'shared/config';
+import { type Locale } from 'shared/config';
+import { extractLocaleFromPathname } from 'shared/lib/locale/utils';
 
 /**
  * 다국어 지원을 위한 useRouter 래퍼 훅
@@ -10,7 +11,7 @@ export function useLocalizedRouter() {
   const pathname = usePathname();
 
   // 현재 경로에서 locale 추출
-  const currentLocale = (pathname.split('/')[1] as Locale) || DEFAULT_LOCALE;
+  const currentLocale = extractLocaleFromPathname(pathname);
 
   /**
    * 경로에 locale을 자동으로 추가하는 헬퍼 함수

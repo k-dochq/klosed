@@ -1,4 +1,5 @@
 import { prisma } from 'shared/lib/prisma';
+import { UserMetadata } from 'shared/model/types/auth';
 
 /**
  * 사용자 데이터 액세스 계층
@@ -10,7 +11,7 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<{
     id: string;
     email: string | null;
-    raw_user_meta_data: any;
+    raw_user_meta_data: UserMetadata;
   } | null>;
 
   /**
@@ -24,7 +25,7 @@ export interface IUserRepository {
  */
 export class UserRepository implements IUserRepository {
   async findByEmail(email: string) {
-    return await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -34,6 +35,17 @@ export class UserRepository implements IUserRepository {
         raw_user_meta_data: true,
       },
     });
+
+    if (!user) {
+      return null;
+    }
+
+    // JsonValue를 UserMetadata로 변환
+    return {
+      id: user.id,
+      email: user.email,
+      raw_user_meta_data: user.raw_user_meta_data as UserMetadata,
+    };
   }
 
   async existsByEmail(email: string): Promise<boolean> {

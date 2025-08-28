@@ -60,6 +60,16 @@
       "error": "로그인 중 오류가 발생했습니다.",
       "emailLabel": "이메일"
     },
+    "phoneVerification": {
+      "title": "휴대폰 인증",
+      "subtitle": "회원가입을 완료하려면 휴대폰 번호를 인증해주세요",
+      "phoneInput": {
+        "label": "휴대폰 번호",
+        "placeholder": "휴대폰 번호를 입력하세요"
+      },
+      "verifyButton": "휴대폰 인증",
+      "skipButton": "나중에 하기"
+    },
     "error": {
       "title": "로그인 오류",
       "subtitle": "로그인 중에 문제가 발생했습니다",

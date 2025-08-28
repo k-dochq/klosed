@@ -15,5 +15,7 @@ export interface LineAuthResult {
   userId?: string;
   displayName?: string;
   email?: string;
+  session?: import('@supabase/supabase-js').Session;
+  isNewUser?: boolean; // 새 사용자인지 여부
   error?: string;
 }

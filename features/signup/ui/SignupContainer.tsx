@@ -49,8 +49,10 @@ export function SignupContainer({ locale, title, subtitle, dict }: SignupContain
     try {
       // TODO: 실제 회원가입 로직 구현
       console.log('Signup data:', { email, password, agreedToTerms });
-      // 회원가입 완료 후 처리
-      console.log('Continue clicked');
+
+      // 회원가입 완료 후 핸드폰 인증 페이지로 이동
+      console.log('회원가입 완료 - 핸드폰 인증 페이지로 이동');
+      router.push(`/auth/phone-verification?email=${encodeURIComponent(email)}`);
     } finally {
       setIsLoading(false);
     }

@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from 'shared/lib/supabase/client';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
+import { LINE_AUTH_ERROR_CODES } from 'shared/config/error-codes';
 import { type Dictionary } from 'shared/model/types';
+import { useLocalizedRouter } from '@/shared/model';
 
 /**
  * LINE 로그인 핸들러
@@ -16,27 +18,37 @@ interface LineLoginHandlerProps {
 }
 
 export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
-  const router = useRouter();
+  const router = useLocalizedRouter();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
+  const hasHandledRef = useRef(false); // 완료 여부 추적
+  const isProcessingRef = useRef(false); // 처리 중 상태 추적
 
-  // dictionary의 lineLogin 부분을 메모화하여 의존성 배열 문제 해결
   const lineLoginTexts = useMemo(
     () => ({
       processing: dictionary.auth.lineLogin.processing,
       success: dictionary.auth.lineLogin.success,
       error: dictionary.auth.lineLogin.error,
     }),
-    [
-      dictionary.auth.lineLogin.processing,
-      dictionary.auth.lineLogin.success,
-      dictionary.auth.lineLogin.error,
-    ],
+    [dictionary.auth.lineLogin], // 객체 전체를 의존성으로
   );
 
   useEffect(() => {
+    // 강화된 방어코드: 완료 여부와 처리 중 여부 모두 체크
+    if (hasHandledRef.current || isProcessingRef.current) {
+      return;
+    }
+
     const handleLogin = async () => {
       try {
+        // 이중 체크 + 처리 중 상태 즉시 설정
+        if (hasHandledRef.current || isProcessingRef.current) {
+          return;
+        }
+
+        hasHandledRef.current = true;
+        isProcessingRef.current = true; // 처리 시작 즉시 표시
+
         setStatus('loading');
         setMessage(lineLoginTexts.processing);
 
@@ -44,7 +56,7 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
 
         // LINE 계정으로 이메일 로그인 (passwordless)
         const { data: _data, error } = await supabase.auth.signInWithPassword({
-          email: email,
+          email: email.trim(),
           password: PASSWORDLESS_AUTH_PASSWORD,
         });
 
@@ -55,27 +67,39 @@ export function LineLoginHandler({ email, dictionary }: LineLoginHandlerProps) {
         setStatus('success');
         setMessage(lineLoginTexts.success);
 
-        // 성공 시 홈페이지로 이동
         setTimeout(() => {
           router.push('/');
-        }, 1500);
+        }, 500);
       } catch (error) {
         console.error('LINE login handler error:', error);
         setStatus('error');
         setMessage(error instanceof Error ? error.message : lineLoginTexts.error);
 
-        // 에러 시 로그인 페이지로 이동
         setTimeout(() => {
-          router.push('/auth/email-login');
-        }, 3000);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          router.push(
+            `/auth/failure?code=${LINE_AUTH_ERROR_CODES.LINE_LOGIN_FAILED}&provider=line&message=${encodeURIComponent(errorMessage)}`,
+          );
+        }, 1000);
+      } finally {
+        // 처리 완료 시 상태 정리
+        isProcessingRef.current = false;
       }
     };
 
     handleLogin();
   }, [email, router, lineLoginTexts]);
 
+  // 컴포넌트 언마운트 시 정리
+  useEffect(() => {
+    return () => {
+      hasHandledRef.current = false;
+      isProcessingRef.current = false;
+    };
+  }, []);
+
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gray-50'>
+    <div className='flex min-h-screen items-center justify-center'>
       <div className='w-full max-w-md rounded-lg bg-white p-8 shadow-md'>
         <div className='text-center'>
           <h1 className='mb-4 text-2xl font-bold text-gray-900'>

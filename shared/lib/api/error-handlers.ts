@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 
 /**
- * 에러 페이지로 리다이렉트하는 공통 유틸리티
+ * 인증 실패 페이지로 리다이렉트하는 공통 유틸리티
  */
-export function redirectToErrorPage(
+export function redirectToAuthFailurePage(
   requestUrl: string,
   errorCode: string,
   provider?: string,
 ): NextResponse {
   const baseUrl = new URL(requestUrl).origin;
-  const errorUrl = new URL('/auth/error', baseUrl);
-  errorUrl.searchParams.set('error', errorCode);
+  const failureUrl = new URL('/auth/failure', baseUrl);
+  failureUrl.searchParams.set('code', errorCode);
   if (provider) {
-    errorUrl.searchParams.set('provider', provider);
+    failureUrl.searchParams.set('provider', provider);
   }
 
-  return NextResponse.redirect(errorUrl);
+  return NextResponse.redirect(failureUrl);
 }

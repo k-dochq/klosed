@@ -66,6 +66,7 @@ export function InviteCodeForm({ dict }: InviteCodeFormProps) {
           placeholder={dict.input.placeholder}
           value={inviteCode}
           onChange={setInviteCode}
+          onEnter={handleContinue}
         />
         {errorMessage && <div className='text-center text-sm text-red-600'>{errorMessage}</div>}
         <NoCodeLink text={dict.noCode} />

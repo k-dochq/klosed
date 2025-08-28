@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { LINE_CONFIG } from 'shared/config';
+import { DEFAULT_LOCALE, LINE_CONFIG } from 'shared/config';
 import { type Locale } from 'shared/config';
 
 interface LineAuthState {
@@ -31,21 +31,20 @@ export function useLineAuth({ locale }: UseLineAuthProps = {}) {
     try {
       setState({ isLoading: true, error: null });
 
-      // CSRF 방지를 위한 state 생성
+      // 현재 도메인 기반 콜백 URL 생성
+      const baseUrl = `${window.location.protocol}//${window.location.host}`;
+      const redirectPath = `/${locale || DEFAULT_LOCALE}/auth/line/callback`;
+      const redirectUri = `${baseUrl}${redirectPath}`;
+
+      // CSRF 방지를 위한 state 생성 (redirect_uri와 로케일 정보 포함)
       const state = btoa(
         JSON.stringify({
           timestamp: Date.now(),
           nonce: Math.random().toString(36).substring(2, 15),
+          locale: locale || DEFAULT_LOCALE,
+          redirectUri: redirectUri, // 생성한 redirect_uri를 state에 저장
         }),
       );
-
-      // 현재 도메인 기반 콜백 URL 생성
-      const baseUrl = `${window.location.protocol}//${window.location.host}`;
-
-      // 전달받은 locale을 사용해서 콜백 경로 생성
-      const redirectPath = locale ? `/${locale}/auth/line/callback` : '/auth/line/callback';
-
-      const redirectUri = `${baseUrl}${redirectPath}`;
 
       // LINE 인증 URL 생성
       const authUrl = new URL(LINE_CONFIG.AUTHORIZE_URL);

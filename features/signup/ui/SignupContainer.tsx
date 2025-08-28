@@ -25,8 +25,6 @@ export function SignupContainer({ locale, title, subtitle, dict }: SignupContain
     router.push('/');
   };
 
-  const handleAppleLogin = () => {};
-
   return (
     <div className='flex flex-col px-6 pb-16'>
       {/* Main Content */}
@@ -39,11 +37,7 @@ export function SignupContainer({ locale, title, subtitle, dict }: SignupContain
           <EmailVerificationForm dict={dict} />
 
           {/* Social Login */}
-          <SocialLoginSection
-            locale={locale}
-            onAppleLogin={handleAppleLogin}
-            dict={dict.auth?.signup?.socialLogin}
-          />
+          <SocialLoginSection locale={locale} dict={dict.auth?.signup?.socialLogin} />
         </div>
       </div>
 

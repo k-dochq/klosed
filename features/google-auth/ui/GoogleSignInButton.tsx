@@ -1,6 +1,7 @@
 'use client';
 
 import { useGoogleAuth } from '../model/useGoogleAuth';
+import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 
 interface GoogleSignInButtonProps {
   className?: string;
@@ -8,7 +9,8 @@ interface GoogleSignInButtonProps {
 }
 
 export function GoogleSignInButton({ className = '', children }: GoogleSignInButtonProps) {
-  const { signInWithGoogle, isLoading, error } = useGoogleAuth();
+  const { currentLocale } = useLocalizedRouter();
+  const { signInWithGoogle, isLoading, error } = useGoogleAuth({ locale: currentLocale });
 
   const handleClick = () => {
     signInWithGoogle();

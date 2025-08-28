@@ -2,10 +2,17 @@
 
 import { useState } from 'react';
 import { createClient } from 'shared/lib/supabase';
+import type { Locale } from 'shared/config';
 
-export function useGoogleAuth() {
+interface UseGoogleAuthOptions {
+  locale: Locale;
+}
+
+export function useGoogleAuth(options: UseGoogleAuthOptions) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const currentLocale = options.locale;
 
   const supabase = createClient();
 
@@ -17,7 +24,7 @@ export function useGoogleAuth() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/${currentLocale}/auth/callback`,
         },
       });
 

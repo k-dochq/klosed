@@ -137,6 +137,35 @@
         "title": "Check your email",
         "description": "We've sent a verification email to {email}. Please check your email to complete verification."
       }
+    },
+    "passwordUpdate": {
+      "title": "Set New Password",
+      "description": "Please enter your new password.",
+      "errors": {
+        "PASSWORD_REQUIRED": "Please enter a password.",
+        "PASSWORD_MISMATCH": "Passwords do not match.",
+        "PASSWORD_TOO_SHORT": "Password must be at least 6 characters long.",
+        "UPDATE_FAILED": "Failed to update password.",
+        "UNKNOWN_ERROR": "An unknown error occurred."
+      },
+      "buttons": {
+        "update": "Update Password",
+        "updating": "Updating..."
+      },
+      "form": {
+        "password": {
+          "label": "New Password",
+          "placeholder": "Enter your new password"
+        },
+        "confirmPassword": {
+          "label": "Confirm Password",
+          "placeholder": "Enter your password again"
+        }
+      },
+      "success": {
+        "title": "Password Updated Successfully",
+        "description": "You will be redirected to the homepage shortly."
+      }
     }
   },
   "footer": {

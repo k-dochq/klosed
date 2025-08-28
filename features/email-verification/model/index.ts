@@ -3,4 +3,6 @@
  */
 
 export { useEmailVerificationSignup } from './useEmailVerificationSignup';
-export { useSendVerificationEmail } from './useSendVerificationEmail';
+export { useCheckEmailExists } from './useCheckEmailExists';
+export { usePasswordValidation } from './usePasswordValidation';
+export { usePasswordUpdate } from './usePasswordUpdate';

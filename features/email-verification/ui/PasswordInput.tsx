@@ -1,41 +1,47 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { type Dictionary } from 'shared/model/types';
 
 interface PasswordInputProps {
+  id: string;
+  label: string;
+  placeholder: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  label: string;
   disabled?: boolean;
+  required?: boolean;
+  minLength?: number;
   error?: string;
 }
 
-/**
- * 비밀번호 입력 필드 컴포넌트
- */
-export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ value, onChange, placeholder, label, disabled = false, error }, ref) => {
-    return (
-      <div>
-        <label htmlFor='password' className='mb-1 block text-sm font-medium text-gray-700'>
-          {label}
-        </label>
-        <input
-          ref={ref}
-          id='password'
-          type='password'
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className='w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none'
-          disabled={disabled}
-          required
-        />
-        {error && <p className='mt-1 text-sm text-red-600'>{error}</p>}
-      </div>
-    );
-  },
-);
-
-PasswordInput.displayName = 'PasswordInput';
+export function PasswordInput({
+  id,
+  label,
+  placeholder,
+  value,
+  onChange,
+  disabled = false,
+  required = true,
+  minLength = 6,
+  error,
+}: PasswordInputProps) {
+  return (
+    <div>
+      <label htmlFor={id} className='block text-sm font-medium text-gray-700 dark:text-gray-300'>
+        {label}
+      </label>
+      <input
+        id={id}
+        type='password'
+        value={value}
+        onChange={onChange}
+        required={required}
+        minLength={minLength}
+        className='mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white'
+        placeholder={placeholder}
+        disabled={disabled}
+      />
+      {error && <p className='mt-1 text-sm text-red-600 dark:text-red-400'>{error}</p>}
+    </div>
+  );
+}

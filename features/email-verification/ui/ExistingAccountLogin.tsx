@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 import { useEmailAuth } from 'features/email-auth/model/useEmailAuth';
-import { useEmailVerificationSignup } from '../model/useEmailVerificationSignup';
+import { createClient } from 'shared/lib/supabase/client';
 import { PasswordInput } from './PasswordInput';
 import { EmailVerificationButton } from './EmailVerificationButton';
 import { type Dictionary } from 'shared/model/types';
@@ -20,7 +20,6 @@ export function ExistingAccountLogin({ dict, email }: ExistingAccountLoginProps)
 
   const router = useLocalizedRouter();
   const { signInWithEmail } = useEmailAuth();
-  const { processEmailVerification } = useEmailVerificationSignup();
 
   const handleBackToSignup = () => {
     router.push('/auth/signup');
@@ -46,15 +45,8 @@ export function ExistingAccountLogin({ dict, email }: ExistingAccountLoginProps)
         return;
       }
 
-      // 로그인 성공 후 이메일 인증 처리
-      const result = await processEmailVerification(email);
-
-      if (result.success) {
-        // 이메일 인증 완료 페이지로 이동
-        router.push(`/auth/email-verification-sent?email=${encodeURIComponent(email)}`);
-      } else {
-        setError(dict.auth?.emailVerification?.errors?.EMAIL_VERIFICATION_FAILED);
-      }
+      // 로그인 성공 시 홈페이지로 리다이렉트
+      router.push('/');
     } catch (error) {
       console.error('로그인 처리 중 오류:', error);
       setError(dict.auth?.emailVerification?.errors?.LOGIN_FAILED);
@@ -93,12 +85,13 @@ export function ExistingAccountLogin({ dict, email }: ExistingAccountLoginProps)
 
           <form onSubmit={handlePasswordSubmit} className='space-y-4'>
             <PasswordInput
-              value={password}
-              onChange={handlePasswordChange}
+              id='password'
+              label={dict.auth?.emailVerification?.form?.password?.label || 'Password'}
               placeholder={
                 dict.auth?.emailVerification?.form?.password?.placeholder || 'Enter your password'
               }
-              label={dict.auth?.emailVerification?.form?.password?.label || 'Password'}
+              value={password}
+              onChange={handlePasswordChange}
               disabled={isProcessing}
               error={error || undefined}
             />

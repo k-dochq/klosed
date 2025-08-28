@@ -8,6 +8,8 @@ export { useSendVerificationEmail } from './model/useSendVerificationEmail';
 
 // UI exports
 export { EmailVerificationForm } from './ui/EmailVerificationForm';
+export { EmailVerificationSent } from './ui/EmailVerificationSent';
+export { ExistingAccountLogin } from './ui/ExistingAccountLogin';
 export { EmailInput } from './ui/EmailInput';
 export { PasswordInput } from './ui/PasswordInput';
 export { EmailVerificationButton } from './ui/EmailVerificationButton';

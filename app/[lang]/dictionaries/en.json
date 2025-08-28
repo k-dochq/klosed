@@ -107,14 +107,20 @@
         "UNKNOWN_ERROR": "An unexpected error occurred. Please try again.",
         "EMAIL_ALREADY_VERIFIED": "This email is already verified.",
         "USER_NOT_FOUND": "User not found.",
-        "TOKEN_GENERATION_FAILED": "Failed to generate verification token."
+        "TOKEN_GENERATION_FAILED": "Failed to generate verification token.",
+        "INVALID_PASSWORD": "Incorrect password.",
+        "EMAIL_VERIFICATION_FAILED": "Email verification failed. Please try again.",
+        "LOGIN_FAILED": "Login failed. Please try again."
       },
       "buttons": {
         "continue": "Continue",
         "creatingAccount": "Creating account...",
         "sendingEmail": "Sending email...",
         "signIn": "Sign In",
-        "signingIn": "Signing in..."
+        "signingIn": "Signing in...",
+        "backToSignup": "Use different email",
+        "resendEmail": "Resend email",
+        "useDifferentEmail": "Use different email"
       },
       "form": {
         "password": {
@@ -122,7 +128,15 @@
           "placeholder": "Enter your password"
         }
       },
-      "description": "We'll create your account and send you a verification email."
+      "description": "We'll create your account and send you a verification email.",
+      "existingAccount": {
+        "title": "Account already exists",
+        "description": "An account with {email} already exists. Please enter your password."
+      },
+      "success": {
+        "title": "Check your email",
+        "description": "We've sent a verification email to {email}. Please check your email to complete verification."
+      }
     }
   },
   "footer": {

@@ -107,14 +107,20 @@
         "UNKNOWN_ERROR": "예상하지 못한 오류가 발생했습니다. 다시 시도해주세요.",
         "EMAIL_ALREADY_VERIFIED": "이미 인증된 이메일입니다.",
         "USER_NOT_FOUND": "사용자를 찾을 수 없습니다.",
-        "TOKEN_GENERATION_FAILED": "인증 토큰 생성에 실패했습니다."
+        "TOKEN_GENERATION_FAILED": "인증 토큰 생성에 실패했습니다.",
+        "INVALID_PASSWORD": "비밀번호가 올바르지 않습니다.",
+        "EMAIL_VERIFICATION_FAILED": "이메일 인증 처리 중 오류가 발생했습니다.",
+        "LOGIN_FAILED": "로그인 처리 중 오류가 발생했습니다."
       },
       "buttons": {
         "continue": "계속",
         "creatingAccount": "계정 생성 중...",
         "sendingEmail": "이메일 전송 중...",
         "signIn": "로그인",
-        "signingIn": "로그인 중..."
+        "signingIn": "로그인 중...",
+        "backToSignup": "다른 이메일 사용",
+        "resendEmail": "이메일 재전송",
+        "useDifferentEmail": "다른 이메일 사용"
       },
       "form": {
         "password": {
@@ -122,7 +128,15 @@
           "placeholder": "비밀번호를 입력하세요"
         }
       },
-      "description": "계정을 생성하고 이메일 인증 링크를 보내드립니다."
+      "description": "계정을 생성하고 이메일 인증 링크를 보내드립니다.",
+      "existingAccount": {
+        "title": "계정이 이미 존재합니다",
+        "description": "{email}로 등록된 계정이 있습니다. 비밀번호를 입력해주세요."
+      },
+      "success": {
+        "title": "이메일을 확인해주세요",
+        "description": "{email}로 인증 메일을 보냈습니다. 이메일을 확인하여 인증을 완료해주세요."
+      }
     }
   },
   "footer": {

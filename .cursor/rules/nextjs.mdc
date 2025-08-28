@@ -395,6 +395,88 @@ function PostComponent() {
 }
 ```
 
+### Route Handler Integration
+
+#### **GET Requests in Server Components**
+
+```typescript
+// ✅ Good - Server component for data fetching
+export default async function PostsPage() {
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ['posts'],
+    queryFn: () => fetch('/api/posts').then(res => res.json()),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PostsList />
+    </HydrationBoundary>
+  );
+}
+```
+
+#### **Mutations with Route Handlers**
+
+```typescript
+// ✅ Good - Client component with mutations
+'use client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+function useCreatePost() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreatePostData) =>
+      fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      }).then((res) => res.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
+}
+```
+
+#### **Route Handler Structure**
+
+```typescript
+// app/api/posts/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET() {
+  // Handle GET requests
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    // Process POST data
+    return NextResponse.json({ success: true, data: result });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+  }
+}
+```
+
+### Data Fetching Strategy
+
+#### **✅ Recommended Approach**
+
+- **GET requests**: Server Components with `useQuery`/`useSuspenseQuery`
+- **POST/PUT/DELETE requests**: Client Components with `useMutation`
+- **Route Handlers**: For API endpoints that need server-side processing
+- **Server Actions**: For simple form submissions (Next.js 13.4+)
+
+#### **❌ Anti-patterns to Avoid**
+
+- **Client components making direct external API calls**
+- **Server components handling POST requests**
+- **Mixing data fetching patterns inconsistently**
+
 ### Common Patterns
 
 - **Background Refetching**: Set appropriate `staleTime` and `gcTime` values

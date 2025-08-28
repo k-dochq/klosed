@@ -99,6 +99,44 @@
         "backToLogin": "กลับสู่หน้าเข้าสู่ระบบ",
         "contactSupport": "ติดต่อฝ่ายสนับสนุน"
       }
+    },
+    "emailVerification": {
+      "errors": {
+        "INVALID_EMAIL_FORMAT": "กรุณาใส่อีเมลที่ถูกต้อง",
+        "EMAIL_SEND_FAILED": "ส่งอีเมลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+        "UNKNOWN_ERROR": "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง",
+        "EMAIL_ALREADY_VERIFIED": "อีเมลนี้ได้รับการยืนยันแล้ว",
+        "USER_NOT_FOUND": "ไม่พบผู้ใช้",
+        "TOKEN_GENERATION_FAILED": "สร้างโทเค็นการยืนยันไม่สำเร็จ",
+        "INVALID_PASSWORD": "รหัสผ่านไม่ถูกต้อง",
+        "EMAIL_VERIFICATION_FAILED": "การยืนยันอีเมลล้มเหลว กรุณาลองใหม่อีกครั้ง",
+        "LOGIN_FAILED": "การเข้าสู่ระบบล้มเหลว กรุณาลองใหม่อีกครั้ง"
+      },
+      "buttons": {
+        "continue": "ดำเนินการต่อ",
+        "creatingAccount": "กำลังสร้างบัญชี...",
+        "sendingEmail": "กำลังส่งอีเมล...",
+        "signIn": "เข้าสู่ระบบ",
+        "signingIn": "กำลังเข้าสู่ระบบ...",
+        "backToSignup": "ใช้อีเมลอื่น",
+        "resendEmail": "ส่งอีเมลใหม่",
+        "useDifferentEmail": "ใช้อีเมลอื่น"
+      },
+      "form": {
+        "password": {
+          "label": "รหัสผ่าน",
+          "placeholder": "กรุณาใส่รหัสผ่าน"
+        }
+      },
+      "description": "เราจะสร้างบัญชีของคุณและส่งอีเมลยืนยัน",
+      "existingAccount": {
+        "title": "บัญชีมีอยู่แล้ว",
+        "description": "บัญชีที่มี {email} มีอยู่แล้ว กรุณาใส่รหัสผ่านของคุณ"
+      },
+      "success": {
+        "title": "ตรวจสอบอีเมลของคุณ",
+        "description": "เราได้ส่งอีเมลยืนยันไปยัง {email} แล้ว กรุณาตรวจสอบอีเมลเพื่อทำการยืนยันให้เสร็จสิ้น"
+      }
     }
   },
   "footer": {

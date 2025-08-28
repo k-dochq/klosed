@@ -4,3 +4,4 @@ export * from './line';
 export * from './auth';
 export * from './error-codes';
 export * from './phone';
+export * from './email';

@@ -70,13 +70,6 @@ alwaysApply: true
 - App initialization, global providers, routing setup
 - Examples: `app/providers/`, `app/styles/`, `app/store/`
 
-## Next.js Integration
-
-- Place Next.js route files in `pages/` layer following App Router structure
-- Use `app/` layer for Next.js configuration and providers
-- Server Components in `entities/` and `features/` for data fetching
-- Client Components should be minimal and wrapped with `'use client'`
-
 ## State Management
 
 - Keep local state within feature segments
@@ -397,6 +390,82 @@ function redirectToErrorPage(requestUrl: string, errorCode: string): NextRespons
 - **Interface Adapters**: 컨트롤러, 게이트웨이, 프레젠터
 - **Frameworks & Drivers**: 외부 라이브러리, 데이터베이스, 웹 프레임워크
 
+#### **FSD + 클린 아키텍처 구조 예시**
+
+```
+features/
+  email-verification/
+    api/
+      entities/               # 도메인 엔티티
+        types.ts             # 요청/응답 타입 정의
+        schemas.ts           # 입력 검증 스키마
+      infrastructure/        # 인프라 계층
+        services/            # 외부 서비스 어댑터
+          email-api-service.ts
+        repositories/        # 데이터 액세스 계층
+          user-repository.ts
+        services/            # 인프라 서비스 계층
+          auth-service.ts
+      use-cases/             # 유스케이스 계층
+        send-verification-email.ts
+        types.ts             # 유스케이스 인터페이스
+      route.ts               # 라우트 핸들러 (컨트롤러)
+    model/                   # React 훅 및 상태 관리
+      useSendVerificationEmail.ts
+    ui/                      # 프레젠테이션 계층
+      EmailVerificationForm.tsx
+```
+
+#### **Use Case 패턴 적용**
+
+```typescript
+// features/email-verification/api/use-cases/send-verification-email.ts
+export class SendVerificationEmailUseCase {
+  constructor(
+    private emailApiService: IEmailApiService,
+    private userRepository: IUserRepository,
+    private authService: IAuthService,
+  ) {}
+
+  async execute(request: SendVerificationEmailRequest): Promise<SendVerificationEmailResponse> {
+    // 1. 이메일 형식 검증
+    // 2. 사용자 존재 확인
+    // 3. 토큰 생성 및 저장
+    // 4. 이메일 발송
+    // 5. 결과 반환
+  }
+}
+```
+
+#### **Route Handler 구조**
+
+```typescript
+// features/email-verification/api/route.ts
+import { SendVerificationEmailUseCase } from './use-cases';
+import { EmailApiService, UserRepository, AuthService } from './infrastructure';
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  try {
+    const useCase = new SendVerificationEmailUseCase(
+      new EmailApiService(),
+      new UserRepository(),
+      new AuthService(),
+    );
+
+    const result = await useCase.execute(await request.json());
+
+    if (result.success) {
+      return NextResponse.json({ success: true, data: result.data });
+    } else {
+      return NextResponse.json({ success: false, error: result.error }, { status: 400 });
+    }
+  } catch (error) {
+    console.error('Email verification error:', error);
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
+  }
+}
+```
+
 ### Shared Layer 사용 원칙
 
 #### ✅ Shared Layer에 포함되어야 하는 것
@@ -476,10 +545,3 @@ shared/
       response.ts               # ✅ 공통 API 유틸리티
     utils/                      # ✅ 공통 유틸리티
 ```
-
-## TypeScript Rules
-
-- **Never use `any` type**: Always provide specific types
-- Use union types and generics for flexibility
-- Define proper interfaces for all external dependencies
-- Use type guards for runtime validation

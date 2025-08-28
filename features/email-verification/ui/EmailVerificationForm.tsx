@@ -5,19 +5,12 @@ import { useEmailVerificationSignup } from '../model/useEmailVerificationSignup'
 import { isValidEmail } from 'shared/lib/validation/email';
 import { EmailInput } from './EmailInput';
 import { EmailVerificationButton } from './EmailVerificationButton';
-import { ErrorMessage } from './ErrorMessage';
+import { EmailErrorMessage } from './ErrorMessage';
 import { EmailVerificationDescription } from './EmailVerificationDescription';
+import { type Dictionary } from 'shared/model/types';
 
 interface EmailVerificationFormProps {
-  onEmailSent: (email: string) => void;
-  dict: {
-    emailInput: {
-      label: string;
-      placeholder: string;
-    };
-    sendButton: string;
-    sending: string;
-  };
+  dict: Dictionary;
 }
 
 /**
@@ -28,9 +21,9 @@ interface EmailVerificationFormProps {
  * - 폼 제출 처리
  * - 로딩 및 에러 상태 관리
  */
-export function EmailVerificationForm({ onEmailSent, dict }: EmailVerificationFormProps) {
+export function EmailVerificationForm({ dict }: EmailVerificationFormProps) {
   const [email, setEmail] = useState('');
-  const { processEmailVerification, isProcessing, error } = useEmailVerificationSignup();
+  const { processEmailVerification, isProcessing, errorCode } = useEmailVerificationSignup();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,11 +38,7 @@ export function EmailVerificationForm({ onEmailSent, dict }: EmailVerificationFo
     }
 
     // 이메일 인증 처리 (회원가입 + 이메일 전송)
-    const result = await processEmailVerification(email);
-
-    if (result.success) {
-      onEmailSent(email);
-    }
+    await processEmailVerification(email);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,24 +53,31 @@ export function EmailVerificationForm({ onEmailSent, dict }: EmailVerificationFo
         <EmailInput
           value={email}
           onChange={handleEmailChange}
-          placeholder={dict.emailInput.placeholder}
-          label={dict.emailInput.label}
+          placeholder={dict.auth?.signup?.form?.email?.placeholder || 'Enter your email'}
+          label={dict.auth?.signup?.form?.email?.label || 'Email'}
           disabled={isProcessing}
         />
 
-        <ErrorMessage error={error} />
+        <EmailErrorMessage errorCode={errorCode} dict={dict} />
 
         <EmailVerificationButton
           disabled={isDisabled}
           isProcessing={isProcessing}
           isSending={false}
-          text={dict.sendButton}
-          processingText='계정 생성 중...'
-          sendingText={dict.sending}
+          text={dict.auth?.emailVerification?.buttons?.continue || 'Continue'}
+          processingText={
+            dict.auth?.emailVerification?.buttons?.creatingAccount || 'Creating account...'
+          }
+          sendingText={dict.auth?.emailVerification?.buttons?.sendingEmail || 'Sending email...'}
         />
       </form>
 
-      <EmailVerificationDescription text='계정을 생성하고 이메일 인증 링크를 보내드립니다.' />
+      <EmailVerificationDescription
+        text={
+          dict.auth?.emailVerification?.description ||
+          "We'll create your account and send you a verification email."
+        }
+      />
     </div>
   );
 }

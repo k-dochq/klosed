@@ -10,5 +10,5 @@ export { useSendVerificationEmail } from './model/useSendVerificationEmail';
 export { EmailVerificationForm } from './ui/EmailVerificationForm';
 export { EmailInput } from './ui/EmailInput';
 export { EmailVerificationButton } from './ui/EmailVerificationButton';
-export { ErrorMessage } from './ui/ErrorMessage';
+export { ErrorMessage, EmailErrorMessage } from './ui/ErrorMessage';
 export { EmailVerificationDescription } from './ui/EmailVerificationDescription';

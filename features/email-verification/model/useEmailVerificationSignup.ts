@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useEmailAuth } from 'features/email-auth/model/useEmailAuth';
 import { useSendVerificationEmail } from './useSendVerificationEmail';
 import { generateRandomPassword } from 'shared/lib/utils/password-generator';
+import { EMAIL_VERIFICATION_ERROR_CODES } from '../api/entities/types';
 
 /**
  * 이메일 인증을 위한 회원가입 + 이메일 전송 통합 훅
@@ -12,7 +13,7 @@ import { generateRandomPassword } from 'shared/lib/utils/password-generator';
  */
 export function useEmailVerificationSignup() {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
 
   const { signUpWithEmail } = useEmailAuth();
   const sendVerificationEmail = useSendVerificationEmail();
@@ -26,7 +27,7 @@ export function useEmailVerificationSignup() {
   const processEmailVerification = async (email: string) => {
     try {
       setIsProcessing(true);
-      setError(null);
+      setErrorCode(null);
 
       // 1. 난수 비밀번호 생성
       const randomPassword = generateRandomPassword();
@@ -36,7 +37,7 @@ export function useEmailVerificationSignup() {
 
       if (signUpResult.error) {
         console.error('회원가입 실패:', signUpResult.error);
-        // 회원가입 실패 시에도 이메일 전송은 시도 (이미 가입된 경우)
+        throw new Error(signUpResult.error);
       }
 
       // 3. 이메일 전송 (직접 mutation 함수 호출)
@@ -45,12 +46,12 @@ export function useEmailVerificationSignup() {
       if (result.success) {
         return { success: true, messageId: result.message };
       } else {
+        setErrorCode(EMAIL_VERIFICATION_ERROR_CODES.EMAIL_SEND_FAILED);
         return { success: false };
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '처리 중 오류가 발생했습니다.';
-      setError(errorMessage);
       console.error('이메일 인증 처리 중 오류:', error);
+      setErrorCode(EMAIL_VERIFICATION_ERROR_CODES.UNKNOWN_ERROR);
       return { success: false };
     } finally {
       setIsProcessing(false);
@@ -60,6 +61,6 @@ export function useEmailVerificationSignup() {
   return {
     processEmailVerification,
     isProcessing,
-    error,
+    errorCode,
   };
 }

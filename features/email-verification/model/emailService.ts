@@ -1,11 +1,10 @@
 import { type SendVerificationEmailRequest, type SendVerificationEmailResponse } from './types';
 import { generateVerificationLink } from './emailTokenUtils';
+import { RESEND_CONFIG, EMAIL_TEMPLATES } from 'shared/config';
 
 /**
  * Resend API를 사용한 이메일 발송 서비스
  */
-
-const RESEND_API_URL = 'https://api.resend.com/emails';
 
 /**
  * 이메일 인증 메일 발송
@@ -27,13 +26,13 @@ export async function sendVerificationEmail(
     const verificationLink = await generateVerificationLink(request.email);
 
     const emailData = {
-      from: 'Klosed <noreply@klosed.com>',
+      from: RESEND_CONFIG.defaultFrom,
       to: [request.email],
-      subject: 'Complete Your Klosed Account Setup',
+      subject: EMAIL_TEMPLATES.verification.subject,
       html: generateVerificationEmailHtml(verificationLink, request.email),
     };
 
-    const response = await fetch(RESEND_API_URL, {
+    const response = await fetch(RESEND_CONFIG.apiUrl, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,

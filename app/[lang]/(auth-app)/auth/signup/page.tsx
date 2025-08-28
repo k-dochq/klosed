@@ -15,7 +15,7 @@ export default async function SignupPage({ params }: SignupPageProps) {
       locale={lang}
       title={dict.auth.signup.title}
       subtitle={dict.auth.signup.subtitle}
-      dict={dict.auth.signup}
+      dict={dict}
     />
   );
 }

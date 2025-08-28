@@ -5,6 +5,7 @@ import {
   EMAIL_VERIFICATION_ERROR_CODES,
 } from '../entities/types';
 import { validateEmail } from '../entities/schemas';
+import { EMAIL_TEMPLATES } from 'shared/config';
 
 /**
  * 이메일 발송 Use Case
@@ -28,7 +29,7 @@ export class SendVerificationEmailUseCase {
       }
 
       // 2. 이메일 템플릿 생성 (간단한 테스트용)
-      const subject = 'Test Email from Klosed';
+      const subject = EMAIL_TEMPLATES.verification.subject;
       const htmlContent = this.generateEmailHtml(email);
 
       // 3. 이메일 발송

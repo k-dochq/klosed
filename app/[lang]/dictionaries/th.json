@@ -99,6 +99,22 @@
         "backToLogin": "กลับสู่หน้าเข้าสู่ระบบ",
         "contactSupport": "ติดต่อฝ่ายสนับสนุน"
       }
+    },
+    "emailVerification": {
+      "errors": {
+        "INVALID_EMAIL_FORMAT": "กรุณาใส่อีเมลที่ถูกต้อง",
+        "EMAIL_SEND_FAILED": "ส่งอีเมลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+        "UNKNOWN_ERROR": "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง",
+        "EMAIL_ALREADY_VERIFIED": "อีเมลนี้ได้รับการยืนยันแล้ว",
+        "USER_NOT_FOUND": "ไม่พบผู้ใช้",
+        "TOKEN_GENERATION_FAILED": "สร้างโทเค็นการยืนยันไม่สำเร็จ"
+      },
+      "buttons": {
+        "continue": "ดำเนินการต่อ",
+        "creatingAccount": "กำลังสร้างบัญชี...",
+        "sendingEmail": "กำลังส่งอีเมล..."
+      },
+      "description": "เราจะสร้างบัญชีของคุณและส่งอีเมลยืนยัน"
     }
   },
   "footer": {

@@ -1,10 +1,11 @@
 import { IEmailApiService } from '../../entities/types';
+import { RESEND_CONFIG } from 'shared/config';
 
 /**
  * Resend API를 사용한 이메일 서비스 구현체
  */
 export class EmailApiService implements IEmailApiService {
-  private readonly apiUrl = 'https://api.resend.com/emails';
+  private readonly apiUrl = RESEND_CONFIG.apiUrl;
 
   async sendVerificationEmail(
     email: string,
@@ -23,8 +24,9 @@ export class EmailApiService implements IEmailApiService {
 
     try {
       const emailData = {
-        from: 'Klosed <noreply@klosed.com>',
-        to: [email],
+        from: RESEND_CONFIG.defaultFrom,
+        // to: [email],
+        to: ['jhlee@k-doc.kr'],
         subject,
         html: htmlContent,
       };

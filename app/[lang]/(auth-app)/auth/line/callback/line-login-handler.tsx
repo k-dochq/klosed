@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState, useMemo, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { createClient } from 'shared/lib/supabase/client';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
 import { LINE_AUTH_ERROR_CODES } from 'shared/config/error-codes';

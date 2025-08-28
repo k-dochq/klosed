@@ -114,6 +114,14 @@ export class LineAuthUseCase {
       // 2. 사용자가 이미 존재하는 경우
       if (existingUser) {
         console.log('User already exists for email:', email, '(ID:', existingUser.id + ')');
+        
+        // 기존 사용자의 display_name 업데이트 (최신 LINE 프로필 정보로)
+        await this.authService.updateLineUser({
+          userId: existingUser.id,
+          nickname: lineProfile.displayName,
+          pictureUrl: lineProfile.pictureUrl,
+        });
+        
         return email;
       }
 

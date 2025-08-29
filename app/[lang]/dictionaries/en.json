@@ -53,6 +53,7 @@
       }
     },
     "logout": "Logout",
+    "loggingOut": "Logging out...",
     "lineLogin": {
       "title": "Processing LINE Login...",
       "processing": "Processing login...",

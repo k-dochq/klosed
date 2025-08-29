@@ -53,6 +53,7 @@
       }
     },
     "logout": "로그아웃",
+    "loggingOut": "로그아웃 중...",
     "lineLogin": {
       "title": "LINE 로그인 처리 중...",
       "processing": "로그인 처리 중...",

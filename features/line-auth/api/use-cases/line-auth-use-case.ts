@@ -3,13 +3,10 @@ import {
   IUserRepository,
   IAuthService,
 } from 'features/line-auth/api/infrastructure';
-import {
-  LineProfile,
-  LineAuthState,
-  LineStateValidationError,
-} from 'features/line-auth/api/entities';
+import { LineAuthState, LineStateValidationError } from 'features/line-auth/api/entities';
 import { LineAuthRequest, LineAuthResult } from './types';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
+import { LineProfile } from '@/shared/model';
 
 /**
  * LINE 인증 Use Case
@@ -33,6 +30,7 @@ export class LineAuthUseCase {
 
       // 2. 액세스 토큰 교환
       const redirectUri = this.buildRedirectUri(request.requestUrl, request.state);
+
       const tokenResponse = await this.lineApiService.exchangeCodeForToken(
         request.code,
         redirectUri,
@@ -40,6 +38,8 @@ export class LineAuthUseCase {
 
       // 3. LINE 프로필 정보 조회
       const lineProfile = await this.lineApiService.getProfile(tokenResponse.access_token);
+
+      console.log('lineProfile', lineProfile);
 
       // 4. Supabase와 통합 및 email 반환
       const result = await this.integrateWithSupabase(lineProfile);
@@ -109,7 +109,11 @@ export class LineAuthUseCase {
     lineProfile: LineProfile,
   ): Promise<{ email: string; isNewUser: boolean }> {
     try {
-      const email = lineProfile.userId.toLowerCase() + '@line.me';
+      const email = lineProfile.email;
+
+      if (!email) {
+        throw new Error('Email is required');
+      }
 
       // 1. 사용자 존재 여부 확인
       const existingUser = await this.userRepository.findByEmail(email);

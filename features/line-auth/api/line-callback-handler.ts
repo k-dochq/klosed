@@ -68,6 +68,10 @@ function mapErrorToCode(errorMessage?: string): string {
 
   const lowerMessage = errorMessage.toLowerCase();
 
+  if (lowerMessage.includes('email not found')) {
+    return LINE_AUTH_ERROR_CODES.EMAIL_NOT_FOUND;
+  }
+
   if (lowerMessage.includes('state')) {
     return LINE_AUTH_ERROR_CODES.INVALID_STATE;
   }

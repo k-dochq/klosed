@@ -1,10 +1,11 @@
 import { LINE_CONFIG } from 'shared/config';
 import {
   LineTokenResponse,
-  LineProfile,
   LineTokenExchangeError,
   LineProfileFetchError,
+  LineEmailNotFoundError,
 } from 'features/line-auth/api/entities';
+import { LineProfile } from '@/shared/model/types';
 
 /**
  * LINE API 서비스 인터페이스
@@ -69,9 +70,14 @@ export class LineApiService implements ILineApiService {
         throw new LineProfileFetchError(`Profile fetch failed: ${response.status} ${errorText}`);
       }
 
-      return response.json();
+      const profileData = await response.json();
+
+      return profileData;
     } catch (error) {
       if (error instanceof LineProfileFetchError) {
+        throw error;
+      }
+      if (error instanceof LineEmailNotFoundError) {
         throw error;
       }
       throw new LineProfileFetchError(

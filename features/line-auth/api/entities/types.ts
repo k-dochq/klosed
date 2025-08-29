@@ -11,14 +11,6 @@ export interface LineTokenResponse {
   token_type: string;
 }
 
-export interface LineProfile {
-  userId: string;
-  displayName: string;
-  pictureUrl?: string;
-  statusMessage?: string;
-  email?: string;
-}
-
 export interface LineAuthState {
   timestamp: number;
   nonce: string;
@@ -64,5 +56,11 @@ export class LineUserCreationError extends LineAuthError {
 export class LineSessionError extends LineAuthError {
   constructor(message: string) {
     super(message, 'SESSION_FAILED');
+  }
+}
+
+export class LineEmailNotFoundError extends LineAuthError {
+  constructor(message: string) {
+    super(message, 'EMAIL_NOT_FOUND');
   }
 }

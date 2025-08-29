@@ -16,6 +16,7 @@ export interface LineProfile {
   displayName: string;
   pictureUrl?: string;
   statusMessage?: string;
+  email?: string;
 }
 
 export interface LineAuthState {

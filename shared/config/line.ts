@@ -9,7 +9,7 @@ export const LINE_CONFIG = {
   // OAuth 엔드포인트
   AUTHORIZE_URL: 'https://access.line.me/oauth2/v2.1/authorize',
   TOKEN_URL: 'https://api.line.me/oauth2/v2.1/token',
-  PROFILE_URL: 'https://api.line.me/v2/profile  ',
+  PROFILE_URL: 'https://api.line.me/oauth2/v2.1/userinfo',
 
   // 기본 스코프
   DEFAULT_SCOPE: 'profile openid email',

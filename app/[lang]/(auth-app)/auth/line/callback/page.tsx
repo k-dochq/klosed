@@ -60,12 +60,6 @@ export default async function LineCallbackPage({ params, searchParams }: LineCal
 
     // 성공 시 클라이언트 컴포넌트에서 로그인 처리
     if (result.success && result.email) {
-      console.log('LINE auth successful:', {
-        userId: result.userId,
-        displayName: result.displayName,
-        email: result.email,
-        isNewUser: result.isNewUser,
-      });
       return (
         <LineLoginHandler
           email={result.email}

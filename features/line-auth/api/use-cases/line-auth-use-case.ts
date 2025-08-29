@@ -3,10 +3,14 @@ import {
   IUserRepository,
   IAuthService,
 } from 'features/line-auth/api/infrastructure';
-import { LineAuthState, LineStateValidationError } from 'features/line-auth/api/entities';
+import {
+  LineAuthState,
+  LineStateValidationError,
+  LineProfile,
+} from 'features/line-auth/api/entities';
 import { LineAuthRequest, LineAuthResult } from './types';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
-import { LineProfile } from '@/shared/model';
+import { parseJWT } from 'shared/lib/jwt';
 
 /**
  * LINE 인증 Use Case
@@ -30,16 +34,14 @@ export class LineAuthUseCase {
 
       // 2. 액세스 토큰 교환
       const redirectUri = this.buildRedirectUri(request.requestUrl, request.state);
-
       const tokenResponse = await this.lineApiService.exchangeCodeForToken(
         request.code,
         redirectUri,
       );
 
-      // 3. LINE 프로필 정보 조회
-      const lineProfile = await this.lineApiService.getProfile(tokenResponse.access_token);
-
-      console.log('lineProfile', lineProfile);
+      // 3. id_token에서 프로필 정보 추출
+      const jwtPayload = parseJWT(tokenResponse.id_token);
+      const lineProfile = LineProfile.fromJWTPayload(jwtPayload);
 
       // 4. Supabase와 통합 및 email 반환
       const result = await this.integrateWithSupabase(lineProfile);
@@ -47,9 +49,9 @@ export class LineAuthUseCase {
       return {
         success: true,
         userId: lineProfile.userId,
-        displayName: lineProfile.displayName,
+        displayName: lineProfile.userId,
         email: result.email,
-        isNewUser: result.isNewUser, // 새 사용자 여부
+        isNewUser: result.isNewUser,
       };
     } catch (error) {
       console.error('LINE auth use case error:', error);
@@ -109,11 +111,8 @@ export class LineAuthUseCase {
     lineProfile: LineProfile,
   ): Promise<{ email: string; isNewUser: boolean }> {
     try {
+      // 도메인에서 이미 검증된 이메일 사용
       const email = lineProfile.email;
-
-      if (!email) {
-        throw new Error('Email is required');
-      }
 
       // 1. 사용자 존재 여부 확인
       const existingUser = await this.userRepository.findByEmail(email);
@@ -129,8 +128,8 @@ export class LineAuthUseCase {
       const result = await this.authService.createLineUser({
         email: email,
         lineId: lineProfile.userId.toLowerCase(),
-        nickname: lineProfile.displayName,
-        pictureUrl: lineProfile.pictureUrl,
+        nickname: lineProfile.userId,
+        pictureUrl: undefined,
       });
 
       console.log('User successfully created:', result.userId);

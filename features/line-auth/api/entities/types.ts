@@ -5,7 +5,7 @@
 export interface LineTokenResponse {
   access_token: string;
   expires_in: number;
-  id_token?: string;
+  id_token: string;
   refresh_token: string;
   scope: string;
   token_type: string;
@@ -62,5 +62,32 @@ export class LineSessionError extends LineAuthError {
 export class LineEmailNotFoundError extends LineAuthError {
   constructor(message: string) {
     super(message, 'EMAIL_NOT_FOUND');
+  }
+}
+
+export class LineProfile {
+  constructor(
+    public readonly userId: string,
+    public readonly email: string,
+  ) {
+    // 이메일 필수 검증
+    if (!email || email.trim() === '') {
+      throw new LineEmailNotFoundError(
+        'Email is required in LINE profile. Please ensure email permission is granted.',
+      );
+    }
+  }
+
+  // JWT 페이로드로부터 LineProfile 생성
+  static fromJWTPayload(payload: any): LineProfile {
+    if (!payload.sub) {
+      throw new LineEmailNotFoundError('User ID not found in JWT payload');
+    }
+
+    if (!payload.email) {
+      throw new LineEmailNotFoundError('Email not found in JWT payload');
+    }
+
+    return new LineProfile(payload.sub, payload.email);
   }
 }

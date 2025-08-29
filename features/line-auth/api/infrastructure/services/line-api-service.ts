@@ -1,18 +1,11 @@
 import { LINE_CONFIG } from 'shared/config';
-import {
-  LineTokenResponse,
-  LineTokenExchangeError,
-  LineProfileFetchError,
-  LineEmailNotFoundError,
-} from 'features/line-auth/api/entities';
-import { LineProfile } from '@/shared/model/types';
+import { LineTokenResponse, LineTokenExchangeError } from 'features/line-auth/api/entities';
 
 /**
  * LINE API 서비스 인터페이스
  */
 export interface ILineApiService {
   exchangeCodeForToken(code: string, redirectUri: string): Promise<LineTokenResponse>;
-  getProfile(accessToken: string): Promise<LineProfile>;
 }
 
 /**
@@ -50,38 +43,6 @@ export class LineApiService implements ILineApiService {
       }
       throw new LineTokenExchangeError(
         `Token exchange error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
-    }
-  }
-
-  /**
-   * LINE 액세스 토큰으로 프로필 정보 조회
-   */
-  async getProfile(accessToken: string): Promise<LineProfile> {
-    try {
-      const response = await fetch(LINE_CONFIG.PROFILE_URL, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new LineProfileFetchError(`Profile fetch failed: ${response.status} ${errorText}`);
-      }
-
-      const profileData = await response.json();
-
-      return profileData;
-    } catch (error) {
-      if (error instanceof LineProfileFetchError) {
-        throw error;
-      }
-      if (error instanceof LineEmailNotFoundError) {
-        throw error;
-      }
-      throw new LineProfileFetchError(
-        `Profile fetch error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }

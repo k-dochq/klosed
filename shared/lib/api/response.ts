@@ -4,6 +4,7 @@ export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
   errorCode?: string;
+  requestId?: string;
   data?: T;
 }
 
@@ -17,8 +18,15 @@ export function formatSuccessResponse<T>(
 
 export function formatErrorResponse(
   errorCode: string,
-  message?: string,
+  requestId?: string,
   status = 400,
 ): NextResponse<ApiResponse> {
-  return NextResponse.json({ success: false, errorCode, message }, { status });
+  return NextResponse.json(
+    {
+      success: false,
+      errorCode,
+      requestId,
+    },
+    { status },
+  );
 }

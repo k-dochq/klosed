@@ -1,10 +1,13 @@
 import { NextRequest } from 'next/server';
-import { formatSuccessResponse, formatErrorResponse } from 'shared/lib';
+import { formatSuccessResponse, formatErrorResponse, routeErrorLogger } from 'shared/lib';
 import { INVITE_CODE_ERROR_CODES } from 'shared/config/error-codes';
 import { ValidateInviteCodeUseCase } from 'features/invitation-code/api/use-cases/validate-invite-code';
 import { InviteCodeValidator } from 'features/invitation-code/api/entities/validators';
 
 export async function POST(request: NextRequest) {
+  const endpoint = '/api/invite/validate';
+  const method = 'POST';
+
   try {
     const body = await request.json();
 
@@ -25,7 +28,13 @@ export async function POST(request: NextRequest) {
 
     return formatSuccessResponse(validationResult.inviteCode);
   } catch (error) {
-    console.error('Invite code validation error:', error);
-    return formatErrorResponse(INVITE_CODE_ERROR_CODES.SERVER_ERROR, undefined, 500);
+    const requestId = routeErrorLogger.logError({
+      error: error as Error,
+      endpoint,
+      method,
+      request,
+    });
+
+    return formatErrorResponse(INVITE_CODE_ERROR_CODES.SERVER_ERROR, requestId, 500);
   }
 }

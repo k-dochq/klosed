@@ -1,28 +1,65 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from 'shared/lib/supabase/server-only';
-import { redirectToErrorPage } from 'shared/lib/api';
+import { routeErrorLogger, redirectToAuthFailure } from 'shared/lib';
 import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get('code');
+export async function GET(request: NextRequest) {
+  const endpoint = '/auth/callback';
+  const method = 'GET';
 
-  if (code) {
-    const supabase = await createServerClient();
-    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
+  try {
+    const { searchParams, origin } = new URL(request.url);
+    const code = searchParams.get('code');
 
-    if (!error && data?.user) {
-      // phone 값이 비어있으면 휴대폰 인증 페이지로 리다이렉트
-      if (!data.user.phone || data.user.phone.trim() === '') {
-        const locale = extractLocaleFromRequestUrl(request.url);
+    if (code) {
+      const supabase = await createServerClient();
+      const { error, data } = await supabase.auth.exchangeCodeForSession(code);
 
-        const phoneVerificationUrl = `${origin}/${locale}/auth/phone-verification`;
-        return NextResponse.redirect(phoneVerificationUrl);
+      if (!error && data?.user) {
+        // phone 값이 비어있으면 휴대폰 인증 페이지로 리다이렉트
+        if (!data.user.phone || data.user.phone.trim() === '') {
+          const locale = extractLocaleFromRequestUrl(request.url);
+
+          const phoneVerificationUrl = `${origin}/${locale}/auth/phone-verification`;
+          return NextResponse.redirect(phoneVerificationUrl);
+        }
+
+        return NextResponse.redirect(`${origin}`);
       }
-
-      return NextResponse.redirect(`${origin}`);
     }
-  }
 
-  return redirectToErrorPage(request.url, 'AUTH_CODE_ERROR');
+    // 인증 코드가 없거나 인증 실패 시
+    const authError = new Error('Authentication code error or invalid code');
+    const requestId = routeErrorLogger.logError({
+      error: authError,
+      endpoint,
+      method,
+      request,
+    });
+
+    const locale = extractLocaleFromRequestUrl(request.url);
+    return redirectToAuthFailure({
+      request,
+      locale,
+      errorCode: 'AUTH_CODE_ERROR',
+      errorMessage: authError.message,
+      requestId,
+    });
+  } catch (error) {
+    const requestId = routeErrorLogger.logError({
+      error: error as Error,
+      endpoint,
+      method,
+      request,
+    });
+
+    const locale = extractLocaleFromRequestUrl(request.url);
+    return redirectToAuthFailure({
+      request,
+      locale,
+      errorCode: 'AUTH_CODE_ERROR',
+      errorMessage: (error as Error).message,
+      requestId,
+    });
+  }
 }

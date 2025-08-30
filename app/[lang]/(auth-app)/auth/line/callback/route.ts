@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { LineAuthUseCase } from 'features/line-auth/api/use-cases';
-import { LineApiService, UserRepository, AuthService } from 'features/line-auth/api/infrastructure';
+import {
+  LineAuthUseCase,
+  LineApiService,
+  UserRepository,
+  AuthService,
+} from 'features/line-auth/api-server';
 import { redirectToAuthFailurePage } from 'shared/lib/api/error-handlers';
 import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
 

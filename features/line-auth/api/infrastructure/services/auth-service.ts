@@ -1,6 +1,4 @@
-import { createAdminClient } from 'shared/lib/supabase/admin';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createSupabaseServerClient } from 'shared/lib/supabase/server-client';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
 
 /**
@@ -33,7 +31,7 @@ export class AuthService implements IAuthService {
     nickname: string;
     pictureUrl?: string;
   }) {
-    const supabase = createAdminClient();
+    const supabase = await createSupabaseServerClient();
 
     const { data, error } = await supabase.auth.signUp({
       email: params.email,
@@ -59,27 +57,7 @@ export class AuthService implements IAuthService {
   async loginWithLineAccount(params: { email: string }) {
     try {
       // Supabase 서버 클라이언트 생성
-      const cookieStore = await cookies();
-      const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-          cookies: {
-            getAll() {
-              return cookieStore.getAll();
-            },
-            setAll(cookiesToSet) {
-              try {
-                cookiesToSet.forEach(({ name, value, options }) =>
-                  cookieStore.set(name, value, options),
-                );
-              } catch {
-                // 서버 컴포넌트에서 호출된 경우 무시
-              }
-            },
-          },
-        },
-      );
+      const supabase = await createSupabaseServerClient();
 
       // LINE 계정으로 이메일 로그인 (passwordless)
       const { data, error } = await supabase.auth.signInWithPassword({

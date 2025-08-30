@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserRepository } from 'features/line-auth/api-server';
+import { routeErrorLogger } from 'shared/lib';
 
 /**
  * 이메일 주소 존재 여부 체크 API 핸들러
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const endpoint = '/api/email/check-email';
+  const method = 'POST';
+
   try {
     const { email } = await request.json();
 
@@ -21,7 +25,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       exists: userExists,
     });
   } catch (error) {
-    console.error('Email check API error:', error);
-    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
+    const requestId = routeErrorLogger.logError({
+      error: error as Error,
+      endpoint,
+      method,
+      request,
+    });
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        requestId,
+      },
+      { status: 500 },
+    );
   }
 }

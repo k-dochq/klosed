@@ -5,13 +5,16 @@ import {
   UserRepository,
   AuthService,
 } from 'features/line-auth/api-server';
-import { redirectToAuthFailurePage } from 'shared/lib/api/error-handlers';
+import { routeErrorLogger, redirectToAuthFailure } from 'shared/lib';
 import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
 
 /**
  * LINE OAuth 콜백 Route Handler
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  const endpoint = '/auth/line/callback';
+  const method = 'GET';
+
   try {
     const url = new URL(request.url);
     const code = url.searchParams.get('code');
@@ -21,13 +24,41 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // OAuth 에러 체크
     if (error) {
-      console.error('LINE OAuth error:', error);
-      return redirectToAuthFailurePage(request.url, 'LINE_OAUTH_ERROR', 'line');
+      const oauthError = new Error(`LINE OAuth error: ${error}`);
+      const requestId = routeErrorLogger.logError({
+        error: oauthError,
+        endpoint,
+        method,
+        request,
+      });
+
+      return redirectToAuthFailure({
+        request,
+        locale,
+        errorCode: 'LINE_OAUTH_ERROR',
+        errorMessage: error,
+        provider: 'line',
+        requestId,
+      });
     }
 
     if (!code) {
-      console.error('No authorization code received');
-      return redirectToAuthFailurePage(request.url, 'MISSING_AUTH_CODE', 'line');
+      const missingCodeError = new Error('No authorization code received');
+      const requestId = routeErrorLogger.logError({
+        error: missingCodeError,
+        endpoint,
+        method,
+        request,
+      });
+
+      return redirectToAuthFailure({
+        request,
+        locale,
+        errorCode: 'MISSING_AUTH_CODE',
+        errorMessage: missingCodeError.message,
+        provider: 'line',
+        requestId,
+      });
     }
 
     // LINE 인증 Use Case 실행
@@ -55,11 +86,39 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         return NextResponse.redirect(new URL(`/${locale}`, request.url));
       }
     } else {
-      console.error('LINE auth failed:', result.error);
-      return redirectToAuthFailurePage(request.url, 'LINE_AUTH_FAILED', 'line');
+      const authFailedError = new Error(`LINE auth failed: ${result.error || 'Unknown error'}`);
+      const requestId = routeErrorLogger.logError({
+        error: authFailedError,
+        endpoint,
+        method,
+        request,
+      });
+
+      return redirectToAuthFailure({
+        request,
+        locale,
+        errorCode: 'LINE_AUTH_FAILED',
+        errorMessage: result.error || 'Unknown error',
+        provider: 'line',
+        requestId,
+      });
     }
   } catch (error) {
-    console.error('LINE callback route error:', error);
-    return redirectToAuthFailurePage(request.url, 'LINE_CALLBACK_ERROR', 'line');
+    const requestId = routeErrorLogger.logError({
+      error: error as Error,
+      endpoint,
+      method,
+      request,
+    });
+
+    const locale = extractLocaleFromRequestUrl(request.url);
+    return redirectToAuthFailure({
+      request,
+      locale,
+      errorCode: 'LINE_CALLBACK_ERROR',
+      errorMessage: (error as Error).message,
+      provider: 'line',
+      requestId,
+    });
   }
 }

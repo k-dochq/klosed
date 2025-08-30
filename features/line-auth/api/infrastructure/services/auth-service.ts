@@ -1,4 +1,6 @@
 import { createAdminClient } from 'shared/lib/supabase/admin';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
 
 /**
@@ -16,12 +18,9 @@ export interface IAuthService {
   }): Promise<{ userId: string | null }>;
 
   /**
-   * 이메일/패스워드로 로그인
+   * LINE 계정으로 로그인 처리
    */
-  loginWithEmailPassword(params: {
-    email: string;
-    password: string;
-  }): Promise<{ userId: string | null; session: import('@supabase/supabase-js').Session }>;
+  loginWithLineAccount(params: { email: string }): Promise<{ success: boolean; error?: string }>;
 }
 
 /**
@@ -57,22 +56,49 @@ export class AuthService implements IAuthService {
     return { userId: data.user?.id || null };
   }
 
-  async loginWithEmailPassword(params: { email: string; password: string }) {
-    const supabase = createAdminClient();
+  async loginWithLineAccount(params: { email: string }) {
+    try {
+      // Supabase 서버 클라이언트 생성
+      const cookieStore = await cookies();
+      const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            getAll() {
+              return cookieStore.getAll();
+            },
+            setAll(cookiesToSet) {
+              try {
+                cookiesToSet.forEach(({ name, value, options }) =>
+                  cookieStore.set(name, value, options),
+                );
+              } catch {
+                // 서버 컴포넌트에서 호출된 경우 무시
+              }
+            },
+          },
+        },
+      );
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: params.email,
-      password: params.password,
-    });
+      // LINE 계정으로 이메일 로그인 (passwordless)
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: params.email.trim(),
+        password: PASSWORDLESS_AUTH_PASSWORD,
+      });
 
-    if (error) {
-      console.error('Supabase signInWithPassword error:', error);
-      throw new Error(`Failed to login: ${error.message}`);
+      if (error) {
+        console.error('LINE login error:', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('LINE login service error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
-
-    return {
-      userId: data.user?.id || null,
-      session: data.session,
-    };
   }
 }

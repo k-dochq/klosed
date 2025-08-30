@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LineAuthUseCase } from 'features/line-auth/api/use-cases';
 import { LineApiService, UserRepository, AuthService } from 'features/line-auth/api/infrastructure';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
 import { redirectToAuthFailurePage } from 'shared/lib/api/error-handlers';
 import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
 
@@ -41,43 +38,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       requestUrl: request.url,
     });
 
-    // 성공 시 서버에서 직접 Supabase 인증 처리
+    // 성공 시 AuthService를 통해 Supabase 인증 처리
     if (result.success && result.email) {
-      // Supabase 서버 클라이언트 생성
-      const cookieStore = await cookies();
-      const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-          cookies: {
-            getAll() {
-              return cookieStore.getAll();
-            },
-            setAll(cookiesToSet) {
-              try {
-                cookiesToSet.forEach(({ name, value, options }) =>
-                  cookieStore.set(name, value, options),
-                );
-              } catch {
-                // 서버 컴포넌트에서 호출된 경우 무시
-              }
-            },
-          },
-        },
-      );
-
-      // LINE 계정으로 이메일 로그인 (passwordless)
-      const { data, error: loginError } = await supabase.auth.signInWithPassword({
-        email: result.email.trim(),
-        password: PASSWORDLESS_AUTH_PASSWORD,
-      });
-
-      if (loginError) {
-        console.error('LINE login error:', loginError);
-        return redirectToAuthFailurePage(request.url, 'LINE_LOGIN_FAILED', 'line');
-      }
-
-      // 로그인 성공 시 리다이렉트
+      // 로그인 성공 시 리다이렉트 (Use Case에서 이미 로그인 처리됨)
       if (result.isNewUser) {
         // 새 사용자: 핸드폰 인증 페이지로 이동
         const redirectUrl = new URL(`/${locale}/auth/phone-verification`, request.url);

@@ -1,51 +1,33 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { LineAuthUseCase } from 'features/line-auth/api/use-cases';
 import { LineApiService, UserRepository, AuthService } from 'features/line-auth/api/infrastructure';
-import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
-import { getDictionary } from 'app/[lang]/dictionaries';
-import { type Locale } from 'shared/config';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
+import { redirectToAuthFailurePage } from 'shared/lib/api/error-handlers';
+import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
 
 /**
- * LINE OAuth 콜백 페이지
- * 서버 컴포넌트에서 직접 LINE 인증 처리 (Next.js 15 searchParams 규칙 준수)
+ * LINE OAuth 콜백 Route Handler
  */
-interface LineCallbackPageProps {
-  params: Promise<{
-    lang: Locale;
-  }>;
-  searchParams: Promise<{
-    code?: string;
-    state?: string;
-    error?: string;
-  }>;
-}
-
-export default async function LineCallbackPage({ params, searchParams }: LineCallbackPageProps) {
-  const { lang } = await params;
-
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    const resolvedSearchParams = await searchParams;
+    const url = new URL(request.url);
+    const code = url.searchParams.get('code');
+    const state = url.searchParams.get('state');
+    const error = url.searchParams.get('error');
+    const locale = extractLocaleFromRequestUrl(request.url);
 
     // OAuth 에러 체크
-    if (resolvedSearchParams.error) {
-      console.error('LINE OAuth error:', resolvedSearchParams.error);
-      redirect(`/${lang}/auth/failure?code=LINE_OAUTH_ERROR&provider=line`);
+    if (error) {
+      console.error('LINE OAuth error:', error);
+      return redirectToAuthFailurePage(request.url, 'LINE_OAUTH_ERROR', 'line');
     }
 
-    if (!resolvedSearchParams.code) {
+    if (!code) {
       console.error('No authorization code received');
-      redirect(`/${lang}/auth/failure?code=MISSING_AUTH_CODE&provider=line`);
+      return redirectToAuthFailurePage(request.url, 'MISSING_AUTH_CODE', 'line');
     }
-
-    // 동적으로 현재 요청 URL 생성
-    const headersList = await headers();
-    const host = headersList.get('host');
-    const protocol =
-      headersList.get('x-forwarded-proto') || (host?.includes('localhost') ? 'http' : 'https');
-    const currentUrl = `${protocol}://${host}`;
 
     // LINE 인증 Use Case 실행
     const lineApiService = new LineApiService();
@@ -54,9 +36,9 @@ export default async function LineCallbackPage({ params, searchParams }: LineCal
     const lineAuthUseCase = new LineAuthUseCase(lineApiService, userRepository, authService);
 
     const result = await lineAuthUseCase.execute({
-      code: resolvedSearchParams.code,
-      state: resolvedSearchParams.state,
-      requestUrl: currentUrl,
+      code,
+      state: state || undefined,
+      requestUrl: request.url,
     });
 
     // 성공 시 서버에서 직접 Supabase 인증 처리
@@ -85,32 +67,32 @@ export default async function LineCallbackPage({ params, searchParams }: LineCal
       );
 
       // LINE 계정으로 이메일 로그인 (passwordless)
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
         email: result.email.trim(),
         password: PASSWORDLESS_AUTH_PASSWORD,
       });
 
-      if (error) {
-        console.error('LINE login error:', error);
-        redirect(
-          `/${lang}/auth/failure?code=LINE_LOGIN_FAILED&provider=line&message=${encodeURIComponent(error.message)}`,
-        );
+      if (loginError) {
+        console.error('LINE login error:', loginError);
+        return redirectToAuthFailurePage(request.url, 'LINE_LOGIN_FAILED', 'line');
       }
 
       // 로그인 성공 시 리다이렉트
       if (result.isNewUser) {
         // 새 사용자: 핸드폰 인증 페이지로 이동
-        redirect(`/${lang}/auth/phone-verification?email=${encodeURIComponent(result.email)}`);
+        const redirectUrl = new URL(`/${locale}/auth/phone-verification`, request.url);
+        redirectUrl.searchParams.set('email', result.email);
+        return NextResponse.redirect(redirectUrl);
       } else {
         // 기존 사용자: 홈으로 이동
-        redirect(`/${lang}`);
+        return NextResponse.redirect(new URL(`/${locale}`, request.url));
       }
     } else {
       console.error('LINE auth failed:', result.error);
-      redirect(`/${lang}/auth/failure?code=LINE_AUTH_FAILED&provider=line`);
+      return redirectToAuthFailurePage(request.url, 'LINE_AUTH_FAILED', 'line');
     }
   } catch (error) {
-    console.error('LINE callback page error:', error);
-    redirect(`/${lang}/auth/failure?code=LINE_CALLBACK_ERROR&provider=line`);
+    console.error('LINE callback route error:', error);
+    return redirectToAuthFailurePage(request.url, 'LINE_CALLBACK_ERROR', 'line');
   }
 }

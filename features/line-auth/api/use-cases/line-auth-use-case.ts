@@ -4,12 +4,13 @@ import {
   IAuthService,
 } from 'features/line-auth/api/infrastructure';
 import {
-  LineProfile,
   LineAuthState,
   LineStateValidationError,
+  LineProfile,
 } from 'features/line-auth/api/entities';
 import { LineAuthRequest, LineAuthResult } from './types';
 import { PASSWORDLESS_AUTH_PASSWORD } from 'shared/config/auth';
+import { parseJWT } from 'shared/lib/jwt';
 
 /**
  * LINE 인증 Use Case
@@ -38,8 +39,9 @@ export class LineAuthUseCase {
         redirectUri,
       );
 
-      // 3. LINE 프로필 정보 조회
-      const lineProfile = await this.lineApiService.getProfile(tokenResponse.access_token);
+      // 3. id_token에서 프로필 정보 추출
+      const jwtPayload = parseJWT(tokenResponse.id_token);
+      const lineProfile = LineProfile.fromJWTPayload(jwtPayload);
 
       // 4. Supabase와 통합 및 email 반환
       const result = await this.integrateWithSupabase(lineProfile);
@@ -47,9 +49,9 @@ export class LineAuthUseCase {
       return {
         success: true,
         userId: lineProfile.userId,
-        displayName: lineProfile.displayName,
+        displayName: lineProfile.userId,
         email: result.email,
-        isNewUser: result.isNewUser, // 새 사용자 여부
+        isNewUser: result.isNewUser,
       };
     } catch (error) {
       console.error('LINE auth use case error:', error);
@@ -109,31 +111,63 @@ export class LineAuthUseCase {
     lineProfile: LineProfile,
   ): Promise<{ email: string; isNewUser: boolean }> {
     try {
-      const email = lineProfile.userId.toLowerCase() + '@line.me';
+      const email = lineProfile.email;
 
-      // 1. 사용자 존재 여부 확인
-      const existingUser = await this.userRepository.findByEmail(email);
-
-      // 2. 사용자가 이미 존재하는 경우
-      if (existingUser) {
-        console.log('User already exists for email:', email, '(ID:', existingUser.id + ')');
+      // 1. 사용자 존재 여부 확인 및 처리
+      const userExists = await this.checkAndHandleExistingUser(email);
+      if (userExists) {
         return { email, isNewUser: false };
       }
 
-      // 3. 사용자가 존재하지 않는 경우에만 계정 생성
-      console.log('Creating new user for email:', email);
-      const result = await this.authService.createLineUser({
-        email: email,
-        lineId: lineProfile.userId.toLowerCase(),
-        nickname: lineProfile.displayName,
-        pictureUrl: lineProfile.pictureUrl,
-      });
-
-      console.log('User successfully created:', result.userId);
+      // 2. 새 사용자 생성 및 로그인
+      await this.createAndLoginNewUser(lineProfile);
       return { email, isNewUser: true };
     } catch (error) {
       console.error('Error integrating with Supabase:', error);
       throw error;
+    }
+  }
+
+  /**
+   * 기존 사용자 확인 및 로그인 처리
+   */
+  private async checkAndHandleExistingUser(email: string): Promise<boolean> {
+    const existingUser = await this.userRepository.findByEmail(email);
+
+    if (existingUser) {
+      console.log('User already exists for email:', email, '(ID:', existingUser.id + ')');
+      await this.loginUser(email);
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * 새 사용자 생성 및 로그인 처리
+   */
+  private async createAndLoginNewUser(lineProfile: LineProfile): Promise<void> {
+    const email = lineProfile.email;
+
+    console.log('Creating new user for email:', email);
+    const result = await this.authService.createLineUser({
+      email: email,
+      lineId: lineProfile.userId.toLowerCase(),
+      nickname: lineProfile.userId,
+      pictureUrl: undefined,
+    });
+
+    console.log('User successfully created:', result.userId);
+    await this.loginUser(email);
+  }
+
+  /**
+   * 사용자 로그인 처리
+   */
+  private async loginUser(email: string): Promise<void> {
+    const loginResult = await this.authService.loginWithLineAccount({ email });
+    if (!loginResult.success) {
+      throw new Error(`Failed to login user: ${loginResult.error}`);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { UserRepository } from 'features/line-auth/api/infrastructure/repositories/user-repository';
+import { UserRepository } from 'features/line-auth/api-server';
 
 /**
  * 이메일 주소 존재 여부 체크 API 핸들러

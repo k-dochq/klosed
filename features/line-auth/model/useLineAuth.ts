@@ -33,15 +33,15 @@ export function useLineAuth({ locale }: UseLineAuthProps = {}) {
 
       // 현재 도메인 기반 콜백 URL 생성
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
-      const redirectPath = `/${locale || DEFAULT_LOCALE}/auth/line/callback`;
-      const redirectUri = `${baseUrl}${redirectPath}`;
+      const currentLocale = locale || DEFAULT_LOCALE;
+      const redirectUri = `${baseUrl}/${currentLocale}/auth/line/callback`;
 
       // CSRF 방지를 위한 state 생성 (redirect_uri와 로케일 정보 포함)
       const state = btoa(
         JSON.stringify({
           timestamp: Date.now(),
           nonce: Math.random().toString(36).substring(2, 15),
-          locale: locale || DEFAULT_LOCALE,
+          locale: currentLocale,
           redirectUri: redirectUri, // 생성한 redirect_uri를 state에 저장
         }),
       );
@@ -63,7 +63,7 @@ export function useLineAuth({ locale }: UseLineAuthProps = {}) {
         error: 'LINE 로그인을 시작할 수 없습니다.',
       });
     }
-  }, []);
+  }, [locale]);
 
   return {
     ...state,

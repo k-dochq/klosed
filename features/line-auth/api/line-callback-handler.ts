@@ -68,6 +68,14 @@ function mapErrorToCode(errorMessage?: string): string {
 
   const lowerMessage = errorMessage.toLowerCase();
 
+  if (lowerMessage.includes('email not found')) {
+    return LINE_AUTH_ERROR_CODES.EMAIL_NOT_FOUND;
+  }
+
+  if (lowerMessage.includes('jwt') || lowerMessage.includes('token')) {
+    return LINE_AUTH_ERROR_CODES.JWT_PARSE_FAILED;
+  }
+
   if (lowerMessage.includes('state')) {
     return LINE_AUTH_ERROR_CODES.INVALID_STATE;
   }
@@ -78,10 +86,6 @@ function mapErrorToCode(errorMessage?: string): string {
 
   if (lowerMessage.includes('token exchange')) {
     return LINE_AUTH_ERROR_CODES.TOKEN_EXCHANGE_FAILED;
-  }
-
-  if (lowerMessage.includes('profile')) {
-    return LINE_AUTH_ERROR_CODES.PROFILE_FETCH_FAILED;
   }
 
   if (lowerMessage.includes('user creation')) {

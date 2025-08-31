@@ -7,6 +7,16 @@ import type { User } from '@supabase/supabase-js';
  */
 export interface IAdminService {
   /**
+   * 사용자 생성 (관리자 권한)
+   */
+  createUser(params: {
+    email: string;
+    password: string;
+    emailConfirm?: boolean;
+    userMetadata?: Record<string, unknown>;
+  }): Promise<{ success: boolean; error?: string; user?: User }>;
+
+  /**
    * 사용자 이메일 수동 인증
    */
   confirmUserEmail(userId: string): Promise<{ success: boolean; error?: string; user?: User }>;
@@ -38,6 +48,38 @@ export class AdminService implements IAdminService {
 
   constructor() {
     this.supabaseAdmin = createSupabaseAdminClient();
+  }
+
+  /**
+   * 사용자 생성 (관리자 권한)
+   */
+  async createUser(params: {
+    email: string;
+    password: string;
+    emailConfirm?: boolean;
+    userMetadata?: Record<string, unknown>;
+  }): Promise<{ success: boolean; error?: string; user?: User }> {
+    try {
+      const { data, error } = await this.supabaseAdmin.auth.admin.createUser({
+        email: params.email,
+        password: params.password,
+        email_confirm: params.emailConfirm ?? false,
+        user_metadata: params.userMetadata,
+      });
+
+      if (error) {
+        console.error('Admin create user error:', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, user: data.user };
+    } catch (error) {
+      console.error('Admin create user service error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
+    }
   }
 
   /**

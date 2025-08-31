@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
           return NextResponse.redirect(phoneVerificationUrl);
         }
 
-        return NextResponse.redirect(`${origin}`);
+        const locale = extractLocaleFromCookie(request);
+        return NextResponse.redirect(`${origin}/${locale}`);
       }
     }
 

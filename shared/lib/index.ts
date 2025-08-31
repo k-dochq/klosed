@@ -10,5 +10,8 @@ export { getInviteErrorMessage } from './error-handler';
 // Error logging
 export { RouteErrorLogger, routeErrorLogger } from './error-logger';
 
+// Cookie utilities
+export { localeCookies } from './cookies';
+
 // Prisma client
 export { prisma } from './prisma';

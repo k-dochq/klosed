@@ -2,8 +2,9 @@
 
 import { Globe } from 'lucide-react';
 import { LOCALE_LABELS, type Locale } from 'shared/config';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { localeCookies } from 'shared/lib';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,6 +18,7 @@ interface HeaderLanguageSwitcherProps {
 
 export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwitcherProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   // 현재 경로에서 locale 부분을 제거하고 나머지 경로만 추출
   const getPathWithoutLocale = (path: string) => {
@@ -29,6 +31,21 @@ export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwi
   };
 
   const pathWithoutLocale = getPathWithoutLocale(pathname);
+
+  // 모든 locale에 대해 prefetch 수행
+  useEffect(() => {
+    Object.keys(LOCALE_LABELS).forEach((locale) => {
+      const prefetchPath = `/${locale}${pathWithoutLocale}`;
+      router.prefetch(prefetchPath);
+    });
+  }, [router, pathWithoutLocale]);
+
+  // 언어 선택 시 쿠키에 저장하고 페이지 이동하는 핸들러
+  const handleLanguageChange = (locale: Locale) => {
+    localeCookies.set(locale);
+    const newPath = `/${locale}${pathWithoutLocale}`;
+    router.replace(newPath);
+  };
 
   return (
     <DropdownMenu>
@@ -44,7 +61,6 @@ export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwi
       <DropdownMenuContent align='end' className='w-32 border border-gray-200 bg-white shadow-lg'>
         {Object.entries(LOCALE_LABELS).map(([localeKey, label]) => (
           <DropdownMenuItem
-            asChild
             key={localeKey}
             // 선택된 언어에 스타일 적용
             className={[
@@ -53,10 +69,9 @@ export function HeaderLanguageSwitcher({ currentLang = 'en' }: HeaderLanguageSwi
                 ? 'bg-blue-50 font-semibold text-blue-600'
                 : 'text-gray-700',
             ].join(' ')}
+            onClick={() => handleLanguageChange(localeKey as Locale)}
           >
-            <Link replace scroll={false} href={`/${localeKey}${pathWithoutLocale}`}>
-              {label}
-            </Link>
+            {label}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

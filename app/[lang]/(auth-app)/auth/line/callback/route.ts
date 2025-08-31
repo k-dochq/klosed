@@ -7,7 +7,7 @@ import {
 } from 'features/line-auth/api-server';
 import { routeErrorLogger, redirectToAuthFailure } from 'shared/lib';
 import { AdminService } from 'shared/lib/server-only';
-import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
+import { extractLocaleFromCookie } from 'shared/lib/locale';
 
 /**
  * LINE OAuth 콜백 Route Handler
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const code = url.searchParams.get('code');
     const state = url.searchParams.get('state');
     const error = url.searchParams.get('error');
-    const locale = extractLocaleFromRequestUrl(request.url);
+    const locale = extractLocaleFromCookie(request);
 
     // OAuth 에러 체크
     if (error) {
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       request,
     });
 
-    const locale = extractLocaleFromRequestUrl(request.url);
+    const locale = extractLocaleFromCookie(request);
     return redirectToAuthFailure({
       request,
       locale,

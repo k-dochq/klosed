@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from 'shared/lib/supabase/server-only';
 import { routeErrorLogger, redirectToAuthFailure } from 'shared/lib';
-import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
+import { extractLocaleFromCookie } from 'shared/lib/locale';
 
 export async function GET(request: NextRequest) {
   const endpoint = '/auth/callback';
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       if (!error && data?.user) {
         // phone 값이 비어있으면 휴대폰 인증 페이지로 리다이렉트
         if (!data.user.phone || data.user.phone.trim() === '') {
-          const locale = extractLocaleFromRequestUrl(request.url);
+          const locale = extractLocaleFromCookie(request);
 
           const phoneVerificationUrl = `${origin}/${locale}/auth/phone-verification`;
           return NextResponse.redirect(phoneVerificationUrl);
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       request,
     });
 
-    const locale = extractLocaleFromRequestUrl(request.url);
+    const locale = extractLocaleFromCookie(request);
     return redirectToAuthFailure({
       request,
       locale,
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
       request,
     });
 
-    const locale = extractLocaleFromRequestUrl(request.url);
+    const locale = extractLocaleFromCookie(request);
     return redirectToAuthFailure({
       request,
       locale,

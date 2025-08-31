@@ -31,17 +31,16 @@ export function useLineAuth({ locale }: UseLineAuthProps = {}) {
     try {
       setState({ isLoading: true, error: null });
 
-      // 현재 도메인 기반 콜백 URL 생성
+      // 현재 도메인 기반 콜백 URL 생성 (locale 제거)
       const baseUrl = `${window.location.protocol}//${window.location.host}`;
-      const currentLocale = locale || DEFAULT_LOCALE;
-      const redirectUri = `${baseUrl}/${currentLocale}/auth/line/callback`;
+      const redirectUri = `${baseUrl}/auth/line/callback`;
 
-      // CSRF 방지를 위한 state 생성 (redirect_uri와 로케일 정보 포함)
+      // CSRF 방지를 위한 state 생성
       const state = btoa(
         JSON.stringify({
           timestamp: Date.now(),
           nonce: Math.random().toString(36).substring(2, 15),
-          locale: currentLocale,
+          locale: locale || DEFAULT_LOCALE,
           redirectUri: redirectUri, // 생성한 redirect_uri를 state에 저장
         }),
       );

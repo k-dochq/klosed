@@ -38,38 +38,30 @@ export class LineAuthService extends AuthService implements ILineAuthService {
     nickname: string;
     pictureUrl?: string;
   }) {
-    const supabase = await createSupabaseServerClient();
+    if (!this.adminService) {
+      throw new Error('AdminService is not available');
+    }
 
-    const { data, error } = await supabase.auth.signUp({
+    // AdminService를 사용하여 사용자 생성 (이메일 인증 상태로)
+    const result = await this.adminService.createUser({
       email: params.email,
-      password: PASSWORDLESS_AUTH_PASSWORD, // passwordless 가입
-      options: {
-        data: {
-          provider: 'line',
-          lineId: params.lineId,
-          nickname: params.nickname,
-          pictureUrl: params.pictureUrl,
-        },
+      password: PASSWORDLESS_AUTH_PASSWORD,
+      emailConfirm: true, // 최초부터 인증 상태로 생성
+      userMetadata: {
+        provider: 'line',
+        lineId: params.lineId,
+        nickname: params.nickname,
+        pictureUrl: params.pictureUrl,
       },
     });
 
-    if (error) {
-      console.error('Supabase signUp error:', error);
-      throw new Error(`Failed to create user: ${error.message}`);
+    if (!result.success) {
+      console.error('Admin create user error:', result.error);
+      throw new Error(`Failed to create user: ${result.error}`);
     }
 
-    // 회원가입 성공 후 자동으로 이메일 인증 수행
-    if (data.user?.id && this.adminService) {
-      const confirmResult = await this.adminService.confirmUserEmail(data.user.id);
-      if (!confirmResult.success) {
-        console.warn('Failed to auto-confirm email for user:', data.user.id, confirmResult.error);
-        // 이메일 인증 실패해도 회원가입은 성공으로 처리 (나중에 수동으로 인증 가능)
-      } else {
-        console.log('Email auto-confirmed for user:', data.user.id);
-      }
-    }
-
-    return { userId: data.user?.id || null };
+    console.log('User created successfully with email confirmed:', result.user?.id);
+    return { userId: result.user?.id || null };
   }
 
   async loginWithLineAccount(params: { email: string }) {

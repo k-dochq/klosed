@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  LineAuthUseCase,
   LineApiService,
+  LineAuthUseCase,
   UserRepository,
   LineAuthService,
 } from 'features/line-auth/api-server';
 import { routeErrorLogger, redirectToAuthFailure } from 'shared/lib';
+import { AdminService } from 'shared/lib/server-only';
 import { extractLocaleFromRequestUrl } from 'shared/lib/locale/utils';
 
 /**
@@ -64,7 +65,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // LINE 인증 Use Case 실행
     const lineApiService = new LineApiService();
     const userRepository = new UserRepository();
-    const authService = new LineAuthService();
+    const adminService = new AdminService();
+    const authService = new LineAuthService(adminService);
     const lineAuthUseCase = new LineAuthUseCase(lineApiService, userRepository, authService);
 
     const result = await lineAuthUseCase.execute({

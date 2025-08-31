@@ -1,7 +1,7 @@
 import {
   ILineApiService,
   IUserRepository,
-  IAuthService,
+  ILineAuthService,
 } from 'features/line-auth/api/infrastructure';
 import {
   LineAuthState,
@@ -19,7 +19,7 @@ export class LineAuthUseCase {
   constructor(
     private lineApiService: ILineApiService,
     private userRepository: IUserRepository,
-    private authService: IAuthService,
+    private authService: ILineAuthService,
   ) {}
 
   /**

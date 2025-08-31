@@ -24,7 +24,7 @@ export function useAppleAuth(options: UseAppleAuthOptions) {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: `${window.location.origin}/${currentLocale}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 

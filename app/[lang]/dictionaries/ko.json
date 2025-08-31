@@ -501,6 +501,7 @@
       "MAX_USES_EXCEEDED": "이미 사용된 초대 코드입니다",
       "SERVER_ERROR": "서버 오류가 발생했습니다",
       "DATABASE_ERROR": "데이터베이스 오류가 발생했습니다"
-    }
+    },
+    "success": "초대 코드가 성공적으로 검증되었습니다"
   }
 }

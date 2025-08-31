@@ -501,6 +501,7 @@
       "MAX_USES_EXCEEDED": "This invitation code has already been used",
       "SERVER_ERROR": "Server error occurred",
       "DATABASE_ERROR": "Database error occurred"
-    }
+    },
+    "success": "Invitation code validated successfully"
   }
 }

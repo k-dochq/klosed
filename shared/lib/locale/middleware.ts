@@ -1,25 +1,26 @@
-import { SUPPORTED_LOCALES } from 'shared/config';
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE, type Locale } from 'shared/config';
 
 /**
- * URL에서 로케일을 추출
+ * 경로에서 로케일을 추출하는 함수
+ * 미들웨어에서 사용
  */
-export function extractLocaleFromPath(pathname: string): string | null {
-  const segments = pathname.split('/').filter(Boolean);
-  const firstSegment = segments[0];
+export function extractLocaleFromPath(pathname: string): Locale {
+  const pathnameParts = pathname.split('/');
+  const extractedLocale = pathnameParts[1];
 
-  if (
-    firstSegment &&
-    SUPPORTED_LOCALES.includes(firstSegment as (typeof SUPPORTED_LOCALES)[number])
-  ) {
-    return firstSegment;
+  if (extractedLocale && SUPPORTED_LOCALES.includes(extractedLocale as Locale)) {
+    return extractedLocale as Locale;
   }
 
-  return null;
+  return DEFAULT_LOCALE;
 }
 
 /**
- * 로케일이 포함된 경로인지 확인
+ * 경로에 로케일이 포함되어 있는지 확인하는 함수
  */
 export function hasLocaleInPath(pathname: string): boolean {
-  return extractLocaleFromPath(pathname) !== null;
+  const pathnameParts = pathname.split('/');
+  const extractedLocale = pathnameParts[1];
+
+  return extractedLocale ? SUPPORTED_LOCALES.includes(extractedLocale as Locale) : false;
 }

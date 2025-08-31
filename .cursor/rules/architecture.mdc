@@ -319,54 +319,83 @@ features/
 여러 피처에서 공통으로 사용되는 API 관련 유틸리티는 `shared/lib/api/`에 배치:
 
 ```typescript
-// shared/lib/api/error-handlers.ts
-export function redirectToErrorPage(
-  requestUrl: string,
-  errorCode: string,
-  provider?: string,
-): NextResponse {
-  const baseUrl = new URL(requestUrl).origin;
-  const errorUrl = new URL('/auth/error', baseUrl);
-  errorUrl.searchParams.set('error', errorCode);
-  if (provider) {
-    errorUrl.searchParams.set('provider', provider);
+// shared/lib/api/redirect-utils.ts
+export function redirectToAuthFailure({
+  request,
+  locale,
+  errorCode,
+  errorMessage,
+  provider,
+  requestId,
+}: RedirectToFailureParams): NextResponse {
+  const redirectUrl = new URL(`/${locale}/auth/failure`, request.url);
+  redirectUrl.searchParams.set('code', errorCode);
+  if (errorMessage) {
+    redirectUrl.searchParams.set('message', errorMessage);
   }
-
-  return NextResponse.redirect(errorUrl);
+  if (provider) {
+    redirectUrl.searchParams.set('provider', provider);
+  }
+  if (requestId) {
+    redirectUrl.searchParams.set('requestId', requestId);
+  }
+  return NextResponse.redirect(redirectUrl);
 }
 
-// shared/lib/api/response-helpers.ts
-export function createSuccessResponse<T>(data: T): NextResponse {
-  return NextResponse.json({ success: true, data });
+// shared/lib/api/response.ts
+export function formatSuccessResponse<T>(
+  data: T,
+  message?: string,
+  status = 200,
+): NextResponse<ApiResponse<T>> {
+  return NextResponse.json({ success: true, message, data }, { status });
 }
 
-export function createErrorResponse(error: string, status: number = 400): NextResponse {
-  return NextResponse.json({ success: false, error }, { status });
+export function formatErrorResponse(
+  errorCode: string,
+  requestId?: string,
+  status = 400,
+): NextResponse<ApiResponse> {
+  return NextResponse.json(
+    {
+      success: false,
+      errorCode,
+      requestId,
+    },
+    { status },
+  );
 }
 ```
 
 #### ✅ **피처별 API에서 공통 유틸리티 활용**
 
 ```typescript
-// features/line-auth/api/line-callback-handler.ts
-import { redirectToErrorPage } from 'shared/lib/api/error-handlers';
+// app/[lang]/(auth-app)/auth/line/callback/route.ts
+import { redirectToAuthFailure } from 'shared/lib';
 
-export async function handleLineCallback(request: NextRequest): Promise<NextResponse> {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // ... 비즈니스 로직
   } catch (error) {
-    return redirectToErrorPage(request.url, 'LINE_AUTH_ERROR', 'line');
+    return redirectToAuthFailure({
+      request,
+      locale,
+      errorCode: 'LINE_AUTH_ERROR',
+      errorMessage: error,
+      provider: 'line',
+      requestId,
+    });
   }
 }
 
-// app/[lang]/(auth-app)/auth/callback/route.ts
-import { redirectToErrorPage } from 'shared/lib/api/error-handlers';
+// app/api/email/check-email/route.ts
+import { formatErrorResponse } from 'shared/lib';
 
-export async function GET(request: Request) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // ... 비즈니스 로직
   } catch (error) {
-    return redirectToErrorPage(request.url, 'AUTH_CODE_ERROR');
+    return formatErrorResponse('INTERNAL_SERVER_ERROR', requestId, 500);
   }
 }
 ```
@@ -381,6 +410,12 @@ function redirectToErrorPage(requestUrl: string, errorCode: string): NextRespons
   errorUrl.searchParams.set('error', errorCode);
   return NextResponse.redirect(errorUrl);
 }
+
+// ❌ 직접 URL 생성 및 리다이렉트
+const redirectUrl = new URL(`/${locale}/auth/failure`, request.url);
+redirectUrl.searchParams.set('code', 'LINE_OAUTH_ERROR');
+redirectUrl.searchParams.set('provider', 'line');
+return NextResponse.redirect(redirectUrl);
 ```
 
 ### 클린 아키텍처 원칙 적용
@@ -419,52 +454,262 @@ features/
 #### **Use Case 패턴 적용**
 
 ```typescript
-// features/email-verification/api/use-cases/send-verification-email.ts
-export class SendVerificationEmailUseCase {
+// features/line-auth/api/use-cases/line-auth-use-case.ts
+export class LineAuthUseCase {
   constructor(
-    private emailApiService: IEmailApiService,
+    private lineApiService: ILineApiService,
     private userRepository: IUserRepository,
-    private authService: IAuthService,
+    private authService: ILineAuthService,
   ) {}
 
-  async execute(request: SendVerificationEmailRequest): Promise<SendVerificationEmailResponse> {
-    // 1. 이메일 형식 검증
-    // 2. 사용자 존재 확인
-    // 3. 토큰 생성 및 저장
-    // 4. 이메일 발송
-    // 5. 결과 반환
+  async execute(request: LineAuthRequest): Promise<LineAuthResult> {
+    // 1. State 검증 (CSRF 방지)
+    // 2. 액세스 토큰 교환
+    // 3. id_token에서 프로필 정보 추출
+    // 4. Supabase와 통합 및 email 반환
   }
 }
 ```
 
-#### **Route Handler 구조**
+> **참고**: Route Handler 구현 패턴은 위의 "Route Handler 설계 규칙" 섹션을 참조하세요.
+
+````
+
+## Route Handler 설계 규칙
+
+### ✅ **Route Handler 구조화 원칙**
+
+#### **1. 의존성 주입 패턴**
 
 ```typescript
-// features/email-verification/api/route.ts
-import { SendVerificationEmailUseCase } from './use-cases';
-import { EmailApiService, UserRepository, AuthService } from './infrastructure';
+// ✅ Good - 의존성 주입을 통한 인스턴스 생성
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const endpoint = '/auth/line/callback';
+  const method = 'GET';
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const useCase = new SendVerificationEmailUseCase(
-      new EmailApiService(),
-      new UserRepository(),
-      new AuthService(),
-    );
+    // 의존성 주입을 통한 인스턴스 생성
+    const lineApiService = new LineApiService();
+    const userRepository = new UserRepository();
+    const adminService = new AdminService();
+    const authService = new LineAuthService(adminService);
+    const lineAuthUseCase = new LineAuthUseCase(lineApiService, userRepository, authService);
 
-    const result = await useCase.execute(await request.json());
-
-    if (result.success) {
-      return NextResponse.json({ success: true, data: result.data });
-    } else {
-      return NextResponse.json({ success: false, error: result.error }, { status: 400 });
-    }
+    const result = await lineAuthUseCase.execute({...});
+    // ...
   } catch (error) {
-    console.error('Email verification error:', error);
-    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
+    // 에러 처리
+  }
+}
+````
+
+#### **2. 에러 로깅 및 처리**
+
+```typescript
+// ✅ Good - 구조화된 에러 로깅
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const endpoint = '/auth/line/callback';
+  const method = 'GET';
+
+  try {
+    // 비즈니스 로직
+  } catch (error) {
+    const requestId = routeErrorLogger.logError({
+      error: error as Error,
+      endpoint,
+      method,
+      request,
+    });
+
+    return redirectToAuthFailure({
+      request,
+      locale,
+      errorCode: 'LINE_CALLBACK_ERROR',
+      errorMessage: (error as Error).message,
+      provider: 'line',
+      requestId,
+    });
   }
 }
 ```
+
+#### **3. 리다이렉트 유틸리티 사용**
+
+```typescript
+// ✅ Good - 공통 리다이렉트 유틸리티 사용
+import { redirectToAuthFailure } from 'shared/lib';
+
+return redirectToAuthFailure({
+  request,
+  locale,
+  errorCode: 'LINE_OAUTH_ERROR',
+  errorMessage: error,
+  provider: 'line',
+  requestId,
+});
+
+// ❌ Bad - 직접 URL 생성 및 리다이렉트
+const redirectUrl = new URL(`/${locale}/auth/failure`, request.url);
+redirectUrl.searchParams.set('code', 'LINE_OAUTH_ERROR');
+redirectUrl.searchParams.set('provider', 'line');
+return NextResponse.redirect(redirectUrl);
+```
+
+#### **4. 서버 전용 기능 분리**
+
+```typescript
+// ✅ Good - 서버 전용 기능을 별도 import
+import { routeErrorLogger, redirectToAuthFailure } from 'shared/lib';
+import { AdminService } from 'shared/lib/server-only';
+
+// ❌ Bad - 클라이언트에서 사용 가능한 곳에 서버 전용 기능 포함
+import { AdminService } from 'shared/lib'; // 클라이언트에서 에러 발생
+```
+
+#### **5. 타입 안전성**
+
+```typescript
+// ✅ Good - Promise 타입 사용 (Next.js 15)
+interface PageProps {
+  params: Promise<{ lang: Locale }>;
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+  const { lang } = await params;
+  const { error } = await searchParams;
+  // ...
+}
+```
+
+### 🔧 **Route Handler 구현 패턴**
+
+#### **OAuth 콜백 Route Handler**
+
+```typescript
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const endpoint = '/auth/line/callback';
+  const method = 'GET';
+
+  try {
+    // 1. URL 파라미터 추출
+    const url = new URL(request.url);
+    const code = url.searchParams.get('code');
+    const state = url.searchParams.get('state');
+    const error = url.searchParams.get('error');
+    const locale = extractLocaleFromRequestUrl(request.url);
+
+    // 2. OAuth 에러 체크
+    if (error) {
+      const oauthError = new Error(`LINE OAuth error: ${error}`);
+      const requestId = routeErrorLogger.logError({
+        error: oauthError,
+        endpoint,
+        method,
+        request,
+      });
+
+      return redirectToAuthFailure({
+        request,
+        locale,
+        errorCode: 'LINE_OAUTH_ERROR',
+        errorMessage: error,
+        provider: 'line',
+        requestId,
+      });
+    }
+
+    // 3. 필수 파라미터 검증
+    if (!code) {
+      const missingCodeError = new Error('No authorization code received');
+      const requestId = routeErrorLogger.logError({
+        error: missingCodeError,
+        endpoint,
+        method,
+        request,
+      });
+
+      return redirectToAuthFailure({
+        request,
+        locale,
+        errorCode: 'MISSING_AUTH_CODE',
+        errorMessage: missingCodeError.message,
+        provider: 'line',
+        requestId,
+      });
+    }
+
+    // 4. Use Case 실행
+    const lineApiService = new LineApiService();
+    const userRepository = new UserRepository();
+    const adminService = new AdminService();
+    const authService = new LineAuthService(adminService);
+    const lineAuthUseCase = new LineAuthUseCase(lineApiService, userRepository, authService);
+
+    const result = await lineAuthUseCase.execute({
+      code,
+      state: state || undefined,
+      requestUrl: request.url,
+    });
+
+    // 5. 결과에 따른 리다이렉트
+    if (result.success && result.email) {
+      if (result.isNewUser) {
+        const redirectUrl = new URL(`/${locale}/auth/phone-verification`, request.url);
+        redirectUrl.searchParams.set('email', result.email);
+        return NextResponse.redirect(redirectUrl);
+      } else {
+        return NextResponse.redirect(new URL(`/${locale}`, request.url));
+      }
+    } else {
+      const authFailedError = new Error(`LINE auth failed: ${result.error || 'Unknown error'}`);
+      const requestId = routeErrorLogger.logError({
+        error: authFailedError,
+        endpoint,
+        method,
+        request,
+      });
+
+      return redirectToAuthFailure({
+        request,
+        locale,
+        errorCode: 'LINE_AUTH_FAILED',
+        errorMessage: result.error || 'Unknown error',
+        provider: 'line',
+        requestId,
+      });
+    }
+  } catch (error) {
+    const requestId = routeErrorLogger.logError({
+      error: error as Error,
+      endpoint,
+      method,
+      request,
+    });
+
+    const locale = extractLocaleFromRequestUrl(request.url);
+    return redirectToAuthFailure({
+      request,
+      locale,
+      errorCode: 'LINE_CALLBACK_ERROR',
+      errorMessage: (error as Error).message,
+      provider: 'line',
+      requestId,
+    });
+  }
+}
+```
+
+### 📋 **Route Handler 체크리스트**
+
+- [ ] **endpoint와 method 상수 정의**
+- [ ] **구조화된 에러 로깅 사용**
+- [ ] **공통 리다이렉트 유틸리티 사용**
+- [ ] **서버 전용 기능 별도 import**
+- [ ] **의존성 주입 패턴 적용**
+- [ ] **타입 안전성 보장**
+- [ ] **적절한 에러 코드 및 메시지 전달**
+- [ ] **Request ID를 통한 에러 추적**
 
 ### Shared Layer 사용 원칙
 

@@ -1,5 +1,4 @@
 import { GoogleSignInButton } from 'features/google-auth';
-import { FacebookSignInButton } from 'features/facebook-auth';
 import { LineSignInButton } from 'features/line-auth';
 import { type Locale } from 'shared/config';
 
@@ -15,7 +14,6 @@ export function SocialLoginSection({ locale, title }: SocialLoginSectionProps) {
       <div className='space-y-3'>
         <LineSignInButton locale={locale} />
         <GoogleSignInButton />
-        <FacebookSignInButton />
       </div>
     </div>
   );

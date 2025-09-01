@@ -245,6 +245,11 @@
     "seoul": "서울",
     "difference": "방콕은 서울보다 2시간 늦습니다"
   },
+  "exchangeRate": {
+    "title": "환율",
+    "thb": "태국 바트",
+    "krw": "대한민국 원"
+  },
   "essentials": {
     "title": "필수품",
     "subtitle": "크레딧을 사용하여 여행을 준비하세요!",

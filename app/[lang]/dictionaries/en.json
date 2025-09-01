@@ -245,6 +245,11 @@
     "seoul": "Seoul",
     "difference": "Bangkok is 2 hours behind Seoul"
   },
+  "exchangeRate": {
+    "title": "Exchange Rate",
+    "thb": "Thai Baht",
+    "krw": "South Korean Won"
+  },
   "essentials": {
     "title": "Essentials",
     "subtitle": "Use your Kredit and prepare your trip!",

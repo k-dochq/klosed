@@ -46,7 +46,7 @@ export function ExistingAccountLogin({ dict, email }: ExistingAccountLoginProps)
       }
 
       // 로그인 성공 시 홈페이지로 리다이렉트
-      window.location.href = '/';
+      window.location.href = `/${router.currentLocale}`;
     } catch (error) {
       console.error('로그인 처리 중 오류:', error);
       setError(dict.auth?.emailVerification?.errors?.LOGIN_FAILED);

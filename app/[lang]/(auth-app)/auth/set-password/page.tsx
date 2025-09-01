@@ -2,6 +2,7 @@ import type { Locale } from 'shared/config';
 import { getDictionary } from 'app/[lang]/dictionaries';
 import { SetPasswordContainer } from 'features/auth';
 import { createServerClient } from 'shared/lib/supabase/server-only';
+import { redirect } from 'next/navigation';
 
 interface SetPasswordPageProps {
   params: Promise<{ lang: Locale }>;

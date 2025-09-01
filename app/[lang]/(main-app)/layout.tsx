@@ -11,7 +11,7 @@ export default async function MainAppLayout({ children, params }: MainAppLayoutP
   const { lang } = await params;
 
   return (
-    <div className='pb-16'>
+    <div className='pb-20'>
       <Header currentLang={lang} />
       {children}
       <BottomNavigation currentLang={lang} />

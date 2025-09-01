@@ -6,5 +6,5 @@ interface EssentialsGridProps {
 }
 
 export function EssentialsGrid({ children, className = '' }: EssentialsGridProps) {
-  return <div className={`flex gap-4 ${className}`}>{children}</div>;
+  return <div className={`grid grid-cols-2 gap-3 ${className}`}>{children}</div>;
 }

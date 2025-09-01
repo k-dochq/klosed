@@ -1,5 +1,5 @@
 export const LINE_CONFIG = {
-  CHANNEL_ID: process.env.LINE_CHANNEL_ID || '',
+  CHANNEL_ID: process.env.LINE_CHANNEL_ID || process.env.NEXT_PUBLIC_LINE_CHANNEL_ID || '',
   CHANNEL_SECRET: process.env.LINE_CHANNEL_SECRET || '',
   AUTHORIZE_URL: 'https://access.line.me/oauth2/v2.1/authorize',
   TOKEN_URL: 'https://api.line.me/oauth2/v2.1/token',

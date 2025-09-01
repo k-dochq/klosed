@@ -10,9 +10,10 @@ interface LogoutButtonProps {
     logout?: string;
     loggingOut?: string;
   };
+  locale: string;
 }
 
-export function LogoutButton({ dict }: LogoutButtonProps) {
+export function LogoutButton({ dict, locale }: LogoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useLocalizedRouter();
   const supabase = createClient();
@@ -27,8 +28,8 @@ export function LogoutButton({ dict }: LogoutButtonProps) {
         return;
       }
 
-      // 로그아웃 후 홈페이지로 리다이렉트
-      router.push('/');
+      // 로그아웃 후 홈페이지로 리다이렉트 (locale 포함)
+      window.location.href = `/${locale}`;
     } catch (error) {
       console.error('Logout error:', error);
     } finally {

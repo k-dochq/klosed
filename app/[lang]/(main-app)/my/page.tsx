@@ -21,7 +21,7 @@ export default async function MyPage({ params }: MyPageProps) {
           </p>
 
           <div className='border-t pt-6'>
-            <LogoutButton dict={dict.auth || {}} />
+            <LogoutButton dict={dict.auth || {}} locale={lang} />
           </div>
         </div>
       </div>

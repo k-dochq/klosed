@@ -1,29 +1,16 @@
+import type { Locale } from 'shared/config';
 import { getDictionary } from 'app/[lang]/dictionaries';
-import { AuthErrorPage } from 'features/auth-error/ui/AuthErrorPage';
-import { Locale } from 'shared/config';
+import { AuthFailureContainer } from 'features/auth';
 
 interface AuthFailurePageProps {
-  params: Promise<{
-    lang: Locale;
-  }>;
-  searchParams: Promise<{
-    code?: string;
-    provider?: string;
-    message?: string;
-  }>;
+  params: Promise<{ lang: Locale }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
-export default async function AuthFailure({ params, searchParams }: AuthFailurePageProps) {
+export default async function AuthFailurePage({ params, searchParams }: AuthFailurePageProps) {
   const { lang } = await params;
-  const resolvedSearchParams = await searchParams;
+  const { error } = await searchParams;
   const dict = await getDictionary(lang);
 
-  return (
-    <AuthErrorPage
-      dict={dict.auth.error}
-      errorCode={resolvedSearchParams.code}
-      provider={resolvedSearchParams.provider}
-      message={resolvedSearchParams.message}
-    />
-  );
+  return <AuthFailureContainer locale={lang} errorCode={error} dict={dict} />;
 }

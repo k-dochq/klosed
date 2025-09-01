@@ -25,17 +25,22 @@ export default async function SetPasswordPage({ params, searchParams }: SetPassw
 
   try {
     const supabase = await createServerClient();
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+    // 이메일 인증의 경우 code를 token_hash로 처리하여 verifyOtp 사용
+    const { data, error } = await supabase.auth.verifyOtp({
+      token_hash: code,
+      type: 'recovery',
+    });
 
     if (error) {
-      console.error('Code verification error:', error);
-      authError = 'invalid_or_expired_code';
+      console.error('Token verification error:', error);
+      authError = `invalid_or_expired_token: ${error.message}`;
     } else if (data.session) {
       hasValidSession = true;
     }
   } catch (error) {
-    console.error('Unexpected error during code verification:', error);
-    authError = 'verification_error';
+    console.error('Unexpected error during verification:', error);
+    authError = `verification_error: ${(error as Error).message}`;
   }
 
   // 인증 실패 시 실패 페이지로 리다이렉트

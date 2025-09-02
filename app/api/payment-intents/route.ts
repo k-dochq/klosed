@@ -6,7 +6,7 @@ import { PaymentRequest } from 'features/payment/api/entities/types';
 import { routeErrorLogger } from 'shared/lib';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const endpoint = '/api/payment';
+  const endpoint = '/api/payment-intents';
   const method = 'POST';
 
   try {
@@ -47,6 +47,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const result = await createPaymentIntentUseCase.execute({
       amount,
       currency,
+      requestUrl: request.url,
     });
 
     // 5. 성공 응답

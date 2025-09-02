@@ -26,18 +26,6 @@ export interface PaymentResponse {
   data: PaymentIntentData;
 }
 
-export interface AirwallexAuthResponse {
-  token: string;
-}
-
-export interface PaymentIntentRequest {
-  request_id: string;
-  amount: number;
-  currency: string;
-  merchant_order_id: string;
-  return_url: string;
-}
-
 export interface NextAction {
   type: string;
   url?: string;

@@ -22,7 +22,7 @@ export class CreatePaymentIntentUseCase {
       amount: request.amount,
       currency: request.currency || 'USD',
       merchant_order_id: `order_${Date.now()}`,
-      return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/return`,
+      return_url: `${new URL(request.requestUrl).origin}/payment/return`,
     };
 
     // 3. 결제 의도 생성

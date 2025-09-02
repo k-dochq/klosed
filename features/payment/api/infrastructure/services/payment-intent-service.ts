@@ -1,4 +1,5 @@
 import { PaymentIntentRequest, PaymentResponse } from '../../entities/types';
+import { apiRequest } from 'shared/lib';
 
 export class PaymentIntentService {
   private readonly baseUrl: string;
@@ -11,7 +12,7 @@ export class PaymentIntentService {
     accessToken: string,
     request: PaymentIntentRequest,
   ): Promise<PaymentResponse> {
-    const response = await fetch(`${this.baseUrl}/api/v1/pa/payment_intents`, {
+    const response = await apiRequest(`${this.baseUrl}/api/v1/pa/payment_intents/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,7 +22,7 @@ export class PaymentIntentService {
     });
 
     if (!response.ok) {
-      throw new Error('결제 의도 생성 실패');
+      throw new Error('Failed to create payment intent');
     }
 
     return response.json();

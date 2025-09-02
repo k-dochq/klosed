@@ -1,4 +1,5 @@
 import { AirwallexAuthResponse } from '../../entities/types';
+import { apiRequest } from 'shared/lib';
 
 export class AirwallexAuthService {
   private readonly baseUrl: string;
@@ -12,19 +13,18 @@ export class AirwallexAuthService {
   }
 
   async authenticate(): Promise<string> {
-    const response = await fetch(`${this.baseUrl}/api/v1/authentication/login`, {
+    const response = await apiRequest(`${this.baseUrl}/api/v1/authentication/login`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
         'x-client-id': this.clientId,
         'x-api-key': this.apiKey,
-      }),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
     });
 
     if (!response.ok) {
-      throw new Error('Airwallex 인증 실패');
+      throw new Error('Airwallex authentication failed');
     }
 
     const authData: AirwallexAuthResponse = await response.json();

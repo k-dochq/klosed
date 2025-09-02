@@ -7,7 +7,9 @@ export { PaymentButton } from './ui/PaymentButton';
 
 // Model hooks
 export { usePayment } from './model/usePayment';
+export { useAirwallexPayment } from './model/useAirwallexPayment';
 export type {
   PaymentRequest as PaymentRequestModel,
   PaymentResponse as PaymentResponseModel,
+  PaymentIntentData,
 } from './model/types';

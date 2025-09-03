@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppleAuth } from '../model/useAppleAuth';
+import { useAppleAuth } from 'features/apple-auth/model/useAppleAuth';
 import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 
 interface AppleSignInButtonProps {

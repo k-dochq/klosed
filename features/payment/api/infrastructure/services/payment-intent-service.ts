@@ -1,4 +1,4 @@
-import { PaymentIntentRequest, PaymentResponse } from '../../entities/types';
+import { PaymentIntentRequest, PaymentResponse } from 'features/payment/api/entities/types';
 import { apiRequest } from 'shared/lib';
 
 export class PaymentIntentService {

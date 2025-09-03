@@ -1,21 +1,25 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from 'shared/lib/supabase/server-only';
 import { SUPPORTED_LOCALES } from 'shared/config';
-import { getLocale } from 'shared/lib/locale';
+import { getLocaleFromRequest } from 'shared/lib/locale';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const pathnameHasLocale = SUPPORTED_LOCALES.some(
+
+  // pathname이 locale로 시작하는지 확인
+  const hasLocale = SUPPORTED_LOCALES.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  if (pathnameHasLocale) {
+  if (hasLocale) {
+    // locale이 이미 있으면 updateSession만 실행하고 리턴
     return await updateSession(request);
   }
 
-  const locale = getLocale();
-
+  // locale이 없으면 locale을 추가해서 리다이렉트
+  const locale = getLocaleFromRequest(request);
   request.nextUrl.pathname = `/${locale}${pathname}`;
+
   return NextResponse.redirect(request.nextUrl);
 }
 

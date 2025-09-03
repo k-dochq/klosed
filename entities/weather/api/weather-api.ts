@@ -1,4 +1,4 @@
-import { WeatherData, ExchangeRateData } from '../model/types';
+import { WeatherData, ExchangeRateData } from 'entities/weather/model/types';
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const WEATHER_BASE_URL = 'https://api.weatherapi.com/v1';

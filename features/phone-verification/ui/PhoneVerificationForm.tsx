@@ -1,12 +1,12 @@
 'use client';
 
-import { useTimer } from '../model/useTimer';
-import { usePhoneVerificationState } from '../model/usePhoneVerificationState';
-import { usePhoneVerificationActions } from '../model/usePhoneVerificationActions';
+import { useTimer } from 'features/phone-verification/model/useTimer';
+import { usePhoneVerificationState } from 'features/phone-verification/model/usePhoneVerificationState';
+import { usePhoneVerificationActions } from 'features/phone-verification/model/usePhoneVerificationActions';
 import {
   formatPhoneNumber,
   validatePhoneVerificationForm,
-} from '../model/phoneVerificationValidators';
+} from 'features/phone-verification/model/phoneVerificationValidators';
 import { PhoneVerificationStep } from './PhoneVerificationStep';
 import { CodeVerificationStep } from './CodeVerificationStep';
 import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';

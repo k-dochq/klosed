@@ -1,6 +1,9 @@
-import { InviteCodeRepository } from '../repositories/invite-code-repository';
+import { InviteCodeRepository } from 'features/invitation-code/api/infrastructure/repositories/invite-code-repository';
 import { INVITE_CODE_ERROR_CODES } from 'shared/config/error-codes';
-import type { InviteCodeData, InviteCodeValidationResult } from '../../entities/types';
+import type {
+  InviteCodeData,
+  InviteCodeValidationResult,
+} from 'features/invitation-code/api/entities/types';
 
 export class InviteCodeValidationService {
   static async validateCode(code: string): Promise<InviteCodeValidationResult> {

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { usePayment } from '../model/usePayment';
-import { useAirwallexPayment } from '../model/useAirwallexPayment';
+import { usePayment } from 'features/payment/model/usePayment';
+import { useAirwallexPayment } from 'features/payment/model/useAirwallexPayment';
 import {
   type SupportedCurrency,
   SUPPORTED_CURRENCIES,

@@ -1,34 +1,8 @@
-import { HeaderLogo } from '@/widgets/header/ui/HeaderLogo';
+import { GlobalLoading } from 'shared/ui/loading';
 
 /**
- * Apple-inspired 미니멀 로딩 컴포넌트 - 서버 컴포넌트 버전
+ * 전역 로딩 컴포넌트 - 공통 컴포넌트 재사용
  */
-export default function GlobalLoading() {
-  return (
-    <div className='flex min-h-screen items-center justify-center bg-white'>
-      <div className='flex translate-y-0 flex-col items-center space-y-8 opacity-100'>
-        {/* 로고 */}
-        <HeaderLogo />
-
-        {/* CSS 애니메이션을 사용한 점 로딩 인디케이터 */}
-        <div className='flex items-center space-x-1'>
-          <div
-            className='h-2 w-2 animate-pulse rounded-full bg-gray-900'
-            style={{ animationDelay: '0s' }}
-          />
-          <div
-            className='h-2 w-2 animate-pulse rounded-full bg-gray-900'
-            style={{ animationDelay: '0.2s' }}
-          />
-          <div
-            className='h-2 w-2 animate-pulse rounded-full bg-gray-900'
-            style={{ animationDelay: '0.4s' }}
-          />
-        </div>
-
-        {/* 심플한 메시지 */}
-        <p className='text-sm font-light text-gray-500'>Loading</p>
-      </div>
-    </div>
-  );
+export default function Loading() {
+  return <GlobalLoading />;
 }

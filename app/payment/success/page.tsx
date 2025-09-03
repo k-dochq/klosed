@@ -4,11 +4,11 @@ import { AirwallexAuthService } from 'features/payment/api/infrastructure/servic
 import { PaymentIntentResponse } from 'features/payment/api/entities/types';
 
 interface PageProps {
-  searchParams: Promise<{ id?: string; type?: string }>;
+  searchParams: Promise<{ id?: string }>;
 }
 
 export default async function PaymentSuccessPage({ searchParams }: PageProps) {
-  const { id, type } = await searchParams;
+  const { id } = await searchParams;
 
   let paymentData: PaymentIntentResponse | null = null;
   let paymentError: string | null = null;

@@ -32,7 +32,6 @@ export function SignupContainer({ locale, title, subtitle, dict }: SignupContain
         <div className='w-full space-y-6 py-8'>
           {/* Header */}
           <SignupHeader title={title} subtitle={subtitle} />
-
           {/* Form */}
           <EmailVerificationForm dict={dict} />
 

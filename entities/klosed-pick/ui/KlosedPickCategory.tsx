@@ -1,4 +1,4 @@
-import { type KlosedPickCategory } from '../model/types';
+import { type KlosedPickCategory } from 'entities/klosed-pick/model/types';
 import { KlosedPickItem } from './KlosedPickItem';
 import { Carousel, CarouselContent, CarouselItem } from 'shared/ui/carousel';
 

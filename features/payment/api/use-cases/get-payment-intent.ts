@@ -1,5 +1,5 @@
-import { AirwallexAuthService } from '../infrastructure/services/airwallex-auth-service';
-import { PaymentIntentResponse } from '../entities/types';
+import { AirwallexAuthService } from 'features/payment/api/infrastructure/services/airwallex-auth-service';
+import { PaymentIntentResponse } from 'features/payment/api/entities/types';
 import { apiRequest } from 'shared/lib';
 
 export class GetPaymentIntentUseCase {

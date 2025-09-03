@@ -3,7 +3,7 @@ import 'server-only';
 import { type NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClientForMiddleware } from './server-client';
 import { extractLocaleFromPath } from 'shared/lib/locale';
-import { getAuthPath, isProtectedRoute } from '../auth/routeGuard';
+import { getAuthPath, isProtectedRoute } from 'shared/lib/auth/routeGuard';
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({

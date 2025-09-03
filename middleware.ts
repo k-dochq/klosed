@@ -29,8 +29,9 @@ export const config = {
      * - favicon.ico (favicon file)
      * - auth/callback (OAuth callback routes)
      * - auth/line/callback (LINE OAuth callback route)
+     * - payment (결제 관련 페이지)
      * - 파일 확장자가 있는 모든 파일 (이미지, CSS, JS 등)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|auth/callback|auth/line/callback|.*\\..*|robots.txt|sitemap.xml).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|auth/callback|auth/line/callback|payment|.*\\..*|robots.txt|sitemap.xml).*)',
   ],
 };

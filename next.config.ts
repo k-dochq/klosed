@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
       fullUrl: true, // 전체 URL 로깅
       hmrRefreshes: true, // HMR 캐시에서 복원된 fetch도 로깅
     },
-    // 들어오는 요청 로깅 (개발 환경에서만)
     incomingRequests: true, // 모든 요청 로깅
   },
 

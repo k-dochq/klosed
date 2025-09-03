@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@airwallex/components-sdk':
+        specifier: ^1.24.2
+        version: 1.24.2
       '@notionhq/client':
         specifier: ^4.0.1
         version: 4.0.1
@@ -137,6 +140,12 @@ importers:
         version: 5.9.2
 
 packages:
+
+  '@airwallex/airtracker@1.2.0':
+    resolution: {integrity: sha512-T6u4QnWEhT9jomVwo6FCVK63AOxRVjonUOn1mj16L/xbqhNCnl/kTBP2khFjFJBJ7wKcb7Yb2KrUg803Uu5zcw==}
+
+  '@airwallex/components-sdk@1.24.2':
+    resolution: {integrity: sha512-7wH8ZUs+PhtCM/UniQ5wf0x9M2c11KYCNh7c3uudMEblIZZdBy8FGi8FjfBsRA17q5rAYyjElG7UCZ3XrWJcqg==}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -3000,6 +3009,9 @@ packages:
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
+  web-vitals@3.5.2:
+    resolution: {integrity: sha512-c0rhqNcHXRkY/ogGDJQxZ9Im9D19hDihbzSQJrsioex+KnFgmMzBiy57Z1EjkhX/+OjyBpclDCzz2ITtjokFmg==}
+
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
@@ -3063,6 +3075,14 @@ packages:
     resolution: {integrity: sha512-1neef4bMce1hNTrxvHVKxWjKfGDn0oAli3Wy1Uwb7TRO1+wEwoZUZNP1NXIEESybOBiFnBOhI6a4m6tCLE8dog==}
 
 snapshots:
+
+  '@airwallex/airtracker@1.2.0':
+    dependencies:
+      web-vitals: 3.5.2
+
+  '@airwallex/components-sdk@1.24.2':
+    dependencies:
+      '@airwallex/airtracker': 1.2.0
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -6036,6 +6056,8 @@ snapshots:
     dependencies:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
+
+  web-vitals@3.5.2: {}
 
   webidl-conversions@3.0.1: {}
 

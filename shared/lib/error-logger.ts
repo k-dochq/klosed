@@ -9,7 +9,6 @@ interface ErrorLogEntry {
   userId?: string;
   ip?: string;
   userAgent?: string;
-  stack?: string;
   digest?: string;
 }
 
@@ -47,7 +46,7 @@ export class RouteErrorLogger {
       userId: params.userId,
       ip: this.extractIP(params.request),
       userAgent: params.request?.headers.get('user-agent') || undefined,
-      stack: process.env.NODE_ENV === 'development' ? params.error.stack : undefined,
+
       digest: this.generateDigest(params.error),
     };
 

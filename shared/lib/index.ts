@@ -18,3 +18,6 @@ export { prisma } from './prisma';
 
 // API client
 export { apiRequest } from './api-client';
+
+// Airwallex utilities
+export { getAirwallexLocale, isSupportedAirwallexLocale, type AirwallexLocale } from './airwallex';

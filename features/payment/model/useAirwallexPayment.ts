@@ -1,8 +1,11 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { init } from '@airwallex/components-sdk';
 import { PaymentIntentData } from './types';
+import { extractLocaleFromPathname } from 'shared/lib/locale/utils';
+import { getAirwallexLocale, type AirwallexLocale } from 'shared/lib';
 
 interface AirwallexConfig {
   env: 'demo' | 'prod';
@@ -12,6 +15,11 @@ interface AirwallexConfig {
 export function useAirwallexPayment(config: AirwallexConfig = { env: 'demo' }) {
   const [isInitializing, setIsInitializing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pathname = usePathname();
+
+  // 현재 locale 추출 및 Airwallex locale 변환
+  const currentLocale = extractLocaleFromPathname(pathname);
+  const airwallexLocale = getAirwallexLocale(currentLocale);
 
   const redirectToCheckout = useCallback(
     async (paymentData: PaymentIntentData) => {
@@ -19,9 +27,10 @@ export function useAirwallexPayment(config: AirwallexConfig = { env: 'demo' }) {
         setIsInitializing(true);
         setError(null);
 
-        // Airwallex SDK 초기화
+        // Airwallex SDK 초기화 (locale 포함)
         const { payments } = await init({
           env: config.env,
+          locale: airwallexLocale,
           enabledElements: ['payments'],
         });
 
@@ -46,7 +55,7 @@ export function useAirwallexPayment(config: AirwallexConfig = { env: 'demo' }) {
         setIsInitializing(false);
       }
     },
-    [config.env, config.countryCode],
+    [config.env, config.countryCode, airwallexLocale],
   );
 
   return {

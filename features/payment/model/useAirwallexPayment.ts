@@ -35,6 +35,8 @@ export function useAirwallexPayment(config: AirwallexConfig = { env: 'demo' }) {
           client_secret: paymentData.client_secret,
           currency: paymentData.currency,
           country_code: config.countryCode || 'US',
+          successUrl: `${window.location.origin}/payment/success`,
+          failUrl: `${window.location.origin}/payment/fail`,
         });
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to redirect to checkout';

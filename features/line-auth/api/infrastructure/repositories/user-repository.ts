@@ -25,27 +25,7 @@ export interface IUserRepository {
  */
 export class UserRepository implements IUserRepository {
   async findByEmail(email: string) {
-    const user = await prisma.user.findFirst({
-      where: {
-        email: email,
-      },
-      select: {
-        id: true,
-        email: true,
-        raw_user_meta_data: true,
-      },
-    });
-
-    if (!user) {
-      return null;
-    }
-
-    // JsonValue를 UserMetadata로 변환
-    return {
-      id: user.id,
-      email: user.email,
-      raw_user_meta_data: user.raw_user_meta_data as UserMetadata,
-    };
+    return null;
   }
 
   async existsByEmail(email: string): Promise<boolean> {

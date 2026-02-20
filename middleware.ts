@@ -1,22 +1,26 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { updateSession } from 'shared/lib/supabase/server-only';
-import { SUPPORTED_LOCALES } from 'shared/config';
-import { getLocale } from 'shared/lib/locale';
+import { authGuard } from 'shared/lib/supabase/supabase-server';
+import { SUPPORTED_LOCALES, type Locale } from 'shared/config';
+import { getLocaleFromRequest } from 'shared/lib/locale';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const pathnameHasLocale = SUPPORTED_LOCALES.some(
+
+  // pathname이 locale로 시작하는지 확인
+  const hasLocale = SUPPORTED_LOCALES.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  if (pathnameHasLocale) {
-    return await updateSession(request);
+  // locale이 없으면 locale을 추가해서 리다이렉트
+  if (!hasLocale) {
+    const locale = getLocaleFromRequest(request);
+    request.nextUrl.pathname = `/${locale}${pathname}`;
+    return NextResponse.redirect(request.nextUrl);
   }
 
-  const locale = getLocale();
-
-  request.nextUrl.pathname = `/${locale}${pathname}`;
-  return NextResponse.redirect(request.nextUrl);
+  // locale 추출 후 인증 가드 실행
+  const locale = pathname.split('/')[1] as Locale;
+  return await authGuard(request, locale);
 }
 
 export const config = {

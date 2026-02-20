@@ -1,4 +1,4 @@
-import { type Tour } from '../model/types';
+import { type Tour } from 'entities/tour/model/types';
 import { TourTag } from './TourTag';
 
 interface TourCardProps {

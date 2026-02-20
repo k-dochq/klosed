@@ -1,18 +1,9 @@
-import { PROTECTED_ROUTES, AUTH_CONFIG } from 'shared/config';
-
-/**
- * 경로가 보호된 경로인지 확인
- */
-export function isProtectedRoute(pathname: string, locale?: string): boolean {
-  const pathWithoutLocale = locale ? pathname.replace(`/${locale}`, '') : pathname;
-
-  return PROTECTED_ROUTES.some((route) => pathWithoutLocale.startsWith(route));
-}
+import { AUTH_CONFIG, Locale } from 'shared/config';
 
 /**
  * 로그인 페이지 경로 생성
  */
-export function getAuthPath(locale: string): string {
+export function getAuthPath(locale: Locale): string {
   return `/${locale}${AUTH_CONFIG.authPath}`;
 }
 

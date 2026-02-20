@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useEmailAuth } from 'features/email-auth/model/useEmailAuth';
 import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 import { generateRandomPassword } from 'shared/lib/utils/password-generator';
-import { EMAIL_VERIFICATION_ERROR_CODES } from '../api/entities/types';
+import { EMAIL_VERIFICATION_ERROR_CODES } from 'features/email-verification/api/entities/types';
 
 /**
  * 이메일 인증을 위한 회원가입 + 이메일 전송 통합 훅

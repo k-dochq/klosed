@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useEmailAuth } from '../model/useEmailAuth';
+import { useEmailAuth } from 'features/email-auth/model/useEmailAuth';
 
 interface EmailLoginFormProps {
   redirectTo?: string;

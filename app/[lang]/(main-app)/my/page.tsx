@@ -1,7 +1,7 @@
 import type { Locale } from 'shared/config';
 import { getDictionary } from 'app/[lang]/dictionaries';
 import { LogoutButton } from 'features/auth';
-import { createServerClient } from 'shared/lib/supabase/server-only';
+import { createSupabaseServerClient } from 'shared/lib/supabase/supabase-server';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import MyPageLoading from './loading';
@@ -15,7 +15,7 @@ export default async function MyPage({ params }: MyPageProps) {
   const dict = await getDictionary(lang);
 
   // Supabase 서버 클라이언트 생성
-  const supabase = await createServerClient();
+  const supabase = await createSupabaseServerClient();
 
   // 현재 사용자 정보 가져오기
   const {

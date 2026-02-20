@@ -1,4 +1,4 @@
-import { InviteCodeValidationService } from '../infrastructure/services/invite-code-validation-service';
+import { InviteCodeValidationService } from 'features/invitation-code/api/infrastructure/services/invite-code-validation-service';
 import type { ValidateInviteCodeUseCaseResult, IValidateInviteCodeUseCase } from './types';
 
 export class ValidateInviteCodeUseCase implements IValidateInviteCodeUseCase {

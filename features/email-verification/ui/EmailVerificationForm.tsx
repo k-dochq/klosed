@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
-import { useEmailVerificationSignup } from '../model/useEmailVerificationSignup';
-import { useCheckEmailExists } from '../model/useCheckEmailExists';
+import { useEmailVerificationSignup } from 'features/email-verification/model/useEmailVerificationSignup';
+import { useCheckEmailExists } from 'features/email-verification/model/useCheckEmailExists';
 import { isValidEmail } from 'shared/lib/validation/email';
 import { EmailInput } from './EmailInput';
 import { EmailVerificationButton } from './EmailVerificationButton';

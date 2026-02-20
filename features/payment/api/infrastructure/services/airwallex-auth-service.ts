@@ -1,4 +1,4 @@
-import { AirwallexAuthResponse } from '../../entities/types';
+import { AirwallexAuthResponse } from 'features/payment/api/entities/types';
 import { apiRequest } from 'shared/lib';
 
 export class AirwallexAuthService {

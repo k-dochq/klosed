@@ -1,4 +1,4 @@
-import { type KlosedPickItem } from '../model/types';
+import { type KlosedPickItem } from 'entities/klosed-pick/model/types';
 
 interface KlosedPickItemProps {
   item: KlosedPickItem;

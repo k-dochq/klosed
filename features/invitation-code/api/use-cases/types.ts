@@ -1,4 +1,4 @@
-import type { ValidationResult } from '../entities/validators';
+import type { ValidationResult } from 'features/invitation-code/api/entities/validators';
 
 export interface ValidateInviteCodeUseCaseResult {
   readonly isValid: boolean;

@@ -1,33 +1,24 @@
-import { TourCarousel } from 'widgets/tour-carousel';
-import { KlosedPicks } from 'widgets/klosed-picks';
-import { WeatherForecast } from 'features/weather-forecast';
-import { TimeDifference } from 'features/time-difference';
-import { ExchangeRate } from 'features/exchange-rate';
-import { Essentials } from 'features/essentials';
-import { createLocalizedTours } from 'entities/tour';
-import { createLocalizedKlosedPicks } from 'entities/klosed-pick';
-import { getDictionary } from '../dictionaries';
-import { type Locale } from 'shared/config';
+import { createSupabaseServerClient } from 'shared/lib/supabase/server-client';
+import { redirect } from 'next/navigation';
+import { type Locale } from 'shared/config/locales';
 
 interface PageProps {
   params: Promise<{ lang: Locale }>;
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function RootPage({ params }: PageProps) {
   const { lang } = await params;
-  const dict = await getDictionary(lang);
+  const supabase = await createSupabaseServerClient();
 
-  const localizedTours = createLocalizedTours(dict.tours);
-  const localizedKlosedPicks = createLocalizedKlosedPicks(dict.klosedPicks);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  return (
-    <div>
-      <TourCarousel tours={localizedTours} />
-      <KlosedPicks data={localizedKlosedPicks} />
-      <WeatherForecast dict={dict} />
-      <TimeDifference dict={dict} />
-      <ExchangeRate dict={dict} />
-      <Essentials dict={dict} />
-    </div>
-  );
+  if (session) {
+    // 로그인된 사용자는 메인 페이지로 이동
+    redirect(`/${lang}/main`);
+  } else {
+    // 로그인되지 않은 사용자는 온보딩으로 이동
+    redirect(`/${lang}/auth/onboarding`);
+  }
 }

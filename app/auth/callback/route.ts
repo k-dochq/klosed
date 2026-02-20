@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from 'shared/lib/supabase/server-only';
+import { createSupabaseServerClient } from 'shared/lib/supabase/supabase-server';
 import { routeErrorLogger, redirectToAuthFailure } from 'shared/lib';
 import { extractLocaleFromCookie } from 'shared/lib/locale';
 
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const code = searchParams.get('code');
 
     if (code) {
-      const supabase = await createServerClient();
+      const supabase = await createSupabaseServerClient();
       const { error, data } = await supabase.auth.exchangeCodeForSession(code);
 
       if (!error && data?.user) {

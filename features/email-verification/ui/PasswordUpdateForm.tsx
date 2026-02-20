@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { usePasswordValidation } from '../model/usePasswordValidation';
-import { usePasswordUpdate } from '../model/usePasswordUpdate';
+import { usePasswordValidation } from 'features/email-verification/model/usePasswordValidation';
+import { usePasswordUpdate } from 'features/email-verification/model/usePasswordUpdate';
 import { PasswordInput } from './PasswordInput';
 import { ErrorMessage } from './ErrorMessage';
 import { SuccessMessage } from './SuccessMessage';

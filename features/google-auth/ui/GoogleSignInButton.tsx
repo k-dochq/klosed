@@ -1,6 +1,6 @@
 'use client';
 
-import { useGoogleAuth } from '../model/useGoogleAuth';
+import { useGoogleAuth } from 'features/google-auth/model/useGoogleAuth';
 import { useLocalizedRouter } from 'shared/model/hooks/useLocalizedRouter';
 
 interface GoogleSignInButtonProps {
